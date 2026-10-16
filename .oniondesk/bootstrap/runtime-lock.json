@@ -1,0 +1,1329 @@
+{
+  "schema": 1,
+  "distribution": "linux-arm64",
+  "base_image": "python:3.12.13-slim-bookworm@sha256:4766d8b510c428e595d74b9cc5bbb2fae8e26316fffb4adc89908d79aacd58a2",
+  "glibc_baseline": "2.36",
+  "manifest_sha256": "9d6045d6b3416e2a45e2ca4bbbe732152e0af403c429219e4e0e5c25327afd9d",
+  "worker_sha256": "6bb868be5847b73e74f496dbbdc7676e44f554f8ad0adfe464d1532af511a060",
+  "packages": [
+    {
+      "binary": "fonts-dejavu-core",
+      "version": "2.37-6",
+      "source": "fonts-dejavu",
+      "source_version": "2.37-6",
+      "source_browser": "https://sources.debian.org/src/fonts-dejavu/2.37-6/"
+    },
+    {
+      "binary": "libatk-bridge2.0-0:arm64",
+      "version": "2.46.0-5",
+      "source": "at-spi2-core",
+      "source_version": "2.46.0-5",
+      "source_browser": "https://sources.debian.org/src/at-spi2-core/2.46.0-5/"
+    },
+    {
+      "binary": "libatk1.0-0:arm64",
+      "version": "2.46.0-5",
+      "source": "at-spi2-core",
+      "source_version": "2.46.0-5",
+      "source_browser": "https://sources.debian.org/src/at-spi2-core/2.46.0-5/"
+    },
+    {
+      "binary": "libatspi2.0-0:arm64",
+      "version": "2.46.0-5",
+      "source": "at-spi2-core",
+      "source_version": "2.46.0-5",
+      "source_browser": "https://sources.debian.org/src/at-spi2-core/2.46.0-5/"
+    },
+    {
+      "binary": "libblkid1:arm64",
+      "version": "2.38.1-5+deb12u3",
+      "source": "util-linux",
+      "source_version": "2.38.1-5+deb12u3",
+      "source_browser": "https://sources.debian.org/src/util-linux/2.38.1-5+deb12u3/"
+    },
+    {
+      "binary": "libbrotli1:arm64",
+      "version": "1.0.9-2+b6",
+      "source": "brotli",
+      "source_version": "1.0.9-2",
+      "source_browser": "https://sources.debian.org/src/brotli/1.0.9-2/"
+    },
+    {
+      "binary": "libbsd0:arm64",
+      "version": "0.11.7-2",
+      "source": "libbsd",
+      "source_version": "0.11.7-2",
+      "source_browser": "https://sources.debian.org/src/libbsd/0.11.7-2/"
+    },
+    {
+      "binary": "libcairo-gobject2:arm64",
+      "version": "1.16.0-7",
+      "source": "cairo",
+      "source_version": "1.16.0-7",
+      "source_browser": "https://sources.debian.org/src/cairo/1.16.0-7/"
+    },
+    {
+      "binary": "libcairo2:arm64",
+      "version": "1.16.0-7",
+      "source": "cairo",
+      "source_version": "1.16.0-7",
+      "source_browser": "https://sources.debian.org/src/cairo/1.16.0-7/"
+    },
+    {
+      "binary": "libcap2:arm64",
+      "version": "1:2.66-4+deb12u3+b1",
+      "source": "libcap2",
+      "source_version": "1:2.66-4+deb12u3",
+      "source_browser": "https://sources.debian.org/src/libcap2/1:2.66-4+deb12u3/"
+    },
+    {
+      "binary": "libdatrie1:arm64",
+      "version": "0.2.13-2+b1",
+      "source": "libdatrie",
+      "source_version": "0.2.13-2",
+      "source_browser": "https://sources.debian.org/src/libdatrie/0.2.13-2/"
+    },
+    {
+      "binary": "libdbus-1-3:arm64",
+      "version": "1.14.10-1~deb12u1",
+      "source": "dbus",
+      "source_version": "1.14.10-1~deb12u1",
+      "source_browser": "https://sources.debian.org/src/dbus/1.14.10-1~deb12u1/"
+    },
+    {
+      "binary": "libepoxy0:arm64",
+      "version": "1.5.10-1",
+      "source": "libepoxy",
+      "source_version": "1.5.10-1",
+      "source_browser": "https://sources.debian.org/src/libepoxy/1.5.10-1/"
+    },
+    {
+      "binary": "libexpat1:arm64",
+      "version": "2.5.0-1+deb12u4",
+      "source": "expat",
+      "source_version": "2.5.0-1+deb12u4",
+      "source_browser": "https://sources.debian.org/src/expat/2.5.0-1+deb12u4/"
+    },
+    {
+      "binary": "libffi8:arm64",
+      "version": "3.4.4-1",
+      "source": "libffi",
+      "source_version": "3.4.4-1",
+      "source_browser": "https://sources.debian.org/src/libffi/3.4.4-1/"
+    },
+    {
+      "binary": "libfontconfig1:arm64",
+      "version": "2.14.1-4",
+      "source": "fontconfig",
+      "source_version": "2.14.1-4",
+      "source_browser": "https://sources.debian.org/src/fontconfig/2.14.1-4/"
+    },
+    {
+      "binary": "libfreetype6:arm64",
+      "version": "2.12.1+dfsg-5+deb12u4",
+      "source": "freetype",
+      "source_version": "2.12.1+dfsg-5+deb12u4",
+      "source_browser": "https://sources.debian.org/src/freetype/2.12.1+dfsg-5+deb12u4/"
+    },
+    {
+      "binary": "libfribidi0:arm64",
+      "version": "1.0.8-2.1",
+      "source": "fribidi",
+      "source_version": "1.0.8-2.1",
+      "source_browser": "https://sources.debian.org/src/fribidi/1.0.8-2.1/"
+    },
+    {
+      "binary": "libgcrypt20:arm64",
+      "version": "1.10.1-3+deb12u1",
+      "source": "libgcrypt20",
+      "source_version": "1.10.1-3+deb12u1",
+      "source_browser": "https://sources.debian.org/src/libgcrypt20/1.10.1-3+deb12u1/"
+    },
+    {
+      "binary": "libgdk-pixbuf-2.0-0:arm64",
+      "version": "2.42.10+dfsg-1+deb12u4",
+      "source": "gdk-pixbuf",
+      "source_version": "2.42.10+dfsg-1+deb12u4",
+      "source_browser": "https://sources.debian.org/src/gdk-pixbuf/2.42.10+dfsg-1+deb12u4/"
+    },
+    {
+      "binary": "libglib2.0-0:arm64",
+      "version": "2.74.6-2+deb12u9",
+      "source": "glib2.0",
+      "source_version": "2.74.6-2+deb12u9",
+      "source_browser": "https://sources.debian.org/src/glib2.0/2.74.6-2+deb12u9/"
+    },
+    {
+      "binary": "libgpg-error0:arm64",
+      "version": "1.46-1",
+      "source": "libgpg-error",
+      "source_version": "1.46-1",
+      "source_browser": "https://sources.debian.org/src/libgpg-error/1.46-1/"
+    },
+    {
+      "binary": "libgraphite2-3:arm64",
+      "version": "1.3.14-1+deb12u1",
+      "source": "graphite2",
+      "source_version": "1.3.14-1+deb12u1",
+      "source_browser": "https://sources.debian.org/src/graphite2/1.3.14-1+deb12u1/"
+    },
+    {
+      "binary": "libgtk-3-0:arm64",
+      "version": "3.24.38-2~deb12u3",
+      "source": "gtk+3.0",
+      "source_version": "3.24.38-2~deb12u3",
+      "source_browser": "https://sources.debian.org/src/gtk+3.0/3.24.38-2~deb12u3/"
+    },
+    {
+      "binary": "libharfbuzz0b:arm64",
+      "version": "6.0.0+dfsg-3",
+      "source": "harfbuzz",
+      "source_version": "6.0.0+dfsg-3",
+      "source_browser": "https://sources.debian.org/src/harfbuzz/6.0.0+dfsg-3/"
+    },
+    {
+      "binary": "libjpeg62-turbo:arm64",
+      "version": "1:2.1.5-2",
+      "source": "libjpeg-turbo",
+      "source_version": "1:2.1.5-2",
+      "source_browser": "https://sources.debian.org/src/libjpeg-turbo/1:2.1.5-2/"
+    },
+    {
+      "binary": "liblz4-1:arm64",
+      "version": "1.9.4-1",
+      "source": "lz4",
+      "source_version": "1.9.4-1",
+      "source_browser": "https://sources.debian.org/src/lz4/1.9.4-1/"
+    },
+    {
+      "binary": "liblzma5:arm64",
+      "version": "5.4.1-1+deb12u2",
+      "source": "xz-utils",
+      "source_version": "5.4.1-1+deb12u2",
+      "source_browser": "https://sources.debian.org/src/xz-utils/5.4.1-1+deb12u2/"
+    },
+    {
+      "binary": "libmd0:arm64",
+      "version": "1.0.4-2",
+      "source": "libmd",
+      "source_version": "1.0.4-2",
+      "source_browser": "https://sources.debian.org/src/libmd/1.0.4-2/"
+    },
+    {
+      "binary": "libmount1:arm64",
+      "version": "2.38.1-5+deb12u3",
+      "source": "util-linux",
+      "source_version": "2.38.1-5+deb12u3",
+      "source_browser": "https://sources.debian.org/src/util-linux/2.38.1-5+deb12u3/"
+    },
+    {
+      "binary": "libpango-1.0-0:arm64",
+      "version": "1.50.12+ds-1",
+      "source": "pango1.0",
+      "source_version": "1.50.12+ds-1",
+      "source_browser": "https://sources.debian.org/src/pango1.0/1.50.12+ds-1/"
+    },
+    {
+      "binary": "libpangocairo-1.0-0:arm64",
+      "version": "1.50.12+ds-1",
+      "source": "pango1.0",
+      "source_version": "1.50.12+ds-1",
+      "source_browser": "https://sources.debian.org/src/pango1.0/1.50.12+ds-1/"
+    },
+    {
+      "binary": "libpangoft2-1.0-0:arm64",
+      "version": "1.50.12+ds-1",
+      "source": "pango1.0",
+      "source_version": "1.50.12+ds-1",
+      "source_browser": "https://sources.debian.org/src/pango1.0/1.50.12+ds-1/"
+    },
+    {
+      "binary": "libpcre2-8-0:arm64",
+      "version": "10.42-1+deb12u2",
+      "source": "pcre2",
+      "source_version": "10.42-1+deb12u2",
+      "source_browser": "https://sources.debian.org/src/pcre2/10.42-1+deb12u2/"
+    },
+    {
+      "binary": "libpixman-1-0:arm64",
+      "version": "0.42.2-1",
+      "source": "pixman",
+      "source_version": "0.42.2-1",
+      "source_browser": "https://sources.debian.org/src/pixman/0.42.2-1/"
+    },
+    {
+      "binary": "libpng16-16:arm64",
+      "version": "1.6.39-2+deb12u6",
+      "source": "libpng1.6",
+      "source_version": "1.6.39-2+deb12u6",
+      "source_browser": "https://sources.debian.org/src/libpng1.6/1.6.39-2+deb12u6/"
+    },
+    {
+      "binary": "libselinux1:arm64",
+      "version": "3.4-1+b6",
+      "source": "libselinux",
+      "source_version": "3.4-1",
+      "source_browser": "https://sources.debian.org/src/libselinux/3.4-1/"
+    },
+    {
+      "binary": "libsystemd0:arm64",
+      "version": "252.39-1~deb12u2",
+      "source": "systemd",
+      "source_version": "252.39-1~deb12u2",
+      "source_browser": "https://sources.debian.org/src/systemd/252.39-1~deb12u2/"
+    },
+    {
+      "binary": "libthai0:arm64",
+      "version": "0.1.29-1",
+      "source": "libthai",
+      "source_version": "0.1.29-1",
+      "source_browser": "https://sources.debian.org/src/libthai/0.1.29-1/"
+    },
+    {
+      "binary": "libwayland-client0:arm64",
+      "version": "1.21.0-1",
+      "source": "wayland",
+      "source_version": "1.21.0-1",
+      "source_browser": "https://sources.debian.org/src/wayland/1.21.0-1/"
+    },
+    {
+      "binary": "libwayland-cursor0:arm64",
+      "version": "1.21.0-1",
+      "source": "wayland",
+      "source_version": "1.21.0-1",
+      "source_browser": "https://sources.debian.org/src/wayland/1.21.0-1/"
+    },
+    {
+      "binary": "libwayland-egl1:arm64",
+      "version": "1.21.0-1",
+      "source": "wayland",
+      "source_version": "1.21.0-1",
+      "source_browser": "https://sources.debian.org/src/wayland/1.21.0-1/"
+    },
+    {
+      "binary": "libx11-6:arm64",
+      "version": "2:1.8.4-2+deb12u2",
+      "source": "libx11",
+      "source_version": "2:1.8.4-2+deb12u2",
+      "source_browser": "https://sources.debian.org/src/libx11/2:1.8.4-2+deb12u2/"
+    },
+    {
+      "binary": "libxau6:arm64",
+      "version": "1:1.0.9-1",
+      "source": "libxau",
+      "source_version": "1:1.0.9-1",
+      "source_browser": "https://sources.debian.org/src/libxau/1:1.0.9-1/"
+    },
+    {
+      "binary": "libxcb-render0:arm64",
+      "version": "1.15-1",
+      "source": "libxcb",
+      "source_version": "1.15-1",
+      "source_browser": "https://sources.debian.org/src/libxcb/1.15-1/"
+    },
+    {
+      "binary": "libxcb-shm0:arm64",
+      "version": "1.15-1",
+      "source": "libxcb",
+      "source_version": "1.15-1",
+      "source_browser": "https://sources.debian.org/src/libxcb/1.15-1/"
+    },
+    {
+      "binary": "libxcb1:arm64",
+      "version": "1.15-1",
+      "source": "libxcb",
+      "source_version": "1.15-1",
+      "source_browser": "https://sources.debian.org/src/libxcb/1.15-1/"
+    },
+    {
+      "binary": "libxcomposite1:arm64",
+      "version": "1:0.4.5-1",
+      "source": "libxcomposite",
+      "source_version": "1:0.4.5-1",
+      "source_browser": "https://sources.debian.org/src/libxcomposite/1:0.4.5-1/"
+    },
+    {
+      "binary": "libxcursor1:arm64",
+      "version": "1:1.2.1-1",
+      "source": "libxcursor",
+      "source_version": "1:1.2.1-1",
+      "source_browser": "https://sources.debian.org/src/libxcursor/1:1.2.1-1/"
+    },
+    {
+      "binary": "libxdamage1:arm64",
+      "version": "1:1.1.6-1",
+      "source": "libxdamage",
+      "source_version": "1:1.1.6-1",
+      "source_browser": "https://sources.debian.org/src/libxdamage/1:1.1.6-1/"
+    },
+    {
+      "binary": "libxdmcp6:arm64",
+      "version": "1:1.1.2-3",
+      "source": "libxdmcp",
+      "source_version": "1:1.1.2-3",
+      "source_browser": "https://sources.debian.org/src/libxdmcp/1:1.1.2-3/"
+    },
+    {
+      "binary": "libxext6:arm64",
+      "version": "2:1.3.4-1+b1",
+      "source": "libxext",
+      "source_version": "2:1.3.4-1",
+      "source_browser": "https://sources.debian.org/src/libxext/2:1.3.4-1/"
+    },
+    {
+      "binary": "libxfixes3:arm64",
+      "version": "1:6.0.0-2",
+      "source": "libxfixes",
+      "source_version": "1:6.0.0-2",
+      "source_browser": "https://sources.debian.org/src/libxfixes/1:6.0.0-2/"
+    },
+    {
+      "binary": "libxi6:arm64",
+      "version": "2:1.8-1+b1",
+      "source": "libxi",
+      "source_version": "2:1.8-1",
+      "source_browser": "https://sources.debian.org/src/libxi/2:1.8-1/"
+    },
+    {
+      "binary": "libxinerama1:arm64",
+      "version": "2:1.1.4-3",
+      "source": "libxinerama",
+      "source_version": "2:1.1.4-3",
+      "source_browser": "https://sources.debian.org/src/libxinerama/2:1.1.4-3/"
+    },
+    {
+      "binary": "libxkbcommon0:arm64",
+      "version": "1.5.0-1",
+      "source": "libxkbcommon",
+      "source_version": "1.5.0-1",
+      "source_browser": "https://sources.debian.org/src/libxkbcommon/1.5.0-1/"
+    },
+    {
+      "binary": "libxrandr2:arm64",
+      "version": "2:1.5.2-2+b1",
+      "source": "libxrandr",
+      "source_version": "2:1.5.2-2",
+      "source_browser": "https://sources.debian.org/src/libxrandr/2:1.5.2-2/"
+    },
+    {
+      "binary": "libxrender1:arm64",
+      "version": "1:0.9.10-1.1",
+      "source": "libxrender",
+      "source_version": "1:0.9.10-1.1",
+      "source_browser": "https://sources.debian.org/src/libxrender/1:0.9.10-1.1/"
+    },
+    {
+      "binary": "libzstd1:arm64",
+      "version": "1.5.4+dfsg2-5",
+      "source": "libzstd",
+      "source_version": "1.5.4+dfsg2-5",
+      "source_browser": "https://sources.debian.org/src/libzstd/1.5.4+dfsg2-5/"
+    },
+    {
+      "binary": "zlib1g:arm64",
+      "version": "1:1.2.13.dfsg-1",
+      "source": "zlib",
+      "source_version": "1:1.2.13.dfsg-1",
+      "source_browser": "https://sources.debian.org/src/zlib/1:1.2.13.dfsg-1/"
+    }
+  ],
+  "system_glibc_sonames": [
+    "ld-linux-aarch64.so.1",
+    "libc.so.6",
+    "libdl.so.2",
+    "libm.so.6",
+    "libpthread.so.0"
+  ],
+  "files": [
+    {
+      "path": ".oniondesk/bootstrap/BUILD-AND-LICENSES.md",
+      "bytes": 21477,
+      "sha256": "4bf0325903bfa0127d42ff306a803138e159b6c3c2cc9596a39837da70fc1ad6",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/fonts/DejaVuSans-Bold.ttf",
+      "bytes": 708920,
+      "sha256": "0d977336a6d5fba34eab8e3199eb218327161b5143749f802982c2bc34df0c96",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/fonts/DejaVuSans.ttf",
+      "bytes": 759720,
+      "sha256": "abdc775b21b1bc470d50c97e790d276f2054b7504e56e5bd3e64f48d68582322",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/fonts.conf",
+      "bytes": 279,
+      "sha256": "6b91bb29fee7360128eea4330776ed3e0f306c543155a6b50a7a67ff51ff11d1",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/hacker-mark.png",
+      "bytes": 1508723,
+      "sha256": "37f3423b5ff9773e7327de160f0ab86605df0fd025a71f22543318577f6a0b4c",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libX11.so.6",
+      "bytes": 1410072,
+      "sha256": "6b67ae6e92db40871ed0a9bc93a7e4b5003d10cf2f2a390dee30eed64f1bf7ab",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXau.so.6",
+      "bytes": 67600,
+      "sha256": "df82c421a8b1050cd6ac1d0b50b604ebac1779d816752e952b9c9c68f67a8eb3",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXcomposite.so.1",
+      "bytes": 67032,
+      "sha256": "1b83f1ec5bf05a345f6cdfd024d0eb14a44dc45cbad0e89c0887f261f95e297b",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXcursor.so.1",
+      "bytes": 69040,
+      "sha256": "3776d157b4713ad45ca46bfda74e641c3c0cf6113d467543a33ecd627963f974",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXdamage.so.1",
+      "bytes": 132336,
+      "sha256": "fbafef93f8b1bc2ac5b5f78b77322b5de1aea2343b097e31829a37e60d2eaff9",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXdmcp.so.6",
+      "bytes": 67648,
+      "sha256": "8adb98bc7bf9983add80076f0826918027bb2588f4589e7322a50b674901c47b",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXext.so.6",
+      "bytes": 201824,
+      "sha256": "bb8262a27b996ea022dcedc1e05d0ca44c18e1825aeca6c30008e619a209fe38",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXfixes.so.3",
+      "bytes": 133424,
+      "sha256": "4ce6008fc69b551d00bc9e829f255e59783fbf2a5f2d5e373c37e91cd30f5615",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXi.so.6",
+      "bytes": 134664,
+      "sha256": "359c0784a9b96217f690135a738bc14a67af324424c60f5acfb2420b505f38a0",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXinerama.so.1",
+      "bytes": 66904,
+      "sha256": "e7bf8ec61be6c4ef325ec6436ef704ac45de794a52ee56a5d84e336b9bbadc13",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXrandr.so.2",
+      "bytes": 68688,
+      "sha256": "a663f0684c1f5cb18d4536ab61cb002b3450c48efef3f7e3f6e934a4811ddd04",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libXrender.so.1",
+      "bytes": 68264,
+      "sha256": "8f97f2911c698051e5ffb86f53ca9d294da5b1bf79a81d59ab6bd08f583231b6",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libatk-1.0.so.0",
+      "bytes": 275512,
+      "sha256": "77f526c31b221904831860eabfcc909e5d6a0b706f3cd8a4799b7540cecb1eef",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libatk-bridge-2.0.so.0",
+      "bytes": 342096,
+      "sha256": "b7c9740c01d385c1fdaa33fc84cfc4febc53f17577637c92f4108f8eabab55f8",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libatspi.so.0",
+      "bytes": 348520,
+      "sha256": "9fc9bb34cfca072fc107e54cb495c16fd780bdc834d33de14910befc7f40e298",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libblkid.so.1",
+      "bytes": 464920,
+      "sha256": "002fc43b173f65c1eeabff565c78b2295e3f95e370491bd0149b692b156f15da",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libbrotlicommon.so.1",
+      "bytes": 197952,
+      "sha256": "b417544bd3b3606fd305b2192079c21259955aa3a6d9baa2b849f164e2628435",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libbrotlidec.so.1",
+      "bytes": 132512,
+      "sha256": "bde0263020a1522327c6b7d5735995e814f2235f5209f7bcabbf79d907b0098a",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libbsd.so.0",
+      "bytes": 200752,
+      "sha256": "d51eeb6a6f0a447f89fcb8f21f33615725f843d51f7e164a4285c6726305b5ff",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libcairo-gobject.so.2",
+      "bytes": 133792,
+      "sha256": "1514b7d9b4ba7f345cc687f2968ef7c5e25a9fcd9bad82b7c35e106e64ac07a4",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libcairo.so.2",
+      "bytes": 1269424,
+      "sha256": "d0e5b9bbf4fe95cb2e5cb62aa024cf2f6629426792a0ab4293e9af2831558f88",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libcap.so.2",
+      "bytes": 133840,
+      "sha256": "c95373202a766505bf1681619505f92c2249aea6fef603cec47e76321472a422",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libdatrie.so.1",
+      "bytes": 132944,
+      "sha256": "749a689945180a4d18c8b7e074d103cb3c051fae1bf498732dc7161903106a75",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libdbus-1.so.3",
+      "bytes": 480472,
+      "sha256": "80a23cc8e63d083d366ebb7ff568c79d713d0c263347bdf5cfef856e792ba06a",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libepoxy.so.0",
+      "bytes": 1501104,
+      "sha256": "651df59dc3438b09a33e4dab4b97fd0da3b8b42b0335e005d121f5e61b0d055a",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libexpat.so.1",
+      "bytes": 265392,
+      "sha256": "a22a53e17ace66a5cdf92bbd906bf8667b09c72f16a8dbb72db233bf5ac0ca56",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libffi.so.8",
+      "bytes": 133256,
+      "sha256": "eb5842fa049ead0a6267aea4f4ba170943f840e4f7aec505e2f9425fe42080bb",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libfontconfig.so.1",
+      "bytes": 401496,
+      "sha256": "e65ee1c19b2db8e75a79d0ed0190047a5bb2545402d78e0a8ddc13baf2d14067",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libfreetype.so.6",
+      "bytes": 859696,
+      "sha256": "79658a2665d3b0be890385f3ab1872ba5644b14e10ce0899ecc82fee240f6db1",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libfribidi.so.0",
+      "bytes": 133440,
+      "sha256": "72f883c2bf79aac78a732a48db07f0d3fd7c37c588fb64f144de9aa9590dac56",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libgcrypt.so.20",
+      "bytes": 1056016,
+      "sha256": "8fc22d2354238bb044301a08de78be627865bb828314fdbf08a2849f0e17b7a5",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libgdk-3.so.0",
+      "bytes": 1228488,
+      "sha256": "521fda13b7c50ef799d629c5947baba05ec2253a4caa4337638501efd4171efc",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libgdk_pixbuf-2.0.so.0",
+      "bytes": 273104,
+      "sha256": "8e6945443ca6a3b5c1f0a44da4ea2266c3fc5f2a7f61770295f1a0f799dab0b9",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libgio-2.0.so.0",
+      "bytes": 2256520,
+      "sha256": "261da7ea57f8364fd644b1524571834372a959cfce28c108d319403603ce34d1",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libglib-2.0.so.0",
+      "bytes": 1430672,
+      "sha256": "03bebbd165e700a302664975aa84405dc051d863e1e32c0553c7e1b29f8a4901",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libgmodule-2.0.so.0",
+      "bytes": 132704,
+      "sha256": "a98b78b467ed0a5d75f22f967a46d3a8dffc1a1d79eaf1682e7eea56e682d0ec",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libgobject-2.0.so.0",
+      "bytes": 545664,
+      "sha256": "cc43547eae9732b35995a19e89a80ebcbf5db7cd130108ceb5641d01ab594c25",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libgpg-error.so.0",
+      "bytes": 267624,
+      "sha256": "5ce1e1d109b2386195d41b6d0a11893ac90bbcb92e44312648b60fb75f5baa82",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libgraphite2.so.3",
+      "bytes": 199408,
+      "sha256": "4227fb6033f483a140e37bf7f3a4d72a908376ff9c00618da65772ed2393cc63",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libgtk-3.so.0",
+      "bytes": 8936952,
+      "sha256": "ced05426d4374408022702b26b26915c5ade1f62515af28bfef85cb356519382",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libharfbuzz.so.0",
+      "bytes": 1133624,
+      "sha256": "fd82b29e8c4cf966e54ac0d50bf5200d98fb0c96d43232f72e684388fe712b13",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libjpeg.so.62",
+      "bytes": 463176,
+      "sha256": "845ad2fef958360d4e4d99fc82b8ccbe9f304e209e2b9c545641c7029657e005",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/liblz4.so.1",
+      "bytes": 266328,
+      "sha256": "c231570eab6295b9a77b3ddf25d1b488ec5540e4c4012ce4f8e7619bcf3b9f8c",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/liblzma.so.5",
+      "bytes": 266704,
+      "sha256": "2495c2b72e0ec295d6a3851ae377a1e7e2d6a2a0499276d3cedcd575dbfd0487",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libmd.so.0",
+      "bytes": 133368,
+      "sha256": "325212bc03181d21bce611484e266daffa31e5212ff1645b80b2ce478dade561",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libmount.so.1",
+      "bytes": 536520,
+      "sha256": "09cada57c9e9f1f2e7576f1d0bc902c18b1a94f9bd230e7e02b87a10f280a873",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libpango-1.0.so.0",
+      "bytes": 550368,
+      "sha256": "08b8729baf837a8987b26c8d6cd124bc19b06a2ce85f1ae5be7e1aa7ef659ad2",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libpangocairo-1.0.so.0",
+      "bytes": 137704,
+      "sha256": "bb6e1e08edba476833505696e8134111711b78bc41a174d15775943c70aed4ef",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libpangoft2-1.0.so.0",
+      "bytes": 207776,
+      "sha256": "874f427f8ad7f35d03debb3590a4228973ced89786915bc3b5660f6c844b6e18",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libpcre2-8.so.0",
+      "bytes": 658856,
+      "sha256": "6f64b40534b32a162d9604fabaf3d3a5ff6e4f968827eab455c3d1e26ce5dd36",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libpixman-1.so.0",
+      "bytes": 727080,
+      "sha256": "790f97e3e58bc322bd5fa29845420ec48b45a950a77f985e6cdcd5f094bb008e",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libpng16.so.16",
+      "bytes": 335840,
+      "sha256": "e2f7e880cef68bcaf4e17ec2017e206bb2b8d8c7bd2532c93cd972ceaa47023f",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libselinux.so.1",
+      "bytes": 271616,
+      "sha256": "92d8a01857301e0d2edaf1f0fb48d59c9252ec5724ca4b30942977ff4a4d6ffc",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libsystemd.so.0",
+      "bytes": 1002144,
+      "sha256": "d62fb8e838002fa9f725c00f72d10e437a1ad097ea945764cca3243b35fa8beb",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libthai.so.0",
+      "bytes": 68496,
+      "sha256": "a85537373111e210c841109d0350014f0409dc2f3f1d9061c173bacd60632832",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libwayland-client.so.0",
+      "bytes": 134792,
+      "sha256": "b74fb5dffbf0d2136563010cf19701c24eebee61c70e2cbcd0db801963e2a605",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libwayland-cursor.so.0",
+      "bytes": 133696,
+      "sha256": "5408dc542e946f8e511003674dfcc3c32a56acdbe15fba210c77600aefde89be",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libwayland-egl.so.1",
+      "bytes": 132208,
+      "sha256": "1a87620a5d6f6da4b7e1a50f5b27c2a919699bbdb09727c727b2e3e1811382ee",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libxcb-render.so.0",
+      "bytes": 142088,
+      "sha256": "bfd9a950d2472ec21a75ae5dcbcc51e8829c8217e5076a36513def395b22c0a9",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libxcb-shm.so.0",
+      "bytes": 132728,
+      "sha256": "55b26d438fcfa5a9c920e40c1770903c142de66b3fd420e25a5c08e613e18f63",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libxcb.so.1",
+      "bytes": 286040,
+      "sha256": "3fc3c6ce96d41036a6641ee94b69b3499680399028b6258993c8644479f49e6e",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libxkbcommon.so.0",
+      "bytes": 397432,
+      "sha256": "cec524532fb2e79a76849e11c26f14b6d8ba77a09e3cd0bc17d4507dca462224",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libz.so.1",
+      "bytes": 199632,
+      "sha256": "64d561291168562386b8144c9e0fda01aeb65db82e2793776991f75837beff61",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/lib/libzstd.so.1",
+      "bytes": 727744,
+      "sha256": "b76311738e0eacd6aca12f61510f97382be7b28f6f05c54d98182a5100f9570f",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/Apache-2.0",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/Artistic",
+      "bytes": 6111,
+      "sha256": "b7fd9b73ea99602016a326e0b62e6646060d18febdd065ceca8bb482208c3d88",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/BSD",
+      "bytes": 1499,
+      "sha256": "5d588eb3b157d52112afea935c88a7ff9efddc1e2d95a42c25d3b96ad9055008",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/CC0-1.0",
+      "bytes": 7048,
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/GFDL",
+      "bytes": 22955,
+      "sha256": "110535522396708cea37c72a802c5e7e81391139f5f7985631c93ef242b206a4",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/GFDL-1.2",
+      "bytes": 20432,
+      "sha256": "d8e94ae5fdb5433fcae2961aeb1a8cf17174d6f4a0465d24bf37dd8a038bd439",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/GFDL-1.3",
+      "bytes": 22955,
+      "sha256": "110535522396708cea37c72a802c5e7e81391139f5f7985631c93ef242b206a4",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/GPL",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/GPL-1",
+      "bytes": 12632,
+      "sha256": "d77d235e41d54594865151f4751e835c5a82322b0e87ace266567c3391a4b912",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/GPL-2",
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/GPL-3",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/LGPL",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/LGPL-2",
+      "bytes": 25381,
+      "sha256": "681e386e44a19d7d0674b4320272c90e66b6610b741e7e6305f8219c42e85366",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/LGPL-2.1",
+      "bytes": 26530,
+      "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/LGPL-3",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/MPL-1.1",
+      "bytes": 25755,
+      "sha256": "f849fc26a7a99981611a3a370e83078deb617d12a45776d6c4cada4d338be469",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/common-licenses/MPL-2.0",
+      "bytes": 16726,
+      "sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/fonts-dejavu-core.copyright",
+      "bytes": 3859,
+      "sha256": "63d3ba759d12804c5b31a9d5940d855c1820d1f5999e6b0872eb1c7ff045fbc9",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libatk-bridge2.0-0_arm64.copyright",
+      "bytes": 12099,
+      "sha256": "ea8d12c1f33112087063f680432565a22d04dd36bec364652e9d1e831a360935",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libatk1.0-0_arm64.copyright",
+      "bytes": 12099,
+      "sha256": "ea8d12c1f33112087063f680432565a22d04dd36bec364652e9d1e831a360935",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libatspi2.0-0_arm64.copyright",
+      "bytes": 12099,
+      "sha256": "ea8d12c1f33112087063f680432565a22d04dd36bec364652e9d1e831a360935",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libblkid1_arm64.copyright",
+      "bytes": 23237,
+      "sha256": "30539a2df6a89d844f43c727505a3193a60515f8ec6cdede8cc515ed22941d1c",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libbrotli1_arm64.copyright",
+      "bytes": 1354,
+      "sha256": "24a64e5bb83d0960d1835696a1e23c0896ad6055b0ca47c66ab0eb9a766324b1",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libbsd0_arm64.copyright",
+      "bytes": 23960,
+      "sha256": "00fd7be5d907a6bcc409a80f2d565f508673db4761d54623691f89ae3aa20fc7",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libcairo-gobject2_arm64.copyright",
+      "bytes": 28461,
+      "sha256": "408fb9e704e875cd42d432e7c9b3b378f568e3c89db2b5c5ef3d11c025319574",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libcairo2_arm64.copyright",
+      "bytes": 28461,
+      "sha256": "408fb9e704e875cd42d432e7c9b3b378f568e3c89db2b5c5ef3d11c025319574",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libcap2_arm64.copyright",
+      "bytes": 4631,
+      "sha256": "e60a5642e12e340060e4e519a65b2eb0330be2917854841c644e36268f607d54",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libdatrie1_arm64.copyright",
+      "bytes": 2123,
+      "sha256": "1169f159b101610f58bdc54949c153de129ef8363294f532f45912de9f94b69c",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libdbus-1-3_arm64.copyright",
+      "bytes": 22102,
+      "sha256": "4cfc9f33368f3b95429992704c96fa598818ec796046426a9979ce4d9b8b1900",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libepoxy0_arm64.copyright",
+      "bytes": 1352,
+      "sha256": "a8be83fe8a66a6ecc1a9fbcec9cf1b43aacca69d38220a94fb37632f090b611e",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libexpat1_arm64.copyright",
+      "bytes": 1756,
+      "sha256": "60919fe1a156395ff14511bb6ff79756c50ade2fff59ac60c9bae1d8a7fe6292",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libffi8_arm64.copyright",
+      "bytes": 10165,
+      "sha256": "f83d2ecba1ea4d99957e81c50bebbd076a128194288a3ec22cc8ccdb77c43087",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libfontconfig1_arm64.copyright",
+      "bytes": 1301,
+      "sha256": "b215a61cdd3e62b5b17cc28b1852c78acb3dd38be0fb30706f7efc050dba91db",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libfreetype6_arm64.copyright",
+      "bytes": 25069,
+      "sha256": "70a7a0a06e6440777417f6875476cb712b03943010abed1c32297798c8cc8ed8",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libfribidi0_arm64.copyright",
+      "bytes": 1450,
+      "sha256": "39000badbcd15a4a144cfa2d2f0d906d4d9183f42350e8193ac775baded86b7c",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libgcrypt20_arm64.copyright",
+      "bytes": 24896,
+      "sha256": "95db2f9da663f2bfe2aabe9c72fce9d6c9ae767b912f397d7823f50bd55a1a7d",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libgdk-pixbuf-2.0-0_arm64.copyright",
+      "bytes": 5506,
+      "sha256": "a0189e53d508d32aeec6462c4740013de70b40f06e507f5e700d3cceb6e8f178",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libglib2.0-0_arm64.copyright",
+      "bytes": 51488,
+      "sha256": "03cbcd6142c92bb14c997af557b8c73b1534710c34fe7f69788f8e8fc5fd941d",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libgpg-error0_arm64.copyright",
+      "bytes": 4903,
+      "sha256": "8760fd36efa1d7186f8769d4e76a3e678045b94d54465bf6f2db5eb871c7c27f",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libgraphite2-3_arm64.copyright",
+      "bytes": 9348,
+      "sha256": "a33017ba0308c41bdbde4751bff349ab7b26af45fadbb1e3e7ac67c372985572",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libgtk-3-0_arm64.copyright",
+      "bytes": 60525,
+      "sha256": "2be2199cc990913cd94874b6f16fc84f1e3c35aaaa4719ad34b4478f1e69c557",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libharfbuzz0b_arm64.copyright",
+      "bytes": 31787,
+      "sha256": "31cfabe2acdcc9cc9dcda6b93185cffc50424d817ae20dd8efd8bcdac5396148",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libjpeg62-turbo_arm64.copyright",
+      "bytes": 38846,
+      "sha256": "3821184e23385bf2cdc01f56bd999b34036fc3aa03d5135d41680374eb81bf8a",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/liblz4-1_arm64.copyright",
+      "bytes": 3275,
+      "sha256": "d3be0f43fe14da244f97c451bbae789c0acf868612598a69f5f22a289abeca40",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/liblzma5_arm64.copyright",
+      "bytes": 15465,
+      "sha256": "a2dc8fac0f496e1c58aff67018cf0c6b88336316afa5642f9335b71642e28aa8",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libmd0_arm64.copyright",
+      "bytes": 8018,
+      "sha256": "4365ef6255ad553fce69dd4bc0e093472c5d0e41b8ea493a545cc926ce171aa6",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libmount1_arm64.copyright",
+      "bytes": 23237,
+      "sha256": "30539a2df6a89d844f43c727505a3193a60515f8ec6cdede8cc515ed22941d1c",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libpango-1.0-0_arm64.copyright",
+      "bytes": 20917,
+      "sha256": "3a29d0e487eae553ec47f260be1570a0d96e4f28c21f29ef58a14cd3d53147ff",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libpangocairo-1.0-0_arm64.copyright",
+      "bytes": 20917,
+      "sha256": "3a29d0e487eae553ec47f260be1570a0d96e4f28c21f29ef58a14cd3d53147ff",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libpangoft2-1.0-0_arm64.copyright",
+      "bytes": 20917,
+      "sha256": "3a29d0e487eae553ec47f260be1570a0d96e4f28c21f29ef58a14cd3d53147ff",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libpcre2-8-0_arm64.copyright",
+      "bytes": 6626,
+      "sha256": "030511beb4d9d620ad09914c369c36ec0528dcf301d1923cc643c948ee7c6a38",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libpixman-1-0_arm64.copyright",
+      "bytes": 2247,
+      "sha256": "1b3fb5690861e15ca4fd6640fd4def4b2576617942eec04b6fcb7d8bc6c4c9da",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libpng16-16_arm64.copyright",
+      "bytes": 12976,
+      "sha256": "68bd3997355bc44ccb97ff5e2bb146360e762c7d9c721945a4fabf77d1349e4a",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libselinux1_arm64.copyright",
+      "bytes": 3131,
+      "sha256": "641806738b0c6a3d03168c2649e6b94205198bb66cd557e6bae3a20b71c9bb0b",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libsystemd0_arm64.copyright",
+      "bytes": 12776,
+      "sha256": "a7d06854714a1ca99f6dbd1a1641dde5bcf28635be149f6554449618f8f427f3",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libthai0_arm64.copyright",
+      "bytes": 2452,
+      "sha256": "016c3098ec29a08639005f6b9cd7519764e7627392eac3d87f2ea7488ce290e5",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libwayland-client0_arm64.copyright",
+      "bytes": 1934,
+      "sha256": "736bf54141fa9808939ffff2691b817888ea53197484c2099e8d03b954b83e3b",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libwayland-cursor0_arm64.copyright",
+      "bytes": 1934,
+      "sha256": "736bf54141fa9808939ffff2691b817888ea53197484c2099e8d03b954b83e3b",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libwayland-egl1_arm64.copyright",
+      "bytes": 1934,
+      "sha256": "736bf54141fa9808939ffff2691b817888ea53197484c2099e8d03b954b83e3b",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libx11-6_arm64.copyright",
+      "bytes": 47102,
+      "sha256": "0b380a7fd5b2228f26e9585e56f14812efd3350f3df307507d2bc055dfd8de3e",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxau6_arm64.copyright",
+      "bytes": 1224,
+      "sha256": "118dd263a7b91c8f21c489f949bf13281dff9e766deea92b829dac4dce66601a",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxcb-render0_arm64.copyright",
+      "bytes": 1781,
+      "sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxcb-shm0_arm64.copyright",
+      "bytes": 1781,
+      "sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxcb1_arm64.copyright",
+      "bytes": 1781,
+      "sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxcomposite1_arm64.copyright",
+      "bytes": 2324,
+      "sha256": "e37c7a7e4026343c3e5c13990a6d9a8879194ae3ab26bfe420b34f6f206bf35f",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxcursor1_arm64.copyright",
+      "bytes": 2774,
+      "sha256": "817abc0ccc9e2591057be256b0f6d80edb134221ced29dd545a9eafaf40b423c",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxdamage1_arm64.copyright",
+      "bytes": 1221,
+      "sha256": "09182bc7805ff77a41251e450cebd0d33c48a74ba8ec4b734855a22c86f50417",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxdmcp6_arm64.copyright",
+      "bytes": 1265,
+      "sha256": "1bcbb50f8603fe8b86d330bfa460b772ea04fbd3c70e4499f0768b5340b9fd6e",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxext6_arm64.copyright",
+      "bytes": 10421,
+      "sha256": "bc57e445ca1d9fe082c8d54189dd411ff26caa8552c9c63d44ea06a982f32124",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxfixes3_arm64.copyright",
+      "bytes": 2320,
+      "sha256": "051ffe073ab38244c504bb379903b4ecda6081fb3d97d0d3dce44bc11712eef2",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxi6_arm64.copyright",
+      "bytes": 4435,
+      "sha256": "c812f9c54513ae593aab9580b54a4b18219648df7068d49ca1daa47f522ba3fa",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxinerama1_arm64.copyright",
+      "bytes": 3670,
+      "sha256": "e49d9732f261b3ffcb50c40914bd9d144de5557dad9b2ae20dbe8e3c5b3d17fb",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxkbcommon0_arm64.copyright",
+      "bytes": 3566,
+      "sha256": "5eeaeb1b6e029a0274e1573765bb0bae2926ef96a3679203faa4fd00fdaeaa88",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxrandr2_arm64.copyright",
+      "bytes": 3733,
+      "sha256": "6d8e6239cfe9dd25bbeef06dcf0610d802ebbdc8968db87cf5adf00ff98927d4",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libxrender1_arm64.copyright",
+      "bytes": 2252,
+      "sha256": "ed2a78123a5076b4f11da38cb1ffb85b5cb9fdc26b5746c517b1d7e7a9029704",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/libzstd1_arm64.copyright",
+      "bytes": 5389,
+      "sha256": "35e85e8e9bbb71492c5f5dddf39ed65b68775a02ad8d710c25d097b497f06c49",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk/bootstrap/licenses/zlib1g_arm64.copyright",
+      "bytes": 2927,
+      "sha256": "9e5b96d63773a5d177ba264254390f792be07e41748ebd94730981c6cac31cc6",
+      "mode": "0o644"
+    },
+    {
+      "path": ".oniondesk-worker",
+      "bytes": 2687102,
+      "sha256": "6bb868be5847b73e74f496dbbdc7676e44f554f8ad0adfe464d1532af511a060",
+      "mode": "0o755"
+    },
+    {
+      "path": "OnionDesk-Linux-ARM64",
+      "bytes": 109120,
+      "sha256": "52d627ad06c4822036b149cfc8322ffdc78eda06770fea70461e69ac4abb977b",
+      "mode": "0o755"
+    }
+  ],
+  "source_redistribution_review": "REQUIRED_BEFORE_RELEASE",
+  "gui_worker_core_execution": "NOT_PERFORMED_BY_PACKAGER"
+}
