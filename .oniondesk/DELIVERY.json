@@ -1,11 +1,30 @@
 {
-  "archive_verification": "LOCAL_POINTER_ONLY; no remote materialized download verified",
+  "archive_mode_policy": "permissions fields are desired source/Git modes, not observed archive extraction. Sourcearchive may restore dirs0775/data0664. Private UI/cache modes remain strict independently.",
+  "archive_verification": "LOCAL_POINTER_ONLY_DERIVATIVE; final root runtime QA pending; new remote full ZIP/TAR not downloaded",
+  "base_frozen_source_sha256": {
+    "engine": "c75806bf6818ccea1e3022c3d8db018631566478bf3c8d20f25cb488f0a4eba1",
+    "linux": "dc72c8f67c66da472aad8ed6057e382bc54553c481f707a267b326c5b7516806",
+    "macos": "fd2c866997f0c1d6f876929038e2cd9657358c8b8de328874c3bbf37171756f1",
+    "windows": "942b907590f9d6ac1540462bf46e45d56ac910f5799fd3cab77accdac59a94ec"
+  },
   "compiled_manifest_sha256": "cf6e38ed3ecb59795b1f42f0de56bb58e9552e951bb1e3a22c55758b3f4024c8",
   "corresponding_source": {
-    "scope": "bootstrap engine, native wrappers, producer and build recipes; not full runtime/Core source",
-    "sha256": "72be43a42e70f0eda28ee5246855eb631e38d5b9abf81d1c599ac9c11081fedf",
-    "url": "https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-native-bootstrap-source-20261017.tar.gz"
+    "Core_source": "https://github.com/lindwerg/oniondesk/tree/main",
+    "archive_regular_files": 605,
+    "base_source": {
+      "scope": "Unchanged baseline and50 Debian corresponding-source packages",
+      "sha256": "72be43a42e70f0eda28ee5246855eb631e38d5b9abf81d1c599ac9c11081fedf",
+      "url": "https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-native-bootstrap-source-20261017.tar.gz"
+    },
+    "bytes": 59825135,
+    "publication_status": "LOCAL_ONLY_PLANNED_ORDINARY_RELEASE_ASSET_NOT_UPLOADED",
+    "scope": "Complete LinuxR4 Go/C/producer sources, configured mini production andall70 embedded inputs both arch, recipes/pins/GPL/notices",
+    "sha256": "ba98510e06ae5a58aa9dc4bf46197cbcb854895c7fa74a1b5ebc53e8c83611e6",
+    "source_files": 296,
+    "url": "https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-linux-r4-source-20261017.tar.gz"
   },
+  "delivery_revision": "native-v5-linux-r4-embedded-ui",
+  "derivative_parent_commit": "88041c8548d0a38b483fb2eb9642466b9b3721cb",
   "directories": [
     {
       "path": ".oniondesk",
@@ -13,14 +32,6 @@
     },
     {
       "path": ".oniondesk/bootstrap",
-      "permissions": "0o755"
-    },
-    {
-      "path": ".oniondesk/bootstrap/fonts",
-      "permissions": "0o755"
-    },
-    {
-      "path": ".oniondesk/bootstrap/lib",
       "permissions": "0o755"
     },
     {
@@ -32,647 +43,80 @@
       "permissions": "0o755"
     },
     {
-      "path": ".oniondesk/bootstrap/modules",
+      "path": ".oniondesk/licenses",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/licenses/go1.26.2",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/licenses/go1.26.2/vendor",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/crypto",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/net",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/sys",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/text",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/manifests",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/transport",
+      "permissions": "0o755"
+    },
+    {
+      "path": ".oniondesk/transport/blobs",
       "permissions": "0o755"
     }
   ],
   "distribution": "linux-x64",
   "frozen_source_sha256": {
-    "engine": "c75806bf6818ccea1e3022c3d8db018631566478bf3c8d20f25cb488f0a4eba1",
-    "linux": "dc72c8f67c66da472aad8ed6057e382bc54553c481f707a267b326c5b7516806",
-    "macos": "fd2c866997f0c1d6f876929038e2cd9657358c8b8de328874c3bbf37171756f1",
-    "windows": "942b907590f9d6ac1540462bf46e45d56ac910f5799fd3cab77accdac59a94ec"
+    "linux_r4_embedded": "3b933d5b9ef3c40706941719db206dd4b64ac18cabdcbf92fa2939a244ae045f"
   },
-  "lfs_policy": "All transport blobs and regular payload files >= 100 MiB; ordinary Git blobs remain < 100 MiB.",
+  "lfs_policy": "Unchanged498 Core blobs andsingleguide only; all499 canonical pointers byte/OID/mode-identical to derivative parent. Staticstage0 remains ordinary Git under100MiB. No new LFS data.",
+  "native_bootstrap": {
+    "Core_cache": "OnionDesk-Offline",
+    "embedded_mini_blobs": 70,
+    "external_bootstrap_executables_or_libraries": "NONE",
+    "mini_manifest_path": ".oniondesk/manifests/linux-x64-ui-r4.json",
+    "mini_manifest_sha256": "4631bf54b7fa2161302df686e7c6b7531890663ed1d971738ba65045f237a341",
+    "private_CUI_sha256": "367fded5f5d3a77ca63d82b58f902f1b16ce97e03ed0f36634d6c535bdfdda15",
+    "private_ui_cache": "OnionDesk-Native-UI-R4",
+    "private_worker_sha256": "323cec720cb6498d16907b1409648c83517fb60bf401bcf45da1064fa523cb39",
+    "stage0_bytes": 39350434,
+    "stage0_sha256": "d6e3fa48273d4aa5847cd71e9c5cdcd9d394d8c008e039e1807c87b087b696e3",
+    "static": true
+  },
   "payload": [
     {
-      "bytes": 2801790,
-      "lfs": false,
-      "mode": "100755",
-      "path": ".oniondesk-worker",
-      "permissions": "0o755",
-      "sha256": "95336bd871fa48e438dd5638006f42baaf42b1f60447f4f6d6fbb62e4f713795",
-      "type": "file"
-    },
-    {
-      "bytes": 21477,
+      "bytes": 5739,
       "lfs": false,
       "mode": "100644",
       "path": ".oniondesk/bootstrap/BUILD-AND-LICENSES.md",
       "permissions": "0o644",
-      "sha256": "4bf0325903bfa0127d42ff306a803138e159b6c3c2cc9596a39837da70fc1ad6",
-      "type": "file"
-    },
-    {
-      "bytes": 279,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/fonts.conf",
-      "permissions": "0o644",
-      "sha256": "6b91bb29fee7360128eea4330776ed3e0f306c543155a6b50a7a67ff51ff11d1",
-      "type": "file"
-    },
-    {
-      "bytes": 708920,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/fonts/DejaVuSans-Bold.ttf",
-      "permissions": "0o644",
-      "sha256": "0d977336a6d5fba34eab8e3199eb218327161b5143749f802982c2bc34df0c96",
-      "type": "file"
-    },
-    {
-      "bytes": 759720,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/fonts/DejaVuSans.ttf",
-      "permissions": "0o644",
-      "sha256": "abdc775b21b1bc470d50c97e790d276f2054b7504e56e5bd3e64f48d68582322",
-      "type": "file"
-    },
-    {
-      "bytes": 1508723,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/hacker-mark.png",
-      "permissions": "0o644",
-      "sha256": "37f3423b5ff9773e7327de160f0ab86605df0fd025a71f22543318577f6a0b4c",
-      "type": "file"
-    },
-    {
-      "bytes": 1352704,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libX11.so.6",
-      "permissions": "0o644",
-      "sha256": "8323526c7ae1fce86dd060c7d53919d69f6f5c5543575d21b527d72e36ee557f",
-      "type": "file"
-    },
-    {
-      "bytes": 18344,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXau.so.6",
-      "permissions": "0o644",
-      "sha256": "ee8a5ca938caac799637a03ee6b632e1ba0f92250467ea7178b81d764ab16306",
-      "type": "file"
-    },
-    {
-      "bytes": 17784,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXcomposite.so.1",
-      "permissions": "0o644",
-      "sha256": "a88b6916444536a7c69217c099a0df126ba6ca130cb83b4557c2325eebde2a48",
-      "type": "file"
-    },
-    {
-      "bytes": 52456,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXcursor.so.1",
-      "permissions": "0o644",
-      "sha256": "2bd5d2a1302d0c67ab7613266ad72efea7840dab49a262d84f6e9d456212a390",
-      "type": "file"
-    },
-    {
-      "bytes": 17552,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXdamage.so.1",
-      "permissions": "0o644",
-      "sha256": "03079f6062de6f94148e5e481f036c7ed8050d90884f45747c98025829bd54bd",
-      "type": "file"
-    },
-    {
-      "bytes": 26560,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXdmcp.so.6",
-      "permissions": "0o644",
-      "sha256": "080f50506b2bee6c68f5b498cc30219cf021367262d2d850f835587e2e8e92d8",
-      "type": "file"
-    },
-    {
-      "bytes": 87064,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXext.so.6",
-      "permissions": "0o644",
-      "sha256": "016d03f5b0324da005f38057a94dff1d9e903876b95f2e091bf785246e0d6c94",
-      "type": "file"
-    },
-    {
-      "bytes": 30944,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXfixes.so.3",
-      "permissions": "0o644",
-      "sha256": "0dda7feacb02b21674a903a97d1c4d5ee5214c279429379afc07931657bd43e1",
-      "type": "file"
-    },
-    {
-      "bytes": 81344,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXi.so.6",
-      "permissions": "0o644",
-      "sha256": "f30c04fe29a36a31856bafff8e73d7ee4acadd0c5f47086f3ce67f92ea36b390",
-      "type": "file"
-    },
-    {
-      "bytes": 21696,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXinerama.so.1",
-      "permissions": "0o644",
-      "sha256": "43a73c68aaea8e381a7a388559e794cc412efad3a39417826e9d1234bb516131",
-      "type": "file"
-    },
-    {
-      "bytes": 52224,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXrandr.so.2",
-      "permissions": "0o644",
-      "sha256": "1bfb8e60f992e2d887fddcf6f3b6fbbfa3b94951b89d9437df3d7553245ad8f2",
-      "type": "file"
-    },
-    {
-      "bytes": 51784,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libXrender.so.1",
-      "permissions": "0o644",
-      "sha256": "531abb1834e83ac88826c8f9469da9a32829af3faabe8a7c0876d8dede6e7ef9",
-      "type": "file"
-    },
-    {
-      "bytes": 177160,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libatk-1.0.so.0",
-      "permissions": "0o644",
-      "sha256": "136d2d25c6979c35ae09f7f7874a192d3e71d11614542f8c4035631aca38e749",
-      "type": "file"
-    },
-    {
-      "bytes": 260112,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libatk-bridge-2.0.so.0",
-      "permissions": "0o644",
-      "sha256": "d4157922167b6fb9ae93782ab9c4bf2592b7026d01c2c2db60cd152407950dbe",
-      "type": "file"
-    },
-    {
-      "bytes": 258344,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libatspi.so.0",
-      "permissions": "0o644",
-      "sha256": "a43a4c319d4c2a2076a7d9038aae60aa6ead836e0560400e0f93590c03dbc65e",
-      "type": "file"
-    },
-    {
-      "bytes": 362600,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libblkid.so.1",
-      "permissions": "0o644",
-      "sha256": "9dd52dcf1c6b39a2b33c078e3f34932cfb41bce898a718dba54af00c00167962",
-      "type": "file"
-    },
-    {
-      "bytes": 140560,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libbrotlicommon.so.1",
-      "permissions": "0o644",
-      "sha256": "cf5de3718731c8f2bbb931257e0b215dd6aa247f2900a677eb7d415ba52c18d2",
-      "type": "file"
-    },
-    {
-      "bytes": 50560,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libbrotlidec.so.1",
-      "permissions": "0o644",
-      "sha256": "5e35889033fae0c602a7d505def767193111ddeb727ef866caf6ec6f5d156e57",
-      "type": "file"
-    },
-    {
-      "bytes": 90192,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libbsd.so.0",
-      "permissions": "0o644",
-      "sha256": "9d53e7cb152abef6044a99f95cd73df42e368b2aafb5367a4553beed800540fa",
-      "type": "file"
-    },
-    {
-      "bytes": 47776,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libcairo-gobject.so.2",
-      "permissions": "0o644",
-      "sha256": "f997e5fd64f25ac40e7c2e87be9f2a0a378cd292b5a42bc6995f64bcd6c3e6bf",
-      "type": "file"
-    },
-    {
-      "bytes": 1212088,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libcairo.so.2",
-      "permissions": "0o644",
-      "sha256": "21af3db551164cb159b8bfe19d0839be5d4ea7e44a509a941d40d257159cba05",
-      "type": "file"
-    },
-    {
-      "bytes": 51920,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libcap.so.2",
-      "permissions": "0o644",
-      "sha256": "fcb767c28378b9216f297ae5476f2f9605977e14407afa5cdf72178f3b429f21",
-      "type": "file"
-    },
-    {
-      "bytes": 38704,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libdatrie.so.1",
-      "permissions": "0o644",
-      "sha256": "05e5a9688a0cf9b6992846bfd798f4f6d79f313b2e7eea2ee2ab02a6a85a8382",
-      "type": "file"
-    },
-    {
-      "bytes": 369880,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libdbus-1.so.3",
-      "permissions": "0o644",
-      "sha256": "a1ab8acddf911e76b9e18e3201c1c3c51d0c4ea2a3c843aca030ab76f9d29816",
-      "type": "file"
-    },
-    {
-      "bytes": 1365928,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libepoxy.so.0",
-      "permissions": "0o644",
-      "sha256": "b920b56bc5b58af0839885a1d7dd1d5405fb901f357d8267a024599b5fb4823e",
-      "type": "file"
-    },
-    {
-      "bytes": 183456,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libexpat.so.1",
-      "permissions": "0o644",
-      "sha256": "4da2dd3280f386ace30705d43930a688fa66ded0dde84ab509ad9262de7980bc",
-      "type": "file"
-    },
-    {
-      "bytes": 47216,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libffi.so.8",
-      "permissions": "0o644",
-      "sha256": "72db6b9bdab16eeb361318a9c4da728ed343f915c04dea46bb2133ff749fbdfa",
-      "type": "file"
-    },
-    {
-      "bytes": 315472,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libfontconfig.so.1",
-      "permissions": "0o644",
-      "sha256": "d8391e8faa18587006de357a4436bd8cc7abff84b8d9b3297f93619e0b4535bf",
-      "type": "file"
-    },
-    {
-      "bytes": 831016,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libfreetype.so.6",
-      "permissions": "0o644",
-      "sha256": "86eaf78128952ed784ebe7209daa716bfee8927b9ec0241b52e3365837cef060",
-      "type": "file"
-    },
-    {
-      "bytes": 112960,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libfribidi.so.0",
-      "permissions": "0o644",
-      "sha256": "cb6dbb527e005f3ca951fab57bb05f9253fd36b3f8ab55be7679adb73d3e0e5f",
-      "type": "file"
-    },
-    {
-      "bytes": 1342696,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libgcrypt.so.20",
-      "permissions": "0o644",
-      "sha256": "6d9ad5e2075813cd4d4e2833f294e3d7847fc1590ef872289776888bfd4abb7c",
-      "type": "file"
-    },
-    {
-      "bytes": 1133696,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libgdk-3.so.0",
-      "permissions": "0o644",
-      "sha256": "997cf8b410644f376e0d5ca423d4342c06eab85c61e934bc39d7ee4ad87edce2",
-      "type": "file"
-    },
-    {
-      "bytes": 199368,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libgdk_pixbuf-2.0.so.0",
-      "permissions": "0o644",
-      "sha256": "7acc26bfdd3229810a3f64fce88df46d9d49f14f913124d1ec4163afa7ecbcfe",
-      "type": "file"
-    },
-    {
-      "bytes": 2047664,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libgio-2.0.so.0",
-      "permissions": "0o644",
-      "sha256": "b82e7158a9023263f3352d5952ddb4b5836915208652a825170ceb57d778dbf5",
-      "type": "file"
-    },
-    {
-      "bytes": 1328336,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libglib-2.0.so.0",
-      "permissions": "0o644",
-      "sha256": "556c318c9e38e7d7c2e127cb8e529c8703fe31485a0e71edb2d45f1fd9d62678",
-      "type": "file"
-    },
-    {
-      "bytes": 22072,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libgmodule-2.0.so.0",
-      "permissions": "0o644",
-      "sha256": "5c9ba5cf22f8de2939bb0c6adb2ebc21da5cedb8513955faf7c8c5ad9e880e05",
-      "type": "file"
-    },
-    {
-      "bytes": 410464,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libgobject-2.0.so.0",
-      "permissions": "0o644",
-      "sha256": "dcf3cdc51a34e8609447b0d3e7f45f54387419d2de8e149c511d340fa8598eaa",
-      "type": "file"
-    },
-    {
-      "bytes": 165224,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libgpg-error.so.0",
-      "permissions": "0o644",
-      "sha256": "c047bf468701aaccfeb4938b68fbb33a1b324be840551278ff6ddc22e6828523",
-      "type": "file"
-    },
-    {
-      "bytes": 170704,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libgraphite2.so.3",
-      "permissions": "0o644",
-      "sha256": "cacdd867a7cc1574b9191af59c509d9897e32e357fd54c7b3b84fd7e76c53d1f",
-      "type": "file"
-    },
-    {
-      "bytes": 8719816,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libgtk-3.so.0",
-      "permissions": "0o644",
-      "sha256": "0a96410bead36733b4cedbb431e18af7d103912b02d440d35206179661e809c0",
-      "type": "file"
-    },
-    {
-      "bytes": 1084448,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libharfbuzz.so.0",
-      "permissions": "0o644",
-      "sha256": "620fc0214c543a177e49083cffd12dd1cd9c0054d77f11770ed71580465fecaf",
-      "type": "file"
-    },
-    {
-      "bytes": 606520,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libjpeg.so.62",
-      "permissions": "0o644",
-      "sha256": "425509ead7e074a7366fc0d5aceb501c4527598e379028b04a3e825c061d1141",
-      "type": "file"
-    },
-    {
-      "bytes": 155704,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/liblz4.so.1",
-      "permissions": "0o644",
-      "sha256": "06ac8e8f8b4fc6341fd336171e601a085b1ab40803020d8a759c195be6d13506",
-      "type": "file"
-    },
-    {
-      "bytes": 197080,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/liblzma.so.5",
-      "permissions": "0o644",
-      "sha256": "b0cdec97be38078612a2f3476ef3b7614c5477670066aeb7de1cfb5a85928337",
-      "type": "file"
-    },
-    {
-      "bytes": 51400,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libmd.so.0",
-      "permissions": "0o644",
-      "sha256": "62647b81828c4c65bedf93db4a0add61d331c83982a658eb9474dc4441a2ef87",
-      "type": "file"
-    },
-    {
-      "bytes": 417864,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libmount.so.1",
-      "permissions": "0o644",
-      "sha256": "aa87858c2b2575687100d43eed149a680643b73ce831d6e6cfefd2d22700c4bb",
-      "type": "file"
-    },
-    {
-      "bytes": 452016,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libpango-1.0.so.0",
-      "permissions": "0o644",
-      "sha256": "d0c2bb671537b354a699c533d9b3f06757232d1e752558e8dc09f768c22c23c8",
-      "type": "file"
-    },
-    {
-      "bytes": 72128,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libpangocairo-1.0.so.0",
-      "permissions": "0o644",
-      "sha256": "095886b4dd1d098a94f5bc600783ab22db030544f30d33c1d9feb2a77372690a",
-      "type": "file"
-    },
-    {
-      "bytes": 113536,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libpangoft2-1.0.so.0",
-      "permissions": "0o644",
-      "sha256": "8484e44dcfe2deb9b40ccfaa8c9acfbbc8b9635db375c19b8d6de467713840e6",
-      "type": "file"
-    },
-    {
-      "bytes": 634272,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libpcre2-8.so.0",
-      "permissions": "0o644",
-      "sha256": "2941b5da6e89bb95afa81eea9aa837fb5f216d0f1358ca74862e77e007f45e56",
-      "type": "file"
-    },
-    {
-      "bytes": 706648,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libpixman-1.so.0",
-      "permissions": "0o644",
-      "sha256": "50dd0c85ab32b5571506438bf6c1c24d4252725c31ffcab3794d27c145c6ed73",
-      "type": "file"
-    },
-    {
-      "bytes": 229336,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libpng16.so.16",
-      "permissions": "0o644",
-      "sha256": "c6af71cd6e838715af95f11c90ea1a5595759ddcd4ce062ab8214509d4e9b154",
-      "type": "file"
-    },
-    {
-      "bytes": 185672,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libselinux.so.1",
-      "permissions": "0o644",
-      "sha256": "9265302dac300345995d32dec0fc27d00402e44783578e1a37deb310eef35e35",
-      "type": "file"
-    },
-    {
-      "bytes": 867080,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libsystemd.so.0",
-      "permissions": "0o644",
-      "sha256": "8de7194fbaa8968528d10ab42b6c611787f039211ad2e562fc21011324b53baf",
-      "type": "file"
-    },
-    {
-      "bytes": 47992,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libthai.so.0",
-      "permissions": "0o644",
-      "sha256": "2347f4d31bd45e6812acd157d7642240b0355a812c9473928899c4164ceb303f",
-      "type": "file"
-    },
-    {
-      "bytes": 73376,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libwayland-client.so.0",
-      "permissions": "0o644",
-      "sha256": "f7d4dfa3186958321a06e81ae0da4f512006592d7c72f537f0c63616195a38d4",
-      "type": "file"
-    },
-    {
-      "bytes": 39408,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libwayland-cursor.so.0",
-      "permissions": "0o644",
-      "sha256": "70ac8a4fa68aaa7795f9ada6f979508833e697b6780e82fd944f1722d2cf8769",
-      "type": "file"
-    },
-    {
-      "bytes": 17472,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libwayland-egl.so.1",
-      "permissions": "0o644",
-      "sha256": "a969f1fc42faa566ff61acb0ec4c70298bb1490ba8ee3c7b3c74ae9f57b42c4e",
-      "type": "file"
-    },
-    {
-      "bytes": 68272,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libxcb-render.so.0",
-      "permissions": "0o644",
-      "sha256": "6dc5955e34a2850ba34790e33b448d2df235fcff7bbda7616d0c7252ba0fb5ff",
-      "type": "file"
-    },
-    {
-      "bytes": 17944,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libxcb-shm.so.0",
-      "permissions": "0o644",
-      "sha256": "5b3a335b1880f09322ac8a48515fcbd04d0f036df9ce711cd64d6424a2ea21de",
-      "type": "file"
-    },
-    {
-      "bytes": 191776,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libxcb.so.1",
-      "permissions": "0o644",
-      "sha256": "a7b6e97e3106a9010b90ade3aee925d417ddb8f54020de7a56c9319049c7e77f",
-      "type": "file"
-    },
-    {
-      "bytes": 286840,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libxkbcommon.so.0",
-      "permissions": "0o644",
-      "sha256": "ba026acc5135edc0d543a84497d8ced9e73bb9dd7b021305ce528574f90fbde9",
-      "type": "file"
-    },
-    {
-      "bytes": 125888,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libz.so.1",
-      "permissions": "0o644",
-      "sha256": "ca4a8fa30a6a1bcd3f3a109c3b3dd18275b4e448f83dc6539cf81573dc6dad9d",
-      "type": "file"
-    },
-    {
-      "bytes": 772792,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/lib/libzstd.so.1",
-      "permissions": "0o644",
-      "sha256": "9a5f83dc96c5fa8c82f65a0f0e40ee6bdad20e7846d0564df0aa1eee551b9014",
+      "sha256": "79623d3bee86d5c550564d6610dad83b5d4d3f8d5c572488abfbeb75513bca29",
       "type": "file"
     },
     {
@@ -1369,21 +813,111 @@
       "type": "file"
     },
     {
-      "bytes": 44996,
-      "lfs": false,
-      "mode": "100644",
-      "path": ".oniondesk/bootstrap/runtime-lock.json",
-      "permissions": "0o644",
-      "sha256": "d8a792e3913ab9b6550edb83a163d3cb0d96d28cc4dc2c6987962256c7aef5f4",
-      "type": "file"
-    },
-    {
       "bytes": 35149,
       "lfs": false,
       "mode": "100644",
       "path": ".oniondesk/licenses/OnionDesk-GPLv3.txt",
       "permissions": "0o644",
       "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "type": "file"
+    },
+    {
+      "bytes": 1453,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/LICENSE",
+      "permissions": "0o644",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "type": "file"
+    },
+    {
+      "bytes": 1303,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/PATENTS",
+      "permissions": "0o644",
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "type": "file"
+    },
+    {
+      "bytes": 1453,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/crypto/LICENSE",
+      "permissions": "0o644",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "type": "file"
+    },
+    {
+      "bytes": 1303,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/crypto/PATENTS",
+      "permissions": "0o644",
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "type": "file"
+    },
+    {
+      "bytes": 1453,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/net/LICENSE",
+      "permissions": "0o644",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "type": "file"
+    },
+    {
+      "bytes": 1303,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/net/PATENTS",
+      "permissions": "0o644",
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "type": "file"
+    },
+    {
+      "bytes": 1453,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/sys/LICENSE",
+      "permissions": "0o644",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "type": "file"
+    },
+    {
+      "bytes": 1303,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/sys/PATENTS",
+      "permissions": "0o644",
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "type": "file"
+    },
+    {
+      "bytes": 1453,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/text/LICENSE",
+      "permissions": "0o644",
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "type": "file"
+    },
+    {
+      "bytes": 1303,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/go1.26.2/vendor/golang.org/x/text/PATENTS",
+      "permissions": "0o644",
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "type": "file"
+    },
+    {
+      "bytes": 22980,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/manifests/linux-x64-ui-r4.json",
+      "permissions": "0o644",
+      "sha256": "4631bf54b7fa2161302df686e7c6b7531890663ed1d971738ba65045f237a341",
       "type": "file"
     },
     {
@@ -5878,12 +5412,12 @@
       "type": "file"
     },
     {
-      "bytes": 79032,
+      "bytes": 39350434,
       "lfs": false,
       "mode": "100755",
       "path": "OnionDesk-Linux-x64",
       "permissions": "0o755",
-      "sha256": "b2d6bff4340d7a5a5603528debc7f1708a72fa2934b1d710865b647bc9f64423",
+      "sha256": "d6e3fa48273d4aa5847cd71e9c5cdcd9d394d8c008e039e1807c87b087b696e3",
       "type": "file"
     },
     {
@@ -5902,5 +5436,12 @@
     "logical_bytes": 3442600578,
     "objects": 498,
     "prefix": ".oniondesk/transport/blobs/"
+  },
+  "verification": {
+    "new_ELF_raw_privacy": "PASS privateusername/homeprefix absent",
+    "new_remote_ZIP_TAR_download": "NOT_PERFORMED",
+    "remote_push_and_source_asset_upload": "NOT_PERFORMED",
+    "root_native_runtime_QA": "PENDING_ROOT_REPORT",
+    "source_archive_readback_rebuild": "PASS staticstage0 andworkers botharch byte-identical"
   }
 }
