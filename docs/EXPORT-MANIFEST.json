@@ -3,7 +3,7 @@
   "status": "Owner-approved GPLv3; media and native-bootstrap corresponding-source assets actual private Release readback PASS; native binary delivery remains separately gated",
   "policy": "Explicit reviewed source classes only; no user data, raw logs, downloaded executable payloads or disk images",
   "baseline": "v5-frozen16-ui3-art32-data43",
-  "tree_sha256_excluding_this_manifest": "3a0208dea54acd62a5bf066c60f7311cd82219cb338ed3cdaa65b59c31eec11c",
+  "tree_sha256_excluding_this_manifest": "4a2b362b7e38f8deb89012ce6d1c98a958bbbde24a8a21712858eb593acdee4b",
   "allowlisted_source_tree_sha256": "1ebf8a462bbdca580db726b71feb9351ad35d3b1107d7c13237d33f75f5eaba6",
   "files": [
     {
@@ -23,8 +23,8 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 10639,
-      "sha256": "b2597df3b1332f365b52b5384c0640a539e4b04f1569b99315c3c736fb4c2a6e"
+      "bytes": 10655,
+      "sha256": "25b44e4db1b3fa5839488cf50cb5aaff23bac4bb141874148cce03333fdec7a8"
     },
     {
       "path": "LICENSE",
@@ -89,8 +89,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 13226,
-      "sha256": "d7cde4fc3ad2aa5b053aa1c86177824e0da7c5c65e9237addea7929372d37082"
+      "bytes": 13234,
+      "sha256": "3dcdee701fc9ee253d98c02dc1b4ecaf0680ead68c4578c61c06a3d0b6b1f55d"
     },
     {
       "path": "SECURITY.md",
@@ -1209,8 +1209,8 @@
     },
     {
       "path": "docs/DOWNLOADS.md",
-      "bytes": 12071,
-      "sha256": "6c86326d987536dd6447ee3df3e97fbfb82ba089d77ca260db59bdd53c40b744"
+      "bytes": 12467,
+      "sha256": "0b229eb38f234d779462495906b7c8e5aa2befd6b952c6b5ccda099fc4692fc9"
     },
     {
       "path": "docs/EXPORT-POLICY.md",
@@ -1264,8 +1264,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 18755,
-      "sha256": "95b97d7fb8167b34f82e75d0e333dcae67c7ffd35faa93493fda2b44491ee819"
+      "bytes": 19170,
+      "sha256": "c2fa1a8725578de301473f438dd9dce0991de0be85a371101e6b0989207f5a5c"
     },
     {
       "path": "docs/WEBSITES.md",
