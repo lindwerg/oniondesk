@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="160" viewBox="0 0 600 160" role="img" aria-label="Linux ARM64 — проверка загрузки и ограничения Tor Browser">
+<title>Linux ARM64 — ограничения Tor Browser · проверка загрузки</title>
+<rect x="2" y="2" width="596" height="156" rx="25" fill="#090e12" stroke="#b99b59" stroke-width="2"/>
+<path d="M38 46h64v64H38z M52 35v11 M70 35v11 M88 35v11 M52 110v11 M70 110v11 M88 110v11 M27 59h11 M27 78h11 M27 97h11 M102 59h11 M102 78h11 M102 97h11" fill="none" stroke="#dcc28c" stroke-width="4" stroke-linejoin="round"/>
+<text x="150" y="59" fill="#f1ddaf" font-family="system-ui, sans-serif" font-size="32" font-weight="600">Linux ARM64</text>
+<text x="150" y="94" fill="#bdd2cb" font-family="system-ui, sans-serif" font-size="26">Ограничения Tor Browser</text>
+<text x="150" y="126" fill="#dcc28c" font-family="system-ui, sans-serif" font-size="21">Проверка загрузки</text>
+<circle cx="548" cy="80" r="17" fill="none" stroke="#dcc28c" stroke-width="3"/>
+<path d="M548 78v11 M548 70v1" fill="none" stroke="#dcc28c" stroke-width="3" stroke-linecap="round"/>
+</svg>

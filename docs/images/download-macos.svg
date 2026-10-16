@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="160" viewBox="0 0 600 160" role="img" aria-label="Mac Apple Silicon, macOS 15+ — проверка загрузки">
+<title>Mac — Apple Silicon · macOS 15+ · проверка загрузки</title>
+<rect x="2" y="2" width="596" height="156" rx="25" fill="#090e12" stroke="#b99b59" stroke-width="2"/>
+<path d="M32 40h76v57H32z M24 110h92 M60 98v12 M80 98v12" fill="none" stroke="#dcc28c" stroke-width="4" stroke-linejoin="round"/>
+<text x="150" y="59" fill="#f1ddaf" font-family="system-ui, sans-serif" font-size="32" font-weight="600">Mac</text>
+<text x="150" y="94" fill="#bdd2cb" font-family="system-ui, sans-serif" font-size="25">Apple Silicon · macOS 15+</text>
+<text x="150" y="126" fill="#dcc28c" font-family="system-ui, sans-serif" font-size="21">Проверка загрузки</text>
+<circle cx="548" cy="80" r="17" fill="none" stroke="#dcc28c" stroke-width="3"/>
+<path d="M548 78v11 M548 70v1" fill="none" stroke="#dcc28c" stroke-width="3" stroke-linecap="round"/>
+</svg>

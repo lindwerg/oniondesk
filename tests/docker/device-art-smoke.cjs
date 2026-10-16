@@ -11,7 +11,6 @@ const {chromium} = require('playwright');
 const ROOT = path.resolve(__dirname, '../..');
 const UI = path.join(ROOT, 'client/ui');
 const ORIGIN = 'http://oniondesk.test';
-const PIXEL = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jLh8AAAAASUVORK5CYII=', 'base64');
 const CHOICES = [
   {device: 'windows', name: 'Windows', prefix: 'windows', count: 4},
   {device: 'macos', name: 'macOS', prefix: 'macos', count: 4},
@@ -42,11 +41,6 @@ async function fixture(t, viewport = {width: 1280, height: 900}) {
     requests.push(url.href);
     if (url.origin !== ORIGIN) return route.abort('blockedbyclient');
     if (failed.has(url.pathname)) return route.abort('failed');
-    // Rendering is real; only pending device artwork is replaced with a valid
-    // image fixture. No DOM, application function, or navigation is mocked.
-    if (url.pathname.startsWith('/assets/device-steps/')) {
-      return route.fulfill({contentType: 'image/png', body: PIXEL});
-    }
     const filename = path.join(url.pathname.startsWith('/assets/') ? ROOT : UI, url.pathname === '/' ? 'index.html' : url.pathname);
     const types = {'.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript', '.png': 'image/png', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.svg': 'image/svg+xml'};
     try {
@@ -196,8 +190,8 @@ test('a failed image uses the stage fallback, recovers on the next hint, and ign
   await art(page, '/assets/device-steps/windows-03.png');
   await image.evaluate(() => { window.previousArtError(); window.previousArtLoad(); });
   await art(page, '/assets/device-steps/windows-03.png');
-  // The enlargement whitelist must reject plausible but nonexistent hints.
-  await image.evaluate((element) => { element.src = '/assets/device-steps/iphone-06.png'; });
+  // The enlargement whitelist must reject a query even when the PNG itself loads.
+  await image.evaluate((element) => { element.src = '/assets/device-steps/windows-03.png?other=1'; });
   await page.waitForFunction(() => document.querySelector('[data-page="12"] [data-goal-image]').complete);
   await page.locator('#view-scene').click();
   assert.equal(await page.locator('#guide-shot-viewer').evaluate((dialog) => dialog.open), false);

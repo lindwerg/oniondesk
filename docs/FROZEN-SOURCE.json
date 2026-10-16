@@ -1,19 +1,64 @@
 {
-  "schema": 2,
-  "status": "Source v4 backend and frozen UI retained; export-only Linux builder resource path difference is documented separately",
-  "backend_manifest_sha256": "f4b575c3ec2c6b9a81f9675a37213353b45694fe59821ff430b5c547648a6be5",
+  "schema": 3,
+  "last_updated": "2026-10-16",
+  "version": "V5",
+  "status": "V5 runtime16, UI3 and device art32 match reviewed source and export in all four locally built native candidates; full native GUI and GitHub delivery are not confirmed",
   "source_backend": [
     {
       "path": "client/app.py",
-      "sha256": "ca45770b3c90736cc845e57c5d9e462f8f4fa4eb57a17ac04003da4011241c16"
+      "sha256": "1a2979695003d2ef7cee7ae7e18bca16f52e3193184f2a95c638ada9ec1e64b5"
     },
     {
-      "path": "client/wallet_controller.py",
-      "sha256": "b8a08b344aca8ae525943040344974827c412039046636f1f9906fc16cb5ab49"
+      "path": "client/launcher.py",
+      "sha256": "dd7c1430f78ea3a17dba1fb6601cb729b909f310bb885009bbb0630b5e876cbf"
+    },
+    {
+      "path": "client/usb_tails.py",
+      "sha256": "6882d57ff598cadee01dee1fe673541fa507c5873f5a4a1cf59ef863f5f60a6c"
+    },
+    {
+      "path": "client/usb_privileged.py",
+      "sha256": "c15db13e6451587e45c3ed81fca58da4367f53bfdb847c6de56291396b484922"
+    },
+    {
+      "path": "client/offline_bundle.py",
+      "sha256": "d4482087de784e341486900df093491e22fb4c7c3a5081909e9ac81da984838f"
+    },
+    {
+      "path": "client/offline_catalog.py",
+      "sha256": "b1c1d68ccef3d513549ef7f5f4af65609fc68fadf55233503af2586f92e5617f"
+    },
+    {
+      "path": "client/phone_usb.py",
+      "sha256": "40c5339b56d768019e5074f3700e8760803a814874e0c79ee9e0cf3bf4653c9f"
+    },
+    {
+      "path": "client/phone_catalog.py",
+      "sha256": "fa6ef95261f6d9a916f39da092b594a89c2c291c4baa5eea122ad562e3b77d77"
+    },
+    {
+      "path": "client/wallet_engine.py",
+      "sha256": "263290fc2c64462be72f3d8d4533ae3a505408da4d67ac8b0a14db963942fdb6"
+    },
+    {
+      "path": "client/wallet_bundle.py",
+      "sha256": "4780cb51022085ab080e06f4e55a50a9537ec8d1e31453dca7a35bdc3ce9ddbd"
+    },
+    {
+      "path": "client/wallet_catalog.py",
+      "sha256": "02460da5c51714b025edc8d554c59ff8b1f84c438f2424883e29ef33dbe47df7"
+    },
+    {
+      "path": "client/wallet_security.py",
+      "sha256": "b6c1f0c7bd69adf7cfe994c4233ea2a4bf4693c53c4ab3b150ab1f10b9fe6453"
     },
     {
       "path": "client/wallet_vault.py",
       "sha256": "c507df96c7bb4619d4758799a9ceee98271aa21a1bd9a20a7410ad88f59b93f0"
+    },
+    {
+      "path": "client/wallet_controller.py",
+      "sha256": "b8a08b344aca8ae525943040344974827c412039046636f1f9906fc16cb5ab49"
     },
     {
       "path": "client/feather_bundle.py",
@@ -22,41 +67,91 @@
     {
       "path": "client/feather_catalog.py",
       "sha256": "f0236358a8e5e302384f6801a449ac1e768af9962eb603a248f4d113dd0495a0"
-    },
-    {
-      "path": "client/build-native.py",
-      "sha256": "c9735b7b954ea3bb0d00595466677221e7693113e7984ba5ec5b4fb005b8b1aa"
-    },
-    {
-      "path": "client/build-linux.py",
-      "sha256": "864f834c475ecf28a0eb4b7f45a3de8ecbff4dd9366867bb9325315522309e6f"
-    },
-    {
-      "path": "client/build-windows.py",
-      "sha256": "7d9b12d2be5c7565acfdf1fc7eedefb2311f6b495b33f314d7de65bd91e693b5"
-    },
-    {
-      "path": "client/build-windows-data.py",
-      "sha256": "c2cb00e0eec07f70e9400e4bb085591acf96457d1aaa330f4bbed7586cbe5c1d"
     }
   ],
   "export_backend": [
     {
       "path": "client/app.py",
-      "sha256": "ca45770b3c90736cc845e57c5d9e462f8f4fa4eb57a17ac04003da4011241c16",
-      "source_sha256": "ca45770b3c90736cc845e57c5d9e462f8f4fa4eb57a17ac04003da4011241c16",
+      "sha256": "1a2979695003d2ef7cee7ae7e18bca16f52e3193184f2a95c638ada9ec1e64b5",
+      "source_sha256": "1a2979695003d2ef7cee7ae7e18bca16f52e3193184f2a95c638ada9ec1e64b5",
       "matches_reviewed_source": true
     },
     {
-      "path": "client/wallet_controller.py",
-      "sha256": "b8a08b344aca8ae525943040344974827c412039046636f1f9906fc16cb5ab49",
-      "source_sha256": "b8a08b344aca8ae525943040344974827c412039046636f1f9906fc16cb5ab49",
+      "path": "client/launcher.py",
+      "sha256": "dd7c1430f78ea3a17dba1fb6601cb729b909f310bb885009bbb0630b5e876cbf",
+      "source_sha256": "dd7c1430f78ea3a17dba1fb6601cb729b909f310bb885009bbb0630b5e876cbf",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/usb_tails.py",
+      "sha256": "6882d57ff598cadee01dee1fe673541fa507c5873f5a4a1cf59ef863f5f60a6c",
+      "source_sha256": "6882d57ff598cadee01dee1fe673541fa507c5873f5a4a1cf59ef863f5f60a6c",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/usb_privileged.py",
+      "sha256": "c15db13e6451587e45c3ed81fca58da4367f53bfdb847c6de56291396b484922",
+      "source_sha256": "c15db13e6451587e45c3ed81fca58da4367f53bfdb847c6de56291396b484922",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/offline_bundle.py",
+      "sha256": "d4482087de784e341486900df093491e22fb4c7c3a5081909e9ac81da984838f",
+      "source_sha256": "d4482087de784e341486900df093491e22fb4c7c3a5081909e9ac81da984838f",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/offline_catalog.py",
+      "sha256": "b1c1d68ccef3d513549ef7f5f4af65609fc68fadf55233503af2586f92e5617f",
+      "source_sha256": "b1c1d68ccef3d513549ef7f5f4af65609fc68fadf55233503af2586f92e5617f",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/phone_usb.py",
+      "sha256": "40c5339b56d768019e5074f3700e8760803a814874e0c79ee9e0cf3bf4653c9f",
+      "source_sha256": "40c5339b56d768019e5074f3700e8760803a814874e0c79ee9e0cf3bf4653c9f",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/phone_catalog.py",
+      "sha256": "fa6ef95261f6d9a916f39da092b594a89c2c291c4baa5eea122ad562e3b77d77",
+      "source_sha256": "fa6ef95261f6d9a916f39da092b594a89c2c291c4baa5eea122ad562e3b77d77",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/wallet_engine.py",
+      "sha256": "263290fc2c64462be72f3d8d4533ae3a505408da4d67ac8b0a14db963942fdb6",
+      "source_sha256": "263290fc2c64462be72f3d8d4533ae3a505408da4d67ac8b0a14db963942fdb6",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/wallet_bundle.py",
+      "sha256": "4780cb51022085ab080e06f4e55a50a9537ec8d1e31453dca7a35bdc3ce9ddbd",
+      "source_sha256": "4780cb51022085ab080e06f4e55a50a9537ec8d1e31453dca7a35bdc3ce9ddbd",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/wallet_catalog.py",
+      "sha256": "02460da5c51714b025edc8d554c59ff8b1f84c438f2424883e29ef33dbe47df7",
+      "source_sha256": "02460da5c51714b025edc8d554c59ff8b1f84c438f2424883e29ef33dbe47df7",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/wallet_security.py",
+      "sha256": "b6c1f0c7bd69adf7cfe994c4233ea2a4bf4693c53c4ab3b150ab1f10b9fe6453",
+      "source_sha256": "b6c1f0c7bd69adf7cfe994c4233ea2a4bf4693c53c4ab3b150ab1f10b9fe6453",
       "matches_reviewed_source": true
     },
     {
       "path": "client/wallet_vault.py",
       "sha256": "c507df96c7bb4619d4758799a9ceee98271aa21a1bd9a20a7410ad88f59b93f0",
       "source_sha256": "c507df96c7bb4619d4758799a9ceee98271aa21a1bd9a20a7410ad88f59b93f0",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/wallet_controller.py",
+      "sha256": "b8a08b344aca8ae525943040344974827c412039046636f1f9906fc16cb5ab49",
+      "source_sha256": "b8a08b344aca8ae525943040344974827c412039046636f1f9906fc16cb5ab49",
       "matches_reviewed_source": true
     },
     {
@@ -70,30 +165,340 @@
       "sha256": "f0236358a8e5e302384f6801a449ac1e768af9962eb603a248f4d113dd0495a0",
       "source_sha256": "f0236358a8e5e302384f6801a449ac1e768af9962eb603a248f4d113dd0495a0",
       "matches_reviewed_source": true
+    }
+  ],
+  "frozen_runtime": {
+    "module_count": 16,
+    "module_paths": [
+      "client/app.py",
+      "client/launcher.py",
+      "client/usb_tails.py",
+      "client/usb_privileged.py",
+      "client/offline_bundle.py",
+      "client/offline_catalog.py",
+      "client/phone_usb.py",
+      "client/phone_catalog.py",
+      "client/wallet_engine.py",
+      "client/wallet_bundle.py",
+      "client/wallet_catalog.py",
+      "client/wallet_security.py",
+      "client/wallet_vault.py",
+      "client/wallet_controller.py",
+      "client/feather_bundle.py",
+      "client/feather_catalog.py"
+    ],
+    "builder_scripts_included": false,
+    "comparison": "Actual frozen Python code compared with reviewed source; source hashes identify the source files, not native executable bytes"
+  },
+  "ui_sha256": {
+    "index.html": "02dc10349ffb4e57cb13de9e8f1ae772c0399875c7fcb2bebc64ddd426c563dd",
+    "style.css": "b22d4d5dddae4b10bdfed9343e2e0fda259e45caf537034db420f1cf32c79ce9",
+    "app.js": "2a1af638dfc4a73a8b92a1b5626ee9ce05263982a2cc87c028536d92633e4f85"
+  },
+  "ui_files": [
+    {
+      "path": "client/ui/index.html",
+      "source_sha256": "02dc10349ffb4e57cb13de9e8f1ae772c0399875c7fcb2bebc64ddd426c563dd",
+      "export_sha256": "02dc10349ffb4e57cb13de9e8f1ae772c0399875c7fcb2bebc64ddd426c563dd",
+      "matches_reviewed_source": true
     },
     {
-      "path": "client/build-native.py",
-      "sha256": "c9735b7b954ea3bb0d00595466677221e7693113e7984ba5ec5b4fb005b8b1aa",
-      "source_sha256": "c9735b7b954ea3bb0d00595466677221e7693113e7984ba5ec5b4fb005b8b1aa",
+      "path": "client/ui/style.css",
+      "source_sha256": "b22d4d5dddae4b10bdfed9343e2e0fda259e45caf537034db420f1cf32c79ce9",
+      "export_sha256": "b22d4d5dddae4b10bdfed9343e2e0fda259e45caf537034db420f1cf32c79ce9",
       "matches_reviewed_source": true
+    },
+    {
+      "path": "client/ui/app.js",
+      "source_sha256": "2a1af638dfc4a73a8b92a1b5626ee9ce05263982a2cc87c028536d92633e4f85",
+      "export_sha256": "2a1af638dfc4a73a8b92a1b5626ee9ce05263982a2cc87c028536d92633e4f85",
+      "matches_reviewed_source": true
+    }
+  ],
+  "device_art": {
+    "file_count": 32,
+    "files": [
+      {
+        "path": "assets/device-steps/android-01.png",
+        "source_sha256": "d8c2065b4454578082271798bb568a924136a437bef91cb182686a3c11bb0077",
+        "export_sha256": "d8c2065b4454578082271798bb568a924136a437bef91cb182686a3c11bb0077",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-02.png",
+        "source_sha256": "6d7be7c9d6e06eab9127384be875642e573b1378c2d2bc6bc59e23ceea02caba",
+        "export_sha256": "6d7be7c9d6e06eab9127384be875642e573b1378c2d2bc6bc59e23ceea02caba",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-03.png",
+        "source_sha256": "cdd24a65f90566dec16f52712657e8b38828ac6ecd19e276ce87b8a6b255a089",
+        "export_sha256": "cdd24a65f90566dec16f52712657e8b38828ac6ecd19e276ce87b8a6b255a089",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-04.png",
+        "source_sha256": "a3b5fbfd3aba7d588e93f8dd0b19dab3e40ce5946165880ae31717b6e06d5cfb",
+        "export_sha256": "a3b5fbfd3aba7d588e93f8dd0b19dab3e40ce5946165880ae31717b6e06d5cfb",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-usb-01.png",
+        "source_sha256": "9f7fb931d584030c486ea3ca20613283741acb6ff0f30b12a569d8c50aefd2dc",
+        "export_sha256": "9f7fb931d584030c486ea3ca20613283741acb6ff0f30b12a569d8c50aefd2dc",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-usb-02.png",
+        "source_sha256": "b3500a4e907b2b3c8048b113ad3b8a6bb15795e1e678aabb7b5ee09f1f914338",
+        "export_sha256": "b3500a4e907b2b3c8048b113ad3b8a6bb15795e1e678aabb7b5ee09f1f914338",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-usb-03.png",
+        "source_sha256": "76d0fb9202228549f095747461e681e28a46d2e49e1e48cf7b601390124b9812",
+        "export_sha256": "76d0fb9202228549f095747461e681e28a46d2e49e1e48cf7b601390124b9812",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-usb-04.png",
+        "source_sha256": "373f2945bdf87fd3b1e1b178db280cfc5b827f257e488278b19c89dfc378678c",
+        "export_sha256": "373f2945bdf87fd3b1e1b178db280cfc5b827f257e488278b19c89dfc378678c",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-usb-05.png",
+        "source_sha256": "51a55b3a6bc4f116fee01a3aa13a6dbda9e9357eb4e590b11396e90efb7d03ce",
+        "export_sha256": "51a55b3a6bc4f116fee01a3aa13a6dbda9e9357eb4e590b11396e90efb7d03ce",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-usb-06.png",
+        "source_sha256": "a1716dec2563f4e8b330694f664bab10de530628b00c5d73480da9f18551aff7",
+        "export_sha256": "a1716dec2563f4e8b330694f664bab10de530628b00c5d73480da9f18551aff7",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-usb-07.png",
+        "source_sha256": "c483ffdf0e30f18500e5971df8c765f7b38a60f0c8cc66fca9f471aabd51ceca",
+        "export_sha256": "c483ffdf0e30f18500e5971df8c765f7b38a60f0c8cc66fca9f471aabd51ceca",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/android-usb-08.png",
+        "source_sha256": "a15b07add95a8c3c77680bf0efec444458f3aa0633c5772c75cf61792d2fb711",
+        "export_sha256": "a15b07add95a8c3c77680bf0efec444458f3aa0633c5772c75cf61792d2fb711",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/iphone-01.png",
+        "source_sha256": "c5d608f0afe4cfd9581b73440c3daaa4ac455cf0abca0f44e7e09c9f1b0f0995",
+        "export_sha256": "c5d608f0afe4cfd9581b73440c3daaa4ac455cf0abca0f44e7e09c9f1b0f0995",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/iphone-02.png",
+        "source_sha256": "4fc9e24973ebcbd7843263ecd049790c7b8276baf73b808be3d8445d2838bd80",
+        "export_sha256": "4fc9e24973ebcbd7843263ecd049790c7b8276baf73b808be3d8445d2838bd80",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/iphone-03.png",
+        "source_sha256": "2512ee2d36445e59e47baaf8c2f0100064fd13da3de0bf94679d3ece3e420dd8",
+        "export_sha256": "2512ee2d36445e59e47baaf8c2f0100064fd13da3de0bf94679d3ece3e420dd8",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/iphone-04.png",
+        "source_sha256": "451b1659c31a6aeaf06f07c5ee9cdbac50bba68f9c17b15447c86ffc1dcc4635",
+        "export_sha256": "451b1659c31a6aeaf06f07c5ee9cdbac50bba68f9c17b15447c86ffc1dcc4635",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/iphone-05.png",
+        "source_sha256": "dd9afc1a2e429e27c78a10ec0a4e7e025868a6d407a7bb8e1e0471a2f0c27f22",
+        "export_sha256": "dd9afc1a2e429e27c78a10ec0a4e7e025868a6d407a7bb8e1e0471a2f0c27f22",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/linux-01.png",
+        "source_sha256": "7db1760de7a2b836146a047d798bde3fd170c48a5af2fdacb4f4502f70827040",
+        "export_sha256": "7db1760de7a2b836146a047d798bde3fd170c48a5af2fdacb4f4502f70827040",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/linux-02.png",
+        "source_sha256": "77d6d53998050f29bbbb13d6a77bdd33abe21861a7a6cba45636604ab35054fa",
+        "export_sha256": "77d6d53998050f29bbbb13d6a77bdd33abe21861a7a6cba45636604ab35054fa",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/linux-03.png",
+        "source_sha256": "0edf196d983136fd249574765d917d546fc37b857389b3113a05e1766d0c7dec",
+        "export_sha256": "0edf196d983136fd249574765d917d546fc37b857389b3113a05e1766d0c7dec",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/linux-04.png",
+        "source_sha256": "473e17730ad141959c3c37ae105e4b6b00b4eb3400084f4acb0158035cc45587",
+        "export_sha256": "473e17730ad141959c3c37ae105e4b6b00b4eb3400084f4acb0158035cc45587",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/macos-01.png",
+        "source_sha256": "4d447947cdf665625e7dccba87d3cfa26ed380957676c6eed996ff29be4def7a",
+        "export_sha256": "4d447947cdf665625e7dccba87d3cfa26ed380957676c6eed996ff29be4def7a",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/macos-02.png",
+        "source_sha256": "9623c61114154595a47d662405e5475be3d174b41d7c541be29978add45480db",
+        "export_sha256": "9623c61114154595a47d662405e5475be3d174b41d7c541be29978add45480db",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/macos-03.png",
+        "source_sha256": "0092a0e20d6d2d8df769967043764c93b3d450ab938da23c3b37999aa6bbbf14",
+        "export_sha256": "0092a0e20d6d2d8df769967043764c93b3d450ab938da23c3b37999aa6bbbf14",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/macos-04.png",
+        "source_sha256": "2eefa72a3088090b77c994d612a1f55749c84d34ac8c87473a7b4953dec9b0db",
+        "export_sha256": "2eefa72a3088090b77c994d612a1f55749c84d34ac8c87473a7b4953dec9b0db",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/tails-01.png",
+        "source_sha256": "0668926f9274031dbb9968e0d2ee384c7417576beb73eba8ad55c024eda2f4d8",
+        "export_sha256": "0668926f9274031dbb9968e0d2ee384c7417576beb73eba8ad55c024eda2f4d8",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/tails-02.png",
+        "source_sha256": "8e1cd528eb13cb7c781da52806a52e9a73676d3fd19ed17535f2aefeda3f4f25",
+        "export_sha256": "8e1cd528eb13cb7c781da52806a52e9a73676d3fd19ed17535f2aefeda3f4f25",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/tails-03.png",
+        "source_sha256": "07518bcfd429bf5ed2a881790c5b52c82d1aad18e96da33ce400a9d932dfe79c",
+        "export_sha256": "07518bcfd429bf5ed2a881790c5b52c82d1aad18e96da33ce400a9d932dfe79c",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/windows-01.png",
+        "source_sha256": "aa15f0c495e3ced46415d80966e3b7faa3d821de7f9e7971b01c4ace48400a62",
+        "export_sha256": "aa15f0c495e3ced46415d80966e3b7faa3d821de7f9e7971b01c4ace48400a62",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/windows-02.png",
+        "source_sha256": "12d57d5e73af270a3388ad0fa53ed6e3639dcaf9d36400586eaeb85343a83a96",
+        "export_sha256": "12d57d5e73af270a3388ad0fa53ed6e3639dcaf9d36400586eaeb85343a83a96",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/windows-03.png",
+        "source_sha256": "0d3ab1a23bf3679b1a8a4f36cdb6c6b153e18d0065539a4e24d0ed78a613f761",
+        "export_sha256": "0d3ab1a23bf3679b1a8a4f36cdb6c6b153e18d0065539a4e24d0ed78a613f761",
+        "matches_reviewed_source": true
+      },
+      {
+        "path": "assets/device-steps/windows-04.png",
+        "source_sha256": "fc4526e93e63a5bac65e8ad10ceec4994d22507a4ded98bdd85d225fd2c05a9f",
+        "export_sha256": "fc4526e93e63a5bac65e8ad10ceec4994d22507a4ded98bdd85d225fd2c05a9f",
+        "matches_reviewed_source": true
+      }
+    ]
+  },
+  "native_candidates": {
+    "macos-arm64": {
+      "frozen_runtime_modules": 16,
+      "actual_frozen_code_matches_source": true,
+      "ui_files": 3,
+      "ui_matches_source_and_export": true,
+      "device_art_files": 32,
+      "device_art_matches_source_and_export": true,
+      "frozen_proof_sha256": "1d92aff8d60bac85e212705df3c7ee389def94fd8da5583d3c68ee6d688dbfdb",
+      "full_native_GUI_tested": false,
+      "strict_codesign": true,
+      "signature": "ad-hoc",
+      "minimum_macos": "15.0",
+      "apple_notarization": false
+    },
+    "windows-x64": {
+      "frozen_runtime_modules": 16,
+      "actual_frozen_code_matches_source": true,
+      "ui_files": 3,
+      "ui_matches_source_and_export": true,
+      "device_art_files": 32,
+      "device_art_matches_source_and_export": true,
+      "frozen_proof_sha256": "beafaf0f5a539d918a1ee177974aac0729ad4e6c933c7a4c25bca6f7ddafb9ef",
+      "full_native_GUI_tested": false,
+      "verification_environment": "Wine; isolated no-network container",
+      "real_Windows_UAC_tested": false,
+      "executable_sha256": "d3c299e12b7ce2867d5eff2978a5edca58b284234681f4e04e488fd4f1fe2de7"
+    },
+    "linux-x64": {
+      "frozen_runtime_modules": 16,
+      "actual_frozen_code_matches_source": true,
+      "ui_files": 3,
+      "ui_matches_source_and_export": true,
+      "device_art_files": 32,
+      "device_art_matches_source_and_export": true,
+      "frozen_proof_sha256": "4bcbfa269f8d8df70737e5e8f054e7a89ffa62189d4856365070a38bc30f3f42",
+      "full_native_GUI_tested": false,
+      "ELF_machine": 62,
+      "ELF_audit_count": 81,
+      "GPG_valid_fixture": "PASS",
+      "GPG_modified_fixture_rejected": "PASS",
+      "executable_sha256": "29aefcf16b4893a87023cf61a09424cd44c7c098545c89f03e0c3bec4133ff51"
+    },
+    "linux-arm64": {
+      "frozen_runtime_modules": 16,
+      "actual_frozen_code_matches_source": true,
+      "ui_files": 3,
+      "ui_matches_source_and_export": true,
+      "device_art_files": 32,
+      "device_art_matches_source_and_export": true,
+      "frozen_proof_sha256": "bd5a20c9f2fa409cade63f924b6c36b8f96a5a7bcad32b38b6aeb76fc24b8277",
+      "full_native_GUI_tested": false,
+      "ELF_machine": 183,
+      "ELF_audit_count": 81,
+      "GPG_valid_fixture": "PASS",
+      "GPG_modified_fixture_rejected": "PASS",
+      "executable_sha256": "6440b7feed4da0bedf1f470ee1a281c2ff8a225a86638f39197013cc1a7e67e0"
+    }
+  },
+  "build_scripts": [
+    {
+      "path": "client/build-native.py",
+      "source_sha256": "c9735b7b954ea3bb0d00595466677221e7693113e7984ba5ec5b4fb005b8b1aa",
+      "export_sha256": "c9735b7b954ea3bb0d00595466677221e7693113e7984ba5ec5b4fb005b8b1aa",
+      "matches_reviewed_source": true,
+      "included_in_frozen_runtime": false
     },
     {
       "path": "client/build-linux.py",
-      "sha256": "dbfc306f059500ca22d9cd28a591e053ea169d3c748a44082dcf383156fe765e",
       "source_sha256": "864f834c475ecf28a0eb4b7f45a3de8ecbff4dd9366867bb9325315522309e6f",
-      "matches_reviewed_source": false
+      "export_sha256": "dbfc306f059500ca22d9cd28a591e053ea169d3c748a44082dcf383156fe765e",
+      "matches_reviewed_source": false,
+      "included_in_frozen_runtime": false
     },
     {
       "path": "client/build-windows.py",
-      "sha256": "7d9b12d2be5c7565acfdf1fc7eedefb2311f6b495b33f314d7de65bd91e693b5",
       "source_sha256": "7d9b12d2be5c7565acfdf1fc7eedefb2311f6b495b33f314d7de65bd91e693b5",
-      "matches_reviewed_source": true
+      "export_sha256": "7d9b12d2be5c7565acfdf1fc7eedefb2311f6b495b33f314d7de65bd91e693b5",
+      "matches_reviewed_source": true,
+      "included_in_frozen_runtime": false
     },
     {
       "path": "client/build-windows-data.py",
-      "sha256": "c2cb00e0eec07f70e9400e4bb085591acf96457d1aaa330f4bbed7586cbe5c1d",
       "source_sha256": "c2cb00e0eec07f70e9400e4bb085591acf96457d1aaa330f4bbed7586cbe5c1d",
-      "matches_reviewed_source": true
+      "export_sha256": "c2cb00e0eec07f70e9400e4bb085591acf96457d1aaa330f4bbed7586cbe5c1d",
+      "matches_reviewed_source": true,
+      "included_in_frozen_runtime": false
     }
   ],
   "export_only_builder_adjustments": [
@@ -105,12 +510,14 @@
       "tracked_runtime_resource": {
         "path": "client/resources/README-LINUX.md",
         "sha256": "4c467707b2ffa67f2d61a6f949aa3143a4067f80c52219b7b937c18af646d943"
-      }
+      },
+      "included_in_frozen_runtime": false
     }
   ],
-  "ui_sha256": {
-    "app.js": "d4246d3d5a8494ea02cfbd91b0ae3e8de9229f038f0a792b76e1381d1d173240",
-    "style.css": "b22d4d5dddae4b10bdfed9343e2e0fda259e45caf537034db420f1cf32c79ce9",
-    "index.html": "02dc10349ffb4e57cb13de9e8f1ae772c0399875c7fcb2bebc64ddd426c563dd"
+  "historical_v4": {
+    "scope": "Previous source baseline only; not the V5 runtime identity",
+    "backend_manifest_sha256": "f4b575c3ec2c6b9a81f9675a37213353b45694fe59821ff430b5c547648a6be5",
+    "app_py_sha256": "ca45770b3c90736cc845e57c5d9e462f8f4fa4eb57a17ac04003da4011241c16",
+    "ui_app_js_sha256": "d4246d3d5a8494ea02cfbd91b0ae3e8de9229f038f0a792b76e1381d1d173240"
   }
 }
