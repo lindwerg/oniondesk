@@ -5,6 +5,7 @@ import sys
 import threading
 import time
 import unittest
+from unittest.mock import patch
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
@@ -353,6 +354,32 @@ class LocalAPITest(unittest.TestCase):
         self.assertEqual(self.request('/../launcher.py')[0],404)
         self.assertEqual(self.request('/client/launcher.py')[0],404)
         self.assertEqual(self.request('/api/state?nonce='+self.desk.nonce)[0],403)
+
+    def test_device_illustrations_have_exactly_32_fixed_png_routes(self):
+        expected = {}
+        for device, count in (("windows", 4), ("macos", 4), ("linux", 4), ("tails", 3),
+                              ("android-usb", 8), ("android", 4), ("iphone", 5)):
+            for step in range(1, count + 1):
+                name = f"{device}-{step:02d}.png"
+                expected["/assets/device-steps/" + name] = app.KIT / "assets" / "device-steps" / name
+        actual = {url: source for url, source in app.ASSETS.items() if url.startswith("/assets/device-steps/")}
+        self.assertEqual(len(actual), 32)
+        self.assertEqual(actual, expected)
+        # Exercise all authorized routes with an existing shipped PNG, so route
+        # authorization remains independently testable while artwork is prepared.
+        fixture = app.KIT / "assets" / "steps" / "06-daily.png"
+        with patch.dict(app.ASSETS, {url: fixture for url in expected}):
+            for url in expected:
+                with self.subTest(url=url), urlopen(self.server.origin + url, timeout=3) as response:
+                    self.assertEqual(response.status, 200)
+                    self.assertEqual(response.headers.get_content_type(), "image/png")
+                    self.assertTrue(response.read().startswith(b"\x89PNG\r\n\x1a\n"))
+        for path in ("windows-00.png", "windows-05.png", "macos-05.png", "linux-05.png", "tails-04.png",
+                     "android-usb-09.png", "android-05.png", "iphone-06.png", "unknown-01.png",
+                     "windows-01.svg", "../app.py", "%2e%2e/app.py"):
+            with self.subTest(path=path):
+                self.assertEqual(self.request("/assets/device-steps/" + path)[0], 404)
+        self.assertEqual(self.request("/assets/device-steps/windows-01.png?other=1")[0], 403)
 
     def test_terminal_fonts_are_local_and_explicitly_whitelisted(self):
         for filename in ('JetBrainsMono-Regular.ttf', 'JetBrainsMono-Bold.ttf'):

@@ -71,6 +71,12 @@ for _goal, _count in enumerate((2, 4, 3, 10, 6, 3, 7, 3, 4, 6, 3, 6, 5, 3)):
         _name = f"g{_goal:02d}-s{_step:02d}.png"
         ASSETS["/assets/microsteps/" + _name] = KIT / "assets" / "microsteps" / _name
 
+for _device, _count in (("windows", 4), ("macos", 4), ("linux", 4), ("tails", 3),
+                      ("android-usb", 8), ("android", 4), ("iphone", 5)):
+    for _step in range(1, _count + 1):
+        _name = f"{_device}-{_step:02d}.png"
+        ASSETS["/assets/device-steps/" + _name] = KIT / "assets" / "device-steps" / _name
+
 GUIDE_SHOTS = {
     "tor-first-connect": ("tor-macos/00-first-connect.png", "Настоящий первый запуск подготовленного Tor Browser 15.0.25 на Mac. Встроенные мосты уже настроены; нажмите Connect."),
     "tor-browser-ready": ("tor-macos/01-browser-ready.png", "Настоящий результат первого подключения подготовленной копии на Mac. После обычного Connect проверка самого мастера подтвердила Tor через HTTPS."),

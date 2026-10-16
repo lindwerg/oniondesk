@@ -72,7 +72,9 @@
   function go(step) {
     if (!Number.isInteger(step) || step < 0 || step >= SCENES.length || closed) return;
     const leavingGoal = activeStep !== step;
+    const leavingDaily = activeStep === 12 && leavingGoal;
     activeStep = step;
+    if (leavingDaily) updateStepArt(document.querySelector('[data-page="12"]'), innerPositions.get(12) || 0);
     document.body.dataset.scene = String(SCENES[step]);
     document.querySelectorAll('[data-page]').forEach((page) => { page.hidden = Number(page.dataset.page) !== step; });
     document.querySelectorAll('[data-step]').forEach((button) => {
@@ -144,7 +146,7 @@
     const image = document.querySelector(`[data-page="${activeStep}"] [data-goal-image]`);
     if (!image || !image.complete || !image.naturalWidth) return;
     const url = image.getAttribute('src');
-    if (!/^\/assets\/(?:microsteps\/g(?:0[0-9]|1[0-3])-s[0-9]{2}|steps\/[A-Za-z0-9_-]+|agent-cover)\.png$/.test(url)) return;
+    if (!/^\/assets\/(?:microsteps\/g(?:0[0-9]|1[0-3])-s[0-9]{2}|device-steps\/(?:windows-0[1-4]|macos-0[1-4]|linux-0[1-4]|tails-0[1-3]|android-usb-0[1-8]|android-0[1-4]|iphone-0[1-5])|steps\/[A-Za-z0-9_-]+|agent-cover)\.png$/.test(url)) return;
     openShot({url, alt: image.alt,
       caption: 'Художественная иллюстрация текущего действия. Это не снимок программы. Реальные экраны находятся рядом с инструкциями.'}, event.currentTarget);
   });
@@ -514,6 +516,10 @@
     button.textContent = show ? 'Скрыть' : 'Показать'; button.setAttribute('aria-pressed', String(show));
   }
 
+  const dailyArtPrefixes = Object.freeze({
+    windows: 'windows', macos: 'macos', linux: 'linux', tails: 'tails',
+    android_usb: 'android-usb', android_phone: 'android', iphone: 'iphone'
+  });
   const dailyGuides = Object.freeze({
     windows: {name: 'Windows', advice: 'Используйте Tor Browser из комплекта в обычной Windows. Telegram открывается на удалённом рабочем столе.', steps: [
       {title: 'Подготовьте Tor Browser на этом компьютере.', text: 'Запустите OnionDesk в Windows. На этапе 1 мастер подготовит официальный Tor Browser из комплекта. Если он уже подготовлен, переходите к следующей подсказке.', stage: 1, action: 1, stageLabel: 'Открыть подготовку Tor Browser'},
@@ -573,6 +579,8 @@
   function drawDailyGuide(focus = false) {
     const key = dailyGuideKey();
     const guide = dailyGuides[key];
+    const page = document.querySelector('[data-page="12"]');
+    const active = activeStep === 12 && (innerPositions.get(12) || 0) === 0;
     $('daily-android-method').hidden = $('daily-device').value !== 'android';
     $('daily-guide').hidden = !guide;
     $('daily-device-advice').hidden = !guide;
@@ -591,7 +599,10 @@
         : 'Выберите устройство из списка. Для неизвестного выбора инструкция не показана.';
       $('daily-guide-back').disabled = true;
       $('daily-guide-next').disabled = true;
-      if (focus) showStepStart(document.querySelector('[data-page="12"]'));
+      if (active) {
+        updateStepArt(page, 0);
+        if (focus) showStepStart(page);
+      }
       return;
     }
     const index = Math.max(0, Math.min(guide.steps.length - 1, dailyPositions.get(key) || 0));
@@ -629,7 +640,10 @@
       $('daily-usb-help').hidden = false;
     }
     renderPhone(Boolean(state && state.job && state.job.state === 'running'));
-    if (focus) showStepStart(document.querySelector('[data-page="12"]'));
+    if (active) {
+      updateStepArt(page, 0);
+      if (focus) showStepStart(page);
+    }
   }
   function renderPhone(busy) {
     const phone = state && state.phone || {};
@@ -1078,15 +1092,27 @@
   function updateStepArt(page, index) {
     const cards = [...page.querySelectorAll('[data-inner-step]')];
     const card = cards[index];
-    const key = card && card.dataset.artKey;
+    let key = card && card.dataset.artKey;
     if (!STEP_ART_KEYS.has(key)) return;
     const image = page.querySelector('[data-goal-image]');
     const frame = page.querySelector('.goal-art-frame');
-    const source = `/assets/microsteps/${key}.png`;
-    const title = card.querySelector('h2').textContent;
+    let source = `/assets/microsteps/${key}.png`;
+    let title = card.querySelector('h2').textContent;
+    let position = `Действие ${index + 1} из ${cards.length}`;
+    let label = `ЭТАП ${page.dataset.page.padStart(2, '0')} / ДЕЙСТВИЕ ${index + 1}`;
+    const guideKey = activeStep === 12 && Number(page.dataset.page) === 12 && index === 0 ? dailyGuideKey() : '';
+    const guide = dailyGuides[guideKey];
+    if (guide) {
+      const hintIndex = Math.max(0, Math.min(guide.steps.length - 1, dailyPositions.get(guideKey) || 0));
+      key = `${dailyArtPrefixes[guideKey]}-${String(hintIndex + 1).padStart(2, '0')}`;
+      source = `/assets/device-steps/${key}.png`;
+      title = `${guide.name}: ${guide.steps[hintIndex].title}`;
+      position = `${guide.name} · шаг ${hintIndex + 1} из ${guide.steps.length}`;
+      label = `ЭТАП 12 / ${guide.name.toLocaleUpperCase('ru')} / ШАГ ${hintIndex + 1} ИЗ ${guide.steps.length}`;
+    }
     image.alt = 'Художественная иллюстрация действия: ' + title;
-    frame.setAttribute('aria-label', `Действие ${index + 1} из ${cards.length}. Иллюстрация: ${title}`);
-    frame.querySelector('[data-art-step-label]').textContent = `ЭТАП ${page.dataset.page.padStart(2, '0')} / ДЕЙСТВИЕ ${index + 1}`;
+    frame.setAttribute('aria-label', `${position}. Иллюстрация: ${title}`);
+    frame.querySelector('[data-art-step-label]').textContent = label;
     if (image.dataset.artKey === key && image.dataset.artState === 'ready') {
       if (Number(page.dataset.page) === activeStep) $('view-scene').disabled = closed || !image.complete || !image.naturalWidth;
       return;
