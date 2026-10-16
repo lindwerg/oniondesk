@@ -1,0 +1,325 @@
+{
+  "archive_verification": "Local git archive contains LFS pointers. Remote expanded archives are not verified.",
+  "data_layout": ".oniondesk/OnionDesk-Data (installer sibling discovery contract)",
+  "distribution": "windows-x64",
+  "lfs_policy": "All nonempty regular payload files; empty files remain normal empty Git blobs.",
+  "payload": [
+    {
+      "bytes": 2975,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/README.txt",
+      "sha256": "359fdcb226f08398d1618dfee986bd37a6c84f096678f89f3a5c063ce824abdf",
+      "type": "file"
+    },
+    {
+      "bytes": 3570,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/SOURCE-PROVENANCE.json",
+      "sha256": "353f7a3d37bc51df311f162515fbd79323a7fbe0a60ded1afaff5504182ea4b1",
+      "type": "file"
+    },
+    {
+      "bytes": 16110554,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/platform-tools_r37.0.1-darwin.zip",
+      "sha256": "ee39ad5967e95c2a07f04dbcbde96b1a0c916ba376096db5d2f498b7727a5d1d",
+      "type": "file"
+    },
+    {
+      "bytes": 9054187,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/platform-tools_r37.0.1-linux.zip",
+      "sha256": "d230f13842f60f782a8645f9c813f8f845bf36089ea7289f28c48f17979313f1",
+      "type": "file"
+    },
+    {
+      "bytes": 8044989,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/platform-tools_r37.0.1-win.zip",
+      "sha256": "45f4d63113e895ebde0c90f194099a4676b6ac653bd28d54314a9e022bbc1a99",
+      "type": "file"
+    },
+    {
+      "bytes": 111122155,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/tor-browser-android-aarch64-15.0.25.apk",
+      "sha256": "43b13364a9adc9b139f7c44279e552b7fdea07aef09a553310c7a8e5743c28b8",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/tor-browser-android-aarch64-15.0.25.apk.asc",
+      "sha256": "57438cbcb2df12e0afdd536f6697db2b34019c098322eb896eb53d24b900182d",
+      "type": "file"
+    },
+    {
+      "bytes": 108865297,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/tor-browser-android-armv7-15.0.25.apk",
+      "sha256": "d917d2c13f4580c225eeced9c22bfcd2b7aa8290992615ee42c3be50624a8aef",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/tor-browser-android-armv7-15.0.25.apk.asc",
+      "sha256": "c692a3d074babf4f74bc8a042cad4ad6ca6418a9d84fb20f5e73af7eea3f6b6d",
+      "type": "file"
+    },
+    {
+      "bytes": 112518728,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/tor-browser-android-x86_64-15.0.25.apk",
+      "sha256": "9f7934ea3a4e68a6e405f04febcd55e6a5a87d112b221b9aac89c6d1bc77597e",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/tor-browser-android-x86_64-15.0.25.apk.asc",
+      "sha256": "a10345ef8f0a20a53d6b81f9d4b27c018e99f172485a71e9f5ebb1ee88ad90a0",
+      "type": "file"
+    },
+    {
+      "bytes": 39452,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Android/tor-browser-developers.key",
+      "sha256": "7cec103d0be11b608f61850143101e56f0ba45383b61f44835300ff54ef93032",
+      "type": "file"
+    },
+    {
+      "bytes": 27128480,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Feather/feather-2.8.1-arm64.AppImage",
+      "sha256": "ed6e8e885539ee2a76e49ef6cbbeda8586959ae5ad30432f102669a83081aecd",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Feather/feather-2.8.1-arm64.AppImage.asc",
+      "sha256": "935a24807ae3b1572c28400223b8624e6204005f2484fe825226ba4f7bdf1890",
+      "type": "file"
+    },
+    {
+      "bytes": 30459335,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Feather/feather-2.8.1-linux.zip",
+      "sha256": "4779c57e9443f7755add3c2414447d1593ebe06998e39a9f765deab5bd64c466",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Feather/feather-2.8.1-linux.zip.asc",
+      "sha256": "f648a80903bcd40917dddb8eec26d4b340b0eee9e87094e66ceb7debe98b5294",
+      "type": "file"
+    },
+    {
+      "bytes": 24130420,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Feather/feather-2.8.1-mac-arm64.zip",
+      "sha256": "a35f19be74ca59bad96f7331d3ca8e4f56ec47e82c193f5fc50ddbebce017233",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Feather/feather-2.8.1-mac-arm64.zip.asc",
+      "sha256": "b0ec5e783e12988dcedf8518c8c63889d836fda1bf42573c856734e68d15f799",
+      "type": "file"
+    },
+    {
+      "bytes": 26764453,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Feather/feather-2.8.1-win.zip",
+      "sha256": "7ce53d73605d007d062a1636ec727fa7f151c5c08248122056c7d4224bd200f3",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Feather/feather-2.8.1-win.zip.asc",
+      "sha256": "5cafdf23a27d65308d1b9c0a56ebe5303bb140979972c98d75cdcb34d50c7ade",
+      "type": "file"
+    },
+    {
+      "bytes": 2882,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Feather/hashes-2.8.1.txt",
+      "sha256": "0d3a92b54eeb48e06ae4326fa713610565fb2f1264d0ef77346ae8b30cc62097",
+      "type": "file"
+    },
+    {
+      "bytes": 5438,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Monero/binaryfate.asc",
+      "sha256": "7dcb19c87d41a4399b4877054111f7dbfd30531545678bc2be218bd56903904c",
+      "type": "file"
+    },
+    {
+      "bytes": 3041,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Monero/hashes.txt",
+      "sha256": "a6acc804b7d7b7df920445e2498830ab17224e8206d2799f03538876754ad568",
+      "type": "file"
+    },
+    {
+      "bytes": 74763123,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Monero/monero-linux-armv8-v0.18.5.3.tar.bz2",
+      "sha256": "1490114f795ad2f67f57bc8d167c3e2539e9f173fc46f02f70ef4abf685f8c66",
+      "type": "file"
+    },
+    {
+      "bytes": 85026860,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Monero/monero-linux-x64-v0.18.5.3.tar.bz2",
+      "sha256": "3333d0e04c9cbe3023e7e2b6dd369c407f36bb8df5b05fb0a19d7685b3d56dfc",
+      "type": "file"
+    },
+    {
+      "bytes": 70624775,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Monero/monero-mac-armv8-v0.18.5.3.tar.bz2",
+      "sha256": "7a083ed2e2499dc25ac046ce7ef740c11183bdf4ac92460ffe503a5be46a54ab",
+      "type": "file"
+    },
+    {
+      "bytes": 89532682,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/Monero/monero-win-x64-v0.18.5.3.zip",
+      "sha256": "f58f8f803f0141c77f40f327c516e4721f61d112084eb3d6644028cb9680b82a",
+      "type": "file"
+    },
+    {
+      "bytes": 1495,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/licenses/Feather-BSD-3-Clause.txt",
+      "sha256": "cda7a6df24e5e3d69b33c15261c9630f6d7f9787832a3e9a3788237fa6020b26",
+      "type": "file"
+    },
+    {
+      "bytes": 1112,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/licenses/Feather-SOURCES.txt",
+      "sha256": "cfc46a7a0f2fa7d9a461df37b7319faa2e259562533b3dbad608dd1074b5ecb2",
+      "type": "file"
+    },
+    {
+      "bytes": 1537,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/licenses/Feather-about.txt",
+      "sha256": "3cf4d023c0258de0f1108966f1449ecdcfb05d127928274ddcb7abdb036542ef",
+      "type": "file"
+    },
+    {
+      "bytes": 1272,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/licenses/Feather-acknowledgements.txt",
+      "sha256": "1dad485903e27f6266f10591eb6c70d5bf59115e2db8474af5924812f33be6dc",
+      "type": "file"
+    },
+    {
+      "bytes": 2121,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/manifest.json",
+      "sha256": "670ee0580d6a1fe9138ebb3dac3ae9f258b78261a0a0676c4ba40e85dcd64cb9",
+      "type": "file"
+    },
+    {
+      "bytes": 3139,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/publisher-keys/featherwallet.asc",
+      "sha256": "bc01e20d05f84827191486f62c606deda454e6b28926e91061f264c40e158250",
+      "type": "file"
+    },
+    {
+      "bytes": 1383243,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/publisher-keys/tails-signing.key",
+      "sha256": "c1f19b5ece12d8562fb40313a2d8a41bb6ac47dea4d94dbbbbc606ab66a1ca37",
+      "type": "file"
+    },
+    {
+      "bytes": 39452,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/publisher-keys/tor-browser-developers.key",
+      "sha256": "7cec103d0be11b608f61850143101e56f0ba45383b61f44835300ff54ef93032",
+      "type": "file"
+    },
+    {
+      "bytes": 1889533952,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/tails/tails-amd64-7.15.img",
+      "sha256": "2bad37833f2e44abbf68646a460759c26d1fc32589c2e0437099743bc6b6197b",
+      "type": "file"
+    },
+    {
+      "bytes": 228,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/tails/tails-amd64-7.15.img.sig",
+      "sha256": "99ad6a16e3bd1c2717a95f5a9ca9b822f9867a7c8a5c16ad334d30ef5fae612d",
+      "type": "file"
+    },
+    {
+      "bytes": 137994120,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/tor-browser/tor-browser-linux-x86_64-15.0.25.tar.xz",
+      "sha256": "37432d6f4d9b1f1190ba2cfbbd4ab9dad5ccd52c14aa47a21795d08273f4a165",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/tor-browser/tor-browser-linux-x86_64-15.0.25.tar.xz.asc",
+      "sha256": "d318920393b2c297b06ed4d0a2e7b45e42436e3f0ad7215a4dbec3b82b6c2eff",
+      "type": "file"
+    },
+    {
+      "bytes": 176943035,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/tor-browser/tor-browser-macos-15.0.25.dmg",
+      "sha256": "4771ad39f84323e60c1966b270a743c9a23f437569aca36dbb93988919c1a7ae",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/tor-browser/tor-browser-macos-15.0.25.dmg.asc",
+      "sha256": "b1e94539e1385a5d5da363462d173f40c840cc44153c406e7f76148859b4c4a7",
+      "type": "file"
+    },
+    {
+      "bytes": 113637768,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/tor-browser/tor-browser-windows-x86_64-portable-15.0.25.exe",
+      "sha256": "948f79f7312c7b62dffeb1d65a51d49ea6bcb22b47b271fdd2edee9d5e22d561",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "mode": "100644",
+      "path": ".oniondesk/OnionDesk-Data/tor-browser/tor-browser-windows-x86_64-portable-15.0.25.exe.asc",
+      "sha256": "5e9da290109d34a32af2aba2609c868be0ab551bf08d985c82190705b8a5c484",
+      "type": "file"
+    },
+    {
+      "bytes": 171404949,
+      "mode": "100644",
+      "path": "OnionDesk-Windows.exe",
+      "sha256": "f6694299789ee49b603969c55d661d0ec77991ffddb6f456109a42347a3ecd0a",
+      "type": "file"
+    },
+    {
+      "bytes": 41306455,
+      "mode": "100644",
+      "path": "Руководство.pdf",
+      "sha256": "70ce1ff2d9e70071d7a499863f721e5f157bb579603492dff83469fd4d364b14",
+      "type": "file"
+    }
+  ],
+  "schema_version": 1,
+  "status": "LOCAL_ONLY_NOT_UPLOADED"
+}
