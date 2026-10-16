@@ -1,9 +1,9 @@
 {
   "schema": 3,
-  "status": "Reviewed V5 source export with owner-approved GPLv3; six media assets actual remote readback PASS; native delivery remains separately gated",
+  "status": "Owner-approved GPLv3; media and native-bootstrap corresponding-source assets actual private Release readback PASS; native binary delivery remains separately gated",
   "policy": "Explicit reviewed source classes only; no user data, raw logs, downloaded executable payloads or disk images",
   "baseline": "v5-frozen16-ui3-art32-data43",
-  "tree_sha256_excluding_this_manifest": "c9fc39ab9333e80b270eb31ac1a2500f712af680121d685e788b8988ffb571cf",
+  "tree_sha256_excluding_this_manifest": "3a0208dea54acd62a5bf066c60f7311cd82219cb338ed3cdaa65b59c31eec11c",
   "allowlisted_source_tree_sha256": "1ebf8a462bbdca580db726b71feb9351ad35d3b1107d7c13237d33f75f5eaba6",
   "files": [
     {
@@ -23,8 +23,8 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 9471,
-      "sha256": "c6d024ef3498822411d2d129bedb6a6cda55a78694e91a5b34f7cbd8e38ade2c"
+      "bytes": 10639,
+      "sha256": "b2597df3b1332f365b52b5384c0640a539e4b04f1569b99315c3c736fb4c2a6e"
     },
     {
       "path": "LICENSE",
@@ -89,8 +89,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 12736,
-      "sha256": "d6007215c376f203a3ac472e990c7e72554878bca0524869edf41b67917ecce5"
+      "bytes": 13226,
+      "sha256": "d7cde4fc3ad2aa5b053aa1c86177824e0da7c5c65e9237addea7929372d37082"
     },
     {
       "path": "SECURITY.md",
@@ -1209,8 +1209,8 @@
     },
     {
       "path": "docs/DOWNLOADS.md",
-      "bytes": 9907,
-      "sha256": "6966c6de4d3a24477b26a895f6208a95d8fa572eb8d83db7123667d6a7fdf493"
+      "bytes": 12071,
+      "sha256": "6c86326d987536dd6447ee3df3e97fbfb82ba089d77ca260db59bdd53c40b744"
     },
     {
       "path": "docs/EXPORT-POLICY.md",
@@ -1229,8 +1229,8 @@
     },
     {
       "path": "docs/LICENSES.md",
-      "bytes": 4102,
-      "sha256": "34b37de402dde2cc1f9cba4861fecb252252047d416f62f9a2fd726607f8a2c6"
+      "bytes": 4954,
+      "sha256": "c418ee9694acd8970a7149c370cbde972d7e884563abc71123946716dad89dca"
     },
     {
       "path": "docs/MONERO-USDT.md",
@@ -1264,8 +1264,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 16606,
-      "sha256": "e1171c75955cb52e962527054f44d2d13afe6a81e2ce0382632768eda83a4862"
+      "bytes": 18755,
+      "sha256": "95b97d7fb8167b34f82e75d0e333dcae67c7ffd35faa93493fda2b44491ee819"
     },
     {
       "path": "docs/WEBSITES.md",

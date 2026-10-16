@@ -18,6 +18,8 @@
   <a href="docs/DOWNLOADS.md#linux-arm64"><img src="docs/images/download-linux-arm64.svg" alt="Linux ARM64 — статус проверки загрузки и ограничения Tor Browser" width="270"></a>
 </p>
 
+**Linux ARM64:** OnionDesk можно открыть для подготовки и просмотра инструкций. В этом выпуске этап с официальным Tor Browser недоступен. Для полного маршрута используйте компьютер Intel/AMD x86-64 или поддерживаемый Mac.
+
 Для закрытого выпуска нужен аккаунт GitHub с доступом к этому репозиторию. Полный комплект рассчитан на запуск готовой программы без Python и самостоятельной сборки. Материалы для знакомства уже опубликованы в выпуске v5. [Первое открытие и ограничения каждой ОС](docs/DOWNLOADS.md).
 
 ## 01 · Что это за сервис
@@ -74,8 +76,8 @@ OnionDesk ведёт по настройке этого доступа чере�
 |---|---|
 | Windows x64 | `OnionDesk-Windows.exe`, затем созданный ярлык OnionDesk |
 | Mac Apple Silicon, macOS 15+ | `OnionDesk.app`; порядок первого открытия — в [инструкции для Mac](docs/DOWNLOADS.md#macos) |
-| Linux Intel / AMD x64 | `OnionDesk-Linux-x64` |
-| Linux ARM64 | `OnionDesk-Linux-ARM64`; полный маршрут Tor Browser пока не покрыт |
+| Linux Intel / AMD x64 | `OnionDesk-Linux-x64`; для Tor Browser нужен обычный Linux Desktop с GTK3 |
+| Linux ARM64 | `OnionDesk-Linux-ARM64` — подготовка и инструкции; этап Tor Browser на этой архитектуре недоступен |
 
 Сохраняйте комплект целиком. Папка `.oniondesk` рядом с Windows- и Linux-программами содержит необходимые ресурсы и может быть скрыта проводником. В Mac-приложении ресурсы встроены. **Файлы исходного кода в верхней части GitHub для установки не нужны.**
 
