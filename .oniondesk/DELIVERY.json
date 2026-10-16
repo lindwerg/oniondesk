@@ -1,0 +1,486 @@
+{
+  "archive_verification": "LOCAL_POINTER_ONLY; no remote materialized download verified",
+  "compiled_manifest_sha256": "09ae996ff86f97c1e38fdfb6b9e38cc7618e365ae4279d8fd806c4f7bee963d0",
+  "corresponding_source": {
+    "scope": "bootstrap engine, native wrappers, producer and build recipes; not full runtime/Core source",
+    "sha256": "72be43a42e70f0eda28ee5246855eb631e38d5b9abf81d1c599ac9c11081fedf",
+    "url": "https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-native-bootstrap-source-20261017.tar.gz"
+  },
+  "directories": [],
+  "distribution": "windows-x64",
+  "frozen_source_sha256": {
+    "engine": "c75806bf6818ccea1e3022c3d8db018631566478bf3c8d20f25cb488f0a4eba1",
+    "linux": "dc72c8f67c66da472aad8ed6057e382bc54553c481f707a267b326c5b7516806",
+    "macos": "fd2c866997f0c1d6f876929038e2cd9657358c8b8de328874c3bbf37171756f1",
+    "windows": "942b907590f9d6ac1540462bf46e45d56ac910f5799fd3cab77accdac59a94ec"
+  },
+  "lfs_policy": "All transport blobs and regular payload files >= 100 MiB; ordinary Git blobs remain < 100 MiB.",
+  "payload": [
+    {
+      "bytes": 35149,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/licenses/OnionDesk-GPLv3.txt",
+      "permissions": "0o644",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "type": "file"
+    },
+    {
+      "bytes": 16577,
+      "lfs": false,
+      "mode": "100644",
+      "path": ".oniondesk/manifests/windows-x64.json",
+      "permissions": "0o644",
+      "sha256": "09ae996ff86f97c1e38fdfb6b9e38cc7618e365ae4279d8fd806c4f7bee963d0",
+      "type": "file"
+    },
+    {
+      "bytes": 536870912,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/042c88bc70aa6979b90043fc8998b0a2c7ffc2dcd68667c0cb1fda8fff8e6c87",
+      "permissions": "0o644",
+      "sha256": "042c88bc70aa6979b90043fc8998b0a2c7ffc2dcd68667c0cb1fda8fff8e6c87",
+      "type": "file"
+    },
+    {
+      "bytes": 2882,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/0d3a92b54eeb48e06ae4326fa713610565fb2f1264d0ef77346ae8b30cc62097",
+      "permissions": "0o644",
+      "sha256": "0d3a92b54eeb48e06ae4326fa713610565fb2f1264d0ef77346ae8b30cc62097",
+      "type": "file"
+    },
+    {
+      "bytes": 74763123,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/1490114f795ad2f67f57bc8d167c3e2539e9f173fc46f02f70ef4abf685f8c66",
+      "permissions": "0o644",
+      "sha256": "1490114f795ad2f67f57bc8d167c3e2539e9f173fc46f02f70ef4abf685f8c66",
+      "type": "file"
+    },
+    {
+      "bytes": 1272,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/1dad485903e27f6266f10591eb6c70d5bf59115e2db8474af5924812f33be6dc",
+      "permissions": "0o644",
+      "sha256": "1dad485903e27f6266f10591eb6c70d5bf59115e2db8474af5924812f33be6dc",
+      "type": "file"
+    },
+    {
+      "bytes": 85026860,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/3333d0e04c9cbe3023e7e2b6dd369c407f36bb8df5b05fb0a19d7685b3d56dfc",
+      "permissions": "0o644",
+      "sha256": "3333d0e04c9cbe3023e7e2b6dd369c407f36bb8df5b05fb0a19d7685b3d56dfc",
+      "type": "file"
+    },
+    {
+      "bytes": 3570,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/353f7a3d37bc51df311f162515fbd79323a7fbe0a60ded1afaff5504182ea4b1",
+      "permissions": "0o644",
+      "sha256": "353f7a3d37bc51df311f162515fbd79323a7fbe0a60ded1afaff5504182ea4b1",
+      "type": "file"
+    },
+    {
+      "bytes": 2975,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/359fdcb226f08398d1618dfee986bd37a6c84f096678f89f3a5c063ce824abdf",
+      "permissions": "0o644",
+      "sha256": "359fdcb226f08398d1618dfee986bd37a6c84f096678f89f3a5c063ce824abdf",
+      "type": "file"
+    },
+    {
+      "bytes": 137994120,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/37432d6f4d9b1f1190ba2cfbbd4ab9dad5ccd52c14aa47a21795d08273f4a165",
+      "permissions": "0o644",
+      "sha256": "37432d6f4d9b1f1190ba2cfbbd4ab9dad5ccd52c14aa47a21795d08273f4a165",
+      "type": "file"
+    },
+    {
+      "bytes": 1537,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/3cf4d023c0258de0f1108966f1449ecdcfb05d127928274ddcb7abdb036542ef",
+      "permissions": "0o644",
+      "sha256": "3cf4d023c0258de0f1108966f1449ecdcfb05d127928274ddcb7abdb036542ef",
+      "type": "file"
+    },
+    {
+      "bytes": 111122155,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/43b13364a9adc9b139f7c44279e552b7fdea07aef09a553310c7a8e5743c28b8",
+      "permissions": "0o644",
+      "sha256": "43b13364a9adc9b139f7c44279e552b7fdea07aef09a553310c7a8e5743c28b8",
+      "type": "file"
+    },
+    {
+      "bytes": 8044989,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/45f4d63113e895ebde0c90f194099a4676b6ac653bd28d54314a9e022bbc1a99",
+      "permissions": "0o644",
+      "sha256": "45f4d63113e895ebde0c90f194099a4676b6ac653bd28d54314a9e022bbc1a99",
+      "type": "file"
+    },
+    {
+      "bytes": 176943035,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/4771ad39f84323e60c1966b270a743c9a23f437569aca36dbb93988919c1a7ae",
+      "permissions": "0o644",
+      "sha256": "4771ad39f84323e60c1966b270a743c9a23f437569aca36dbb93988919c1a7ae",
+      "type": "file"
+    },
+    {
+      "bytes": 30459335,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/4779c57e9443f7755add3c2414447d1593ebe06998e39a9f765deab5bd64c466",
+      "permissions": "0o644",
+      "sha256": "4779c57e9443f7755add3c2414447d1593ebe06998e39a9f765deab5bd64c466",
+      "type": "file"
+    },
+    {
+      "bytes": 536870912,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/4f8cd56721c3c99155d782a64de31315a27f47cdef110bd6af928f729844fa7f",
+      "permissions": "0o644",
+      "sha256": "4f8cd56721c3c99155d782a64de31315a27f47cdef110bd6af928f729844fa7f",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/57438cbcb2df12e0afdd536f6697db2b34019c098322eb896eb53d24b900182d",
+      "permissions": "0o644",
+      "sha256": "57438cbcb2df12e0afdd536f6697db2b34019c098322eb896eb53d24b900182d",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/5cafdf23a27d65308d1b9c0a56ebe5303bb140979972c98d75cdcb34d50c7ade",
+      "permissions": "0o644",
+      "sha256": "5cafdf23a27d65308d1b9c0a56ebe5303bb140979972c98d75cdcb34d50c7ade",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/5e9da290109d34a32af2aba2609c868be0ab551bf08d985c82190705b8a5c484",
+      "permissions": "0o644",
+      "sha256": "5e9da290109d34a32af2aba2609c868be0ab551bf08d985c82190705b8a5c484",
+      "type": "file"
+    },
+    {
+      "bytes": 2121,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/670ee0580d6a1fe9138ebb3dac3ae9f258b78261a0a0676c4ba40e85dcd64cb9",
+      "permissions": "0o644",
+      "sha256": "670ee0580d6a1fe9138ebb3dac3ae9f258b78261a0a0676c4ba40e85dcd64cb9",
+      "type": "file"
+    },
+    {
+      "bytes": 41306455,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/70ce1ff2d9e70071d7a499863f721e5f157bb579603492dff83469fd4d364b14",
+      "permissions": "0o644",
+      "sha256": "70ce1ff2d9e70071d7a499863f721e5f157bb579603492dff83469fd4d364b14",
+      "type": "file"
+    },
+    {
+      "bytes": 70624775,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/7a083ed2e2499dc25ac046ce7ef740c11183bdf4ac92460ffe503a5be46a54ab",
+      "permissions": "0o644",
+      "sha256": "7a083ed2e2499dc25ac046ce7ef740c11183bdf4ac92460ffe503a5be46a54ab",
+      "type": "file"
+    },
+    {
+      "bytes": 26764453,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/7ce53d73605d007d062a1636ec727fa7f151c5c08248122056c7d4224bd200f3",
+      "permissions": "0o644",
+      "sha256": "7ce53d73605d007d062a1636ec727fa7f151c5c08248122056c7d4224bd200f3",
+      "type": "file"
+    },
+    {
+      "bytes": 39452,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/7cec103d0be11b608f61850143101e56f0ba45383b61f44835300ff54ef93032",
+      "permissions": "0o644",
+      "sha256": "7cec103d0be11b608f61850143101e56f0ba45383b61f44835300ff54ef93032",
+      "type": "file"
+    },
+    {
+      "bytes": 5438,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/7dcb19c87d41a4399b4877054111f7dbfd30531545678bc2be218bd56903904c",
+      "permissions": "0o644",
+      "sha256": "7dcb19c87d41a4399b4877054111f7dbfd30531545678bc2be218bd56903904c",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/935a24807ae3b1572c28400223b8624e6204005f2484fe825226ba4f7bdf1890",
+      "permissions": "0o644",
+      "sha256": "935a24807ae3b1572c28400223b8624e6204005f2484fe825226ba4f7bdf1890",
+      "type": "file"
+    },
+    {
+      "bytes": 113637768,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/948f79f7312c7b62dffeb1d65a51d49ea6bcb22b47b271fdd2edee9d5e22d561",
+      "permissions": "0o644",
+      "sha256": "948f79f7312c7b62dffeb1d65a51d49ea6bcb22b47b271fdd2edee9d5e22d561",
+      "type": "file"
+    },
+    {
+      "bytes": 228,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/99ad6a16e3bd1c2717a95f5a9ca9b822f9867a7c8a5c16ad334d30ef5fae612d",
+      "permissions": "0o644",
+      "sha256": "99ad6a16e3bd1c2717a95f5a9ca9b822f9867a7c8a5c16ad334d30ef5fae612d",
+      "type": "file"
+    },
+    {
+      "bytes": 112518728,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/9f7934ea3a4e68a6e405f04febcd55e6a5a87d112b221b9aac89c6d1bc77597e",
+      "permissions": "0o644",
+      "sha256": "9f7934ea3a4e68a6e405f04febcd55e6a5a87d112b221b9aac89c6d1bc77597e",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/a10345ef8f0a20a53d6b81f9d4b27c018e99f172485a71e9f5ebb1ee88ad90a0",
+      "permissions": "0o644",
+      "sha256": "a10345ef8f0a20a53d6b81f9d4b27c018e99f172485a71e9f5ebb1ee88ad90a0",
+      "type": "file"
+    },
+    {
+      "bytes": 230765248,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/a234b82b6fdb96fb0fc4d37592d7f355bb67c0a23d448cc3f9727fbecbebbb41",
+      "permissions": "0o644",
+      "sha256": "a234b82b6fdb96fb0fc4d37592d7f355bb67c0a23d448cc3f9727fbecbebbb41",
+      "type": "file"
+    },
+    {
+      "bytes": 24130420,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/a35f19be74ca59bad96f7331d3ca8e4f56ec47e82c193f5fc50ddbebce017233",
+      "permissions": "0o644",
+      "sha256": "a35f19be74ca59bad96f7331d3ca8e4f56ec47e82c193f5fc50ddbebce017233",
+      "type": "file"
+    },
+    {
+      "bytes": 3041,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/a6acc804b7d7b7df920445e2498830ab17224e8206d2799f03538876754ad568",
+      "permissions": "0o644",
+      "sha256": "a6acc804b7d7b7df920445e2498830ab17224e8206d2799f03538876754ad568",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/b0ec5e783e12988dcedf8518c8c63889d836fda1bf42573c856734e68d15f799",
+      "permissions": "0o644",
+      "sha256": "b0ec5e783e12988dcedf8518c8c63889d836fda1bf42573c856734e68d15f799",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/b1e94539e1385a5d5da363462d173f40c840cc44153c406e7f76148859b4c4a7",
+      "permissions": "0o644",
+      "sha256": "b1e94539e1385a5d5da363462d173f40c840cc44153c406e7f76148859b4c4a7",
+      "type": "file"
+    },
+    {
+      "bytes": 3139,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/bc01e20d05f84827191486f62c606deda454e6b28926e91061f264c40e158250",
+      "permissions": "0o644",
+      "sha256": "bc01e20d05f84827191486f62c606deda454e6b28926e91061f264c40e158250",
+      "type": "file"
+    },
+    {
+      "bytes": 1383243,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/c1f19b5ece12d8562fb40313a2d8a41bb6ac47dea4d94dbbbbc606ab66a1ca37",
+      "permissions": "0o644",
+      "sha256": "c1f19b5ece12d8562fb40313a2d8a41bb6ac47dea4d94dbbbbc606ab66a1ca37",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/c692a3d074babf4f74bc8a042cad4ad6ca6418a9d84fb20f5e73af7eea3f6b6d",
+      "permissions": "0o644",
+      "sha256": "c692a3d074babf4f74bc8a042cad4ad6ca6418a9d84fb20f5e73af7eea3f6b6d",
+      "type": "file"
+    },
+    {
+      "bytes": 1495,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/cda7a6df24e5e3d69b33c15261c9630f6d7f9787832a3e9a3788237fa6020b26",
+      "permissions": "0o644",
+      "sha256": "cda7a6df24e5e3d69b33c15261c9630f6d7f9787832a3e9a3788237fa6020b26",
+      "type": "file"
+    },
+    {
+      "bytes": 1112,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/cfc46a7a0f2fa7d9a461df37b7319faa2e259562533b3dbad608dd1074b5ecb2",
+      "permissions": "0o644",
+      "sha256": "cfc46a7a0f2fa7d9a461df37b7319faa2e259562533b3dbad608dd1074b5ecb2",
+      "type": "file"
+    },
+    {
+      "bytes": 9054187,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/d230f13842f60f782a8645f9c813f8f845bf36089ea7289f28c48f17979313f1",
+      "permissions": "0o644",
+      "sha256": "d230f13842f60f782a8645f9c813f8f845bf36089ea7289f28c48f17979313f1",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/d318920393b2c297b06ed4d0a2e7b45e42436e3f0ad7215a4dbec3b82b6c2eff",
+      "permissions": "0o644",
+      "sha256": "d318920393b2c297b06ed4d0a2e7b45e42436e3f0ad7215a4dbec3b82b6c2eff",
+      "type": "file"
+    },
+    {
+      "bytes": 108865297,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/d917d2c13f4580c225eeced9c22bfcd2b7aa8290992615ee42c3be50624a8aef",
+      "permissions": "0o644",
+      "sha256": "d917d2c13f4580c225eeced9c22bfcd2b7aa8290992615ee42c3be50624a8aef",
+      "type": "file"
+    },
+    {
+      "bytes": 27128480,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/ed6e8e885539ee2a76e49ef6cbbeda8586959ae5ad30432f102669a83081aecd",
+      "permissions": "0o644",
+      "sha256": "ed6e8e885539ee2a76e49ef6cbbeda8586959ae5ad30432f102669a83081aecd",
+      "type": "file"
+    },
+    {
+      "bytes": 536870912,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/ed72f0e9225a0e403b929ea4f7372394cf5669d903e90c16702f7eaf55c3eb04",
+      "permissions": "0o644",
+      "sha256": "ed72f0e9225a0e403b929ea4f7372394cf5669d903e90c16702f7eaf55c3eb04",
+      "type": "file"
+    },
+    {
+      "bytes": 16110554,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/ee39ad5967e95c2a07f04dbcbde96b1a0c916ba376096db5d2f498b7727a5d1d",
+      "permissions": "0o644",
+      "sha256": "ee39ad5967e95c2a07f04dbcbde96b1a0c916ba376096db5d2f498b7727a5d1d",
+      "type": "file"
+    },
+    {
+      "bytes": 278921216,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/f407a20e38f989a22fc16918709099bfa22822e20a10558fb4fd9c79763a5d9e",
+      "permissions": "0o644",
+      "sha256": "f407a20e38f989a22fc16918709099bfa22822e20a10558fb4fd9c79763a5d9e",
+      "type": "file"
+    },
+    {
+      "bytes": 89532682,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/f58f8f803f0141c77f40f327c516e4721f61d112084eb3d6644028cb9680b82a",
+      "permissions": "0o644",
+      "sha256": "f58f8f803f0141c77f40f327c516e4721f61d112084eb3d6644028cb9680b82a",
+      "type": "file"
+    },
+    {
+      "bytes": 833,
+      "lfs": true,
+      "mode": "100644",
+      "path": ".oniondesk/transport/blobs/f648a80903bcd40917dddb8eec26d4b340b0eee9e87094e66ceb7debe98b5294",
+      "permissions": "0o644",
+      "sha256": "f648a80903bcd40917dddb8eec26d4b340b0eee9e87094e66ceb7debe98b5294",
+      "type": "file"
+    },
+    {
+      "bytes": 2938880,
+      "lfs": false,
+      "mode": "100755",
+      "path": "OnionDesk-Windows.exe",
+      "permissions": "0o755",
+      "sha256": "40194812153fa00d20aaa41d40a10fb4c038087064199742bc09515c9b48da64",
+      "type": "file"
+    },
+    {
+      "bytes": 215850794,
+      "lfs": true,
+      "mode": "100644",
+      "path": "Руководство.pdf",
+      "permissions": "0o644",
+      "sha256": "5e448b58da9983ef06e3b9f0c676f88ab16934905870ad5f6cb7f52124066843",
+      "type": "file"
+    }
+  ],
+  "schema": 1,
+  "status": "LOCAL_ONLY_NOT_UPLOADED",
+  "transport_pool": {
+    "logical_bytes": 3385786451,
+    "objects": 47,
+    "prefix": ".oniondesk/transport/blobs/"
+  }
+}
