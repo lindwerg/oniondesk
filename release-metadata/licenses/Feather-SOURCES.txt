@@ -1,0 +1,14 @@
+Feather Wallet 2.8.1 — unmodified official release binaries.
+Version and release platforms checked on 2026-10-16; this is a build-date check.
+Official release: https://featherwallet.org/download/
+Official release mirror and hashes: https://github.com/feather-wallet/feather/releases/tag/2.8.1
+Source release: https://featherwallet.org/files/releases/source/feather-2.8.1.tar.gz
+Release source repository: https://github.com/feather-wallet/feather/tree/2.8.1
+Feather copyright and redistribution license: Feather-BSD-3-Clause.txt
+Upstream About and acknowledgements: Feather-about.txt, Feather-acknowledgements.txt
+Official publisher key fingerprint: 8185 E158 A333 30C7 FD61 BC0D 1F76 E155 CEFB A71C
+Independent published fingerprint: https://docs.featherwallet.org/guides/release-signing-key
+Portable mode: https://docs.featherwallet.org/guides/portable-mode
+No background software downloads or automatic updates are performed by OnionDesk.
+The bundled executable is copied without modification into the encrypted store.
+All wallet restoration and payments require the user's own explicit actions in Feather.

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Рабочие столы — OnionDesk</title>
+<style>
+body{font:18px/1.5 system-ui,sans-serif;color:#f4f7f9;background:#122027;margin:0;padding:32px 18px}main{max-width:650px;margin:5vh auto;background:#1a3039;border:1px solid #526b77;border-radius:14px;padding:28px}h1{font-size:28px;margin-top:0}.desktop{display:block;padding:18px 22px;margin:18px 0;border-radius:8px;background:#b8ead3;color:#11281d;font-weight:650;text-decoration:none}.desktop small{display:block;font-size:16px;font-weight:400}button{font:inherit;padding:12px 20px;color:#f4f7f9;background:#304a55;border:1px solid #98b3bd;border-radius:7px;cursor:pointer}a:focus-visible,button:focus-visible{outline:3px solid #ffd77f;outline-offset:3px}.notice{border-left:4px solid #ffd77f;padding-left:16px}
+</style>
+<main>
+<h1>Выберите рабочий стол</h1>
+<a class="desktop" href="/novnc/vnc.html?autoconnect=1&amp;resize=scale&amp;path=/ws/workstation">Рабочий стол<small>Whonix-Workstation: браузер и приложения</small></a>
+<a class="desktop" href="/novnc/vnc.html?autoconnect=1&amp;resize=scale&amp;path=/ws/gateway">Настройка Tor<small>Whonix-Gateway: настройки подключения</small></a>
+<p class="notice">Перед выходом заблокируйте экран внутри каждой открытой виртуальной машины и закройте все окна её рабочего стола. Выход ниже запрещает новые подключения, но уже открытый рабочий стол может продолжить работать.</p>
+<form action="/logout" method="post">
+<input type="hidden" name="csrf" value="{{CSRF}}">
+<button type="submit">Выйти из вебсеанса</button>
+</form>
+<p>Вебсеанс действует до 8 часов. Перезапуск службы входа завершает все вебсеансы.</p>
+</main>
+</html>

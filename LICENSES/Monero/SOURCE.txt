@@ -1,0 +1,5 @@
+Monero 0.18.5.3
+https://www.getmonero.org/downloads/
+https://github.com/monero-project/monero/tree/v0.18.5.3
+Unmodified official command-line archives; only monero-wallet-rpc is extracted at runtime.
+Archive authentication: signed hashes.txt, binaryFate 81AC591FE9C4B65C5806AFC3F0AF4D462A0BDF92.

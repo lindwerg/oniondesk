@@ -1,0 +1,75 @@
+{
+  "verified_on": "2026-10-15",
+  "tor_version": "15.0.25",
+  "platform_tools_version": "37.0.1",
+  "tor_primary_fingerprint": "EF6E286DDA85EA2A4BA7DE684E2C6E8793298290",
+  "mirror_authority": "https://support.torproject.org/tor-browser/getting-started/downloading/",
+  "tls_verification": true,
+  "apk_gpg_verified": true,
+  "google_repository": "https://dl.google.com/android/repository/repository2-1.xml",
+  "google_repository_sha1_matched": true,
+  "linux_arm64": "No official Google platform-tools Linux ARM64 archive published; USB installer fails closed.",
+  "assets": [
+    {
+      "path": "Android/tor-browser-android-armv7-15.0.25.apk.asc",
+      "size_bytes": 833,
+      "sha256": "c692a3d074babf4f74bc8a042cad4ad6ca6418a9d84fb20f5e73af7eea3f6b6d",
+      "url": "https://dist.torproject.org/torbrowser/15.0.25/tor-browser-android-armv7-15.0.25.apk.asc"
+    },
+    {
+      "path": "Android/tor-browser-android-aarch64-15.0.25.apk.asc",
+      "size_bytes": 833,
+      "sha256": "57438cbcb2df12e0afdd536f6697db2b34019c098322eb896eb53d24b900182d",
+      "url": "https://dist.torproject.org/torbrowser/15.0.25/tor-browser-android-aarch64-15.0.25.apk.asc"
+    },
+    {
+      "path": "Android/tor-browser-android-aarch64-15.0.25.apk",
+      "size_bytes": 111122155,
+      "sha256": "43b13364a9adc9b139f7c44279e552b7fdea07aef09a553310c7a8e5743c28b8",
+      "url": "https://tor.eff.org/dist/torbrowser/15.0.25/tor-browser-android-aarch64-15.0.25.apk"
+    },
+    {
+      "path": "Android/platform-tools_r37.0.1-linux.zip",
+      "size_bytes": 9054187,
+      "sha256": "d230f13842f60f782a8645f9c813f8f845bf36089ea7289f28c48f17979313f1",
+      "url": "https://dl.google.com/android/repository/platform-tools_r37.0.1-linux.zip"
+    },
+    {
+      "path": "Android/platform-tools_r37.0.1-darwin.zip",
+      "size_bytes": 16110554,
+      "sha256": "ee39ad5967e95c2a07f04dbcbde96b1a0c916ba376096db5d2f498b7727a5d1d",
+      "url": "https://dl.google.com/android/repository/platform-tools_r37.0.1-darwin.zip"
+    },
+    {
+      "path": "Android/tor-browser-android-armv7-15.0.25.apk",
+      "size_bytes": 108865297,
+      "sha256": "d917d2c13f4580c225eeced9c22bfcd2b7aa8290992615ee42c3be50624a8aef",
+      "url": "https://tor.eff.org/dist/torbrowser/15.0.25/tor-browser-android-armv7-15.0.25.apk"
+    },
+    {
+      "path": "Android/tor-browser-android-x86_64-15.0.25.apk.asc",
+      "size_bytes": 833,
+      "sha256": "a10345ef8f0a20a53d6b81f9d4b27c018e99f172485a71e9f5ebb1ee88ad90a0",
+      "url": "https://dist.torproject.org/torbrowser/15.0.25/tor-browser-android-x86_64-15.0.25.apk.asc"
+    },
+    {
+      "path": "Android/platform-tools_r37.0.1-win.zip",
+      "size_bytes": 8044989,
+      "sha256": "45f4d63113e895ebde0c90f194099a4676b6ac653bd28d54314a9e022bbc1a99",
+      "url": "https://dl.google.com/android/repository/platform-tools_r37.0.1-win.zip"
+    },
+    {
+      "path": "Android/tor-browser-android-x86_64-15.0.25.apk",
+      "size_bytes": 112518728,
+      "sha256": "9f7934ea3a4e68a6e405f04febcd55e6a5a87d112b221b9aac89c6d1bc77597e",
+      "url": "https://tor.eff.org/dist/torbrowser/15.0.25/tor-browser-android-x86_64-15.0.25.apk"
+    },
+    {
+      "path": "Android/tor-browser-developers.key",
+      "size_bytes": 39452,
+      "sha256": "7cec103d0be11b608f61850143101e56f0ba45383b61f44835300ff54ef93032",
+      "url": "https://support.torproject.org/tor-browser/getting-started/verifying-tor-browser/",
+      "note": "Identical pinned public key already supplied by desktop Tor bundle; primary fingerprint verified independently with GnuPG."
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "status": "LOCAL DRAFT; root privacy approval required before push",
+  "images": [
+    {
+      "id": "tor-first-connect",
+      "file": "tor-macos/00-first-connect.png",
+      "bytes": 419086,
+      "sha256": "18864e5c7edc4e907bb2dd41e31558070d8dcc3fb4eb8a567dfda17b5630a1ba",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tor-browser-ready",
+      "file": "tor-macos/01-browser-ready.png",
+      "bytes": 652282,
+      "sha256": "307af1eb91e12b4071f7e51a81869acce513341fcb2d55c8c1d09c39a1e05dca",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-preparing",
+      "file": "tails-first-boot-preparing.png",
+      "bytes": 5266,
+      "sha256": "9d4134d3f51c4a5ad5598f486359fe26fb4b16e324c931b3b911bd169fca9987",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-boot",
+      "file": "tails-emulator-usb-boot-menu.png",
+      "bytes": 3691,
+      "sha256": "f28536bb50da32057a1a7c50e3bfa841c1c8f9650ea3c624ab043f5a6a7fa3b0",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-welcome",
+      "file": "tails-welcome-russian.png",
+      "bytes": 69775,
+      "sha256": "9d4accfc15744b37200b5a082d74fdc23edabbf810cf990c2418263e6625dc1a",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-network",
+      "file": "tails-desktop-network.png",
+      "bytes": 36555,
+      "sha256": "d3da089aab09a60822243b43c4e34d5a7924d7247a35485b15dd0d93e05c7beb",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-tor",
+      "file": "tails-tor-connection-options.png",
+      "bytes": 74560,
+      "sha256": "f16200ace68f947da04de5df0e090fe2ed202ff63003ac9cda20cdef6a4ad44f",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-tor-auto",
+      "file": "tails-tor-connection-auto.png",
+      "bytes": 77795,
+      "sha256": "719d3be77dfb504274bd575de899c1a00632adce38a0a4dce5ee6c6f4dde2957",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-tor-bridge",
+      "file": "tails-tor-custom-obfs4.png",
+      "bytes": 87524,
+      "sha256": "55793d00ccc61dd915386003c29dd60d325e88a5b98b49de6aa257db2f766ffb",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-tor-success",
+      "file": "tails-tor-connected.png",
+      "bytes": 49864,
+      "sha256": "4b74d7c23773ae6b7323aeaec14dbd19f7d348c31e879ac6b1adeae5167e700e",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-tor-failure",
+      "file": "tails-tor-direct-failed-bridges-pending.png",
+      "bytes": 45481,
+      "sha256": "57040bce703301792ef6ed25dce10ee99ce24a66a2bfef0c85d5fb5defc2e927",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "tails-about",
+      "file": "tails-about-version.png",
+      "bytes": 82422,
+      "sha256": "66362533523c189fda401606498c4709c1ec16a6d8305f33c45512c54782d4ef",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "whonix-gateway",
+      "file": "whonix/06-gateway-tor-bootstrap.png",
+      "bytes": 230708,
+      "sha256": "8ff4ce76c231fd6107a6e071004315c770c601e98d05e006d3b4932f6d04c070",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "whonix-grub",
+      "file": "whonix/27-auto-workstation-maintenance.png",
+      "bytes": 12274,
+      "sha256": "385042a3fb85cacabae2b72aee5ae671fb2f84c7cf56cd9bc040674a1de01619",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "whonix-maintenance",
+      "file": "whonix/28-auto-workstation-setup.png",
+      "bytes": 80837,
+      "sha256": "c74ff556a1d778a69c682fe2b2adf3fc1be6d13ffff471f6e9cae9ba5eff2962",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "whonix-terminal",
+      "file": "whonix/30-auto-setup-readonly-status.png",
+      "bytes": 198868,
+      "sha256": "1e27aeefc2b46d70b13f5a4a7d994f007423e8660b71c9192b981b7dbffd14b4",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "whonix-telegram",
+      "file": "whonix/32-auto-telegram-launch.png",
+      "bytes": 58232,
+      "sha256": "e03d00ae4ece92ec2eeed2caa252b4e4c88c26aa0406c4a2f2b918490dfc0714",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "whonix-metadata",
+      "file": "whonix/33-auto-clean-files.png",
+      "bytes": 108492,
+      "sha256": "060411767cb215bfc7d39e77f2e79163a5868d51cc0666731bf40aae41b15d87",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "provider-privex",
+      "file": "providers/privex-order-form.png",
+      "bytes": 154958,
+      "sha256": "89029a4a45a1ae9458bf15ea830e445d908d655cff13ee21aa43e9195b871d70",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "provider-privex-xmr",
+      "file": "providers/privex-xmr-terms.png",
+      "bytes": 533793,
+      "sha256": "c27751056bed08729f32bc85f18f8435a03c936e2d132d4f2c436c2c213e6958",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "provider-nice-registration",
+      "file": "providers/nicevps-registration.png",
+      "bytes": 201976,
+      "sha256": "f59b133d4e936ff325c29df30b61dadeaff94f1beb32bfd0599a8d27a4503b1e",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "provider-nice-payment",
+      "file": "providers/nicevps-monero-payment.png",
+      "bytes": 266338,
+      "sha256": "32cdec24fd802f91711722786beb011d2eaafcbda941a115ed26281ea88a1d9c",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "provider-nice-config",
+      "file": "providers/nicevps-config.png",
+      "bytes": 236708,
+      "sha256": "ff985f23e3c8d998e0a5bd02dc6aceb3cbd97cf10916b1159fd13943b4a603fd",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "crypton-api",
+      "file": "providers/crypton-api-docs.png",
+      "bytes": 312764,
+      "sha256": "470fc5e782d6d7decc8caaefde847341e802d77a50c5cf5c8f38ff3a8be25eba",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "metadata-picker",
+      "file": "metadata/01-select-file.png",
+      "bytes": 29895,
+      "sha256": "90213c45f11d5f0dfc29e2a9c72da32b542e8f77720d8535cc41b8976369a164",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    },
+    {
+      "id": "metadata-result",
+      "file": "metadata/02-clean-result.png",
+      "bytes": 49823,
+      "sha256": "dff6d62d3a91d72580e61db09304d2166cc55c64e6296a4642b2c0ccfbf99862",
+      "review": "Visual privacy review: no owner personal information or operational secrets. Lab/default system values remain."
+    }
+  ]
+}

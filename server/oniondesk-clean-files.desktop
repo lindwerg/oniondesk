@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Очистить данные файла
+Comment=Создать проверенную копию JPEG, PNG, PDF или DOCX без стандартных метаданных
+Exec=/usr/bin/python3 -I -B /usr/local/lib/oniondesk/clean-files.py
+Icon=edit-clear
+Terminal=false
+Categories=Utility;Security;
+StartupNotify=true

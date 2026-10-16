@@ -1,0 +1,19 @@
+{
+  "font": "JetBrains Mono",
+  "version": "2.304",
+  "license": "SIL Open Font License 1.1",
+  "license_url": "https://github.com/JetBrains/JetBrainsMono/blob/v2.304/OFL.txt",
+  "files": [
+    {
+      "filename": "JetBrainsMono-Regular.ttf",
+      "sha256": "a0bf60ef0f83c5ed4d7a75d45838548b1f6873372dfac88f71804491898d138f",
+      "source": "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/v2.304/fonts/ttf/JetBrainsMono-Regular.ttf"
+    },
+    {
+      "filename": "JetBrainsMono-Bold.ttf",
+      "sha256": "5590990c82e097397517f275f430af4546e1c45cff408bde4255dad142479dcb",
+      "source": "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/v2.304/fonts/ttf/JetBrainsMono-Bold.ttf"
+    }
+  ],
+  "runtime_requests": "local only"
+}

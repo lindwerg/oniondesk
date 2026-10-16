@@ -1,0 +1,33 @@
+All publisher archives/APKs are redistributed byte-for-byte, without modification.
+Runtime extracts only adb and the original packaged runtime libraries from the
+verified Google archive. Complete vendor notices remain in every original archive and the
+platform-tools_r37.0.1-*-NOTICE.txt copies in this directory.
+
+Google Platform Tools 37.0.1:
+https://developer.android.com/tools/releases/platform-tools
+https://dl.google.com/android/repository/repository2-1.xml
+https://android.googlesource.com/platform/packages/modules/adb/
+SDK terms: GOOGLE-ANDROID-SDK-LICENSE.txt
+Component licensing: corresponding original NOTICE.txt (Apache-2.0 and vendor
+notices; consult the included notices for exact individual component terms).
+
+Tor Browser for Android 15.0.25:
+https://www.torproject.org/download/#android
+https://dist.torproject.org/torbrowser/15.0.25/
+Official mirror authority, explicitly naming EFF:
+https://support.torproject.org/tor-browser/getting-started/downloading/
+Actual APK download transport:
+https://tor.eff.org/dist/torbrowser/15.0.25/
+Detached signatures were fetched from dist.torproject.org through Tor, with normal
+HTTPS certificate validation. All APKs passed the Tor Browser Developers primary
+fingerprint EF6E286DDA85EA2A4BA7DE684E2C6E8793298290 GnuPG verification.
+License notices extracted unchanged from the original APK's assets/omni.ja:
+TOR-BROWSER-LICENSE.html. Further component notices remain inside the original APK.
+Source release:
+https://dist.torproject.org/torbrowser/15.0.25/src-firefox-tor-browser-140.17.0esr-15.0-1-build6.tar.xz
+Source repositories:
+https://gitlab.torproject.org/tpo/applications/tor-browser
+https://gitlab.torproject.org/tpo/applications/tor-browser-build
+
+SOURCE-PROVENANCE.json under OnionDesk-Data/Android records actual asset URLs,
+lengths, and SHA-256. Compiled client/phone_catalog.py pins execution independently.

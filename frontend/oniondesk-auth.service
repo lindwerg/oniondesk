@@ -1,0 +1,45 @@
+[Unit]
+Description=OnionDesk password and TOTP authentication
+After=network.target
+
+[Service]
+Type=simple
+User=oniondesk-auth
+Group=oniondesk-auth
+LoadCredential=auth.json:/etc/oniondesk/auth.json
+ExecStart=/usr/bin/python3 /opt/oniondesk/frontend/auth.py serve --config %d/auth.json --state-dir /var/lib/oniondesk/auth
+WorkingDirectory=/opt/oniondesk/frontend
+StateDirectory=oniondesk/auth
+StateDirectoryMode=0700
+UMask=0077
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=5
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_INET AF_UNIX
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+ReadWritePaths=/var/lib/oniondesk/auth
+IPAddressDeny=any
+IPAddressAllow=localhost
+MemoryMax=384M
+TasksMax=64
+
+[Install]
+WantedBy=multi-user.target

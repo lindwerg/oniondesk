@@ -1,0 +1,26 @@
+[Unit]
+Description=OnionDesk automatic verified metadata-cleaned download copies
+ConditionUser=user
+ConditionKernelCommandLine=!boot-role=sysmaint
+ConditionKernelCommandLine=!systemd.unit=sysmaint-boot.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -I -B /usr/local/lib/oniondesk/auto-cleaner.py --watch
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+RestrictSUIDSGID=true
+SystemCallArchitectures=native
+MemoryMax=1536M
+CPUQuota=50%
+TasksMax=128
+Restart=on-failure
+RestartSec=15
+KillMode=control-group
+TimeoutStopSec=80
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=default.target

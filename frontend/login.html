@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Вход — OnionDesk</title>
+<style>
+body{font:18px/1.5 system-ui,sans-serif;color:#f4f7f9;background:#122027;margin:0;padding:32px 18px}main{max-width:480px;margin:5vh auto;background:#1a3039;border:1px solid #526b77;border-radius:14px;padding:28px}h1{font-size:28px;margin-top:0}label{display:block;margin-top:18px}input{box-sizing:border-box;width:100%;font:inherit;padding:12px;background:#fff;color:#152a32;border:2px solid #7896a3;border-radius:7px}button{font:inherit;font-weight:650;padding:13px 22px;background:#b8ead3;color:#11281d;border:0;border-radius:7px;margin-top:24px;cursor:pointer}input:focus-visible,button:focus-visible{outline:3px solid #ffd77f;outline-offset:3px}.message{color:#ffdda6}small{display:block;color:#d3e1e8;margin-top:18px}
+</style>
+<main>
+<h1>Вход в рабочий стол</h1>
+<p>Введите пароль и шестизначный код из приложения-аутентификатора.</p>
+<p class="message" role="status">{{MESSAGE}}</p>
+<form action="/login" method="post">
+<input type="hidden" name="csrf" value="{{CSRF}}">
+<label for="login">Имя пользователя</label>
+<input id="login" name="login" autocomplete="username" value="owner" required maxlength="32" autofocus>
+<label for="password">Пароль</label>
+<input id="password" name="password" type="password" autocomplete="current-password" required maxlength="256">
+<label for="otp">Код подтверждения</label>
+<input id="otp" name="otp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" required maxlength="6" placeholder="123456">
+<button type="submit">Войти</button>
+</form>
+<small>Открывайте только свой сохранённый адрес .onion. Код меняется каждые 30 секунд; уже использованный код не подойдёт для нового входа.</small>
+</main>
+</html>

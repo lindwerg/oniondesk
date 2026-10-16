@@ -1,0 +1,15 @@
+[Unit]
+Description=OnionDesk one-time Workstation preparation in SYSMAINT
+After=sysmaint-boot.target sysmaint-boot.service network.target
+ConditionKernelCommandLine=boot-role=sysmaint
+ConditionPathExists=!/var/lib/oniondesk/setup.complete
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/oniondesk-workstation-setup
+TimeoutStartSec=45min
+StandardOutput=journal+console
+StandardError=inherit
+
+[Install]
+WantedBy=sysmaint-boot.target

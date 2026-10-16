@@ -1,0 +1,116 @@
+{
+  "schema": 2,
+  "status": "Source v3 backend manifest and frozen UI retained; runtime inputs match; export-only Linux builder resource path delta requires focused review",
+  "backend_manifest_sha256": "951448663e0c2fc72761171934dfe7d5a90f446f9ffba246b1fee919522382db",
+  "source_backend": [
+    {
+      "path": "client/app.py",
+      "sha256": "ca45770b3c90736cc845e57c5d9e462f8f4fa4eb57a17ac04003da4011241c16"
+    },
+    {
+      "path": "client/wallet_controller.py",
+      "sha256": "b8a08b344aca8ae525943040344974827c412039046636f1f9906fc16cb5ab49"
+    },
+    {
+      "path": "client/wallet_vault.py",
+      "sha256": "c507df96c7bb4619d4758799a9ceee98271aa21a1bd9a20a7410ad88f59b93f0"
+    },
+    {
+      "path": "client/feather_bundle.py",
+      "sha256": "b66b213eb0dde5c0654a26de6cde0805f0eeb6f0bff71550bbbd2f4332e8490e"
+    },
+    {
+      "path": "client/feather_catalog.py",
+      "sha256": "f0236358a8e5e302384f6801a449ac1e768af9962eb603a248f4d113dd0495a0"
+    },
+    {
+      "path": "client/build-native.py",
+      "sha256": "c9735b7b954ea3bb0d00595466677221e7693113e7984ba5ec5b4fb005b8b1aa"
+    },
+    {
+      "path": "client/build-linux.py",
+      "sha256": "864f834c475ecf28a0eb4b7f45a3de8ecbff4dd9366867bb9325315522309e6f"
+    },
+    {
+      "path": "client/build-windows.py",
+      "sha256": "7d9b12d2be5c7565acfdf1fc7eedefb2311f6b495b33f314d7de65bd91e693b5"
+    },
+    {
+      "path": "client/build-windows-data.py",
+      "sha256": "c2cb00e0eec07f70e9400e4bb085591acf96457d1aaa330f4bbed7586cbe5c1d"
+    }
+  ],
+  "export_backend": [
+    {
+      "path": "client/app.py",
+      "sha256": "ca45770b3c90736cc845e57c5d9e462f8f4fa4eb57a17ac04003da4011241c16",
+      "source_sha256": "ca45770b3c90736cc845e57c5d9e462f8f4fa4eb57a17ac04003da4011241c16",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/wallet_controller.py",
+      "sha256": "b8a08b344aca8ae525943040344974827c412039046636f1f9906fc16cb5ab49",
+      "source_sha256": "b8a08b344aca8ae525943040344974827c412039046636f1f9906fc16cb5ab49",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/wallet_vault.py",
+      "sha256": "c507df96c7bb4619d4758799a9ceee98271aa21a1bd9a20a7410ad88f59b93f0",
+      "source_sha256": "c507df96c7bb4619d4758799a9ceee98271aa21a1bd9a20a7410ad88f59b93f0",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/feather_bundle.py",
+      "sha256": "b66b213eb0dde5c0654a26de6cde0805f0eeb6f0bff71550bbbd2f4332e8490e",
+      "source_sha256": "b66b213eb0dde5c0654a26de6cde0805f0eeb6f0bff71550bbbd2f4332e8490e",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/feather_catalog.py",
+      "sha256": "f0236358a8e5e302384f6801a449ac1e768af9962eb603a248f4d113dd0495a0",
+      "source_sha256": "f0236358a8e5e302384f6801a449ac1e768af9962eb603a248f4d113dd0495a0",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/build-native.py",
+      "sha256": "c9735b7b954ea3bb0d00595466677221e7693113e7984ba5ec5b4fb005b8b1aa",
+      "source_sha256": "c9735b7b954ea3bb0d00595466677221e7693113e7984ba5ec5b4fb005b8b1aa",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/build-linux.py",
+      "sha256": "dbfc306f059500ca22d9cd28a591e053ea169d3c748a44082dcf383156fe765e",
+      "source_sha256": "864f834c475ecf28a0eb4b7f45a3de8ecbff4dd9366867bb9325315522309e6f",
+      "matches_reviewed_source": false
+    },
+    {
+      "path": "client/build-windows.py",
+      "sha256": "7d9b12d2be5c7565acfdf1fc7eedefb2311f6b495b33f314d7de65bd91e693b5",
+      "source_sha256": "7d9b12d2be5c7565acfdf1fc7eedefb2311f6b495b33f314d7de65bd91e693b5",
+      "matches_reviewed_source": true
+    },
+    {
+      "path": "client/build-windows-data.py",
+      "sha256": "c2cb00e0eec07f70e9400e4bb085591acf96457d1aaa330f4bbed7586cbe5c1d",
+      "source_sha256": "c2cb00e0eec07f70e9400e4bb085591acf96457d1aaa330f4bbed7586cbe5c1d",
+      "matches_reviewed_source": true
+    }
+  ],
+  "export_only_builder_adjustments": [
+    {
+      "path": "client/build-linux.py",
+      "reason": "Read runtime README from tracked client/resources rather than ignored Linux build output",
+      "source_sha256": "864f834c475ecf28a0eb4b7f45a3de8ecbff4dd9366867bb9325315522309e6f",
+      "export_sha256": "dbfc306f059500ca22d9cd28a591e053ea169d3c748a44082dcf383156fe765e",
+      "tracked_runtime_resource": {
+        "path": "client/resources/README-LINUX.md",
+        "sha256": "4c467707b2ffa67f2d61a6f949aa3143a4067f80c52219b7b937c18af646d943"
+      }
+    }
+  ],
+  "ui_sha256": {
+    "app.js": "d4246d3d5a8494ea02cfbd91b0ae3e8de9229f038f0a792b76e1381d1d173240",
+    "style.css": "b22d4d5dddae4b10bdfed9343e2e0fda259e45caf537034db420f1cf32c79ce9",
+    "index.html": "2d5b5e2845db66c477b167d1623142d34f3f3b813f224408c38b4b666bcb01ba"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "ui_sha256": {
+    "index.html": "2d5b5e2845db66c477b167d1623142d34f3f3b813f224408c38b4b666bcb01ba",
+    "app.js": "d4246d3d5a8494ea02cfbd91b0ae3e8de9229f038f0a792b76e1381d1d173240",
+    "style.css": "b22d4d5dddae4b10bdfed9343e2e0fda259e45caf537034db420f1cf32c79ce9"
+  },
+  "capture_count": 30,
+  "viewports": [
+    1280,
+    768,
+    390
+  ],
+  "errors": [],
+  "external_requests": [],
+  "previews": [
+    {
+      "file": "docs/images/hero-preview.png",
+      "bytes": 1064418,
+      "sha256": "6f5976e09e67176f8459b420f2ee91741dbed5d0594c14dcea2852d93c7feb93",
+      "state": "Synthetic public demonstration, wallet closed; no actual user data or proof of live operations"
+    },
+    {
+      "file": "docs/images/wallet-preview.png",
+      "bytes": 178037,
+      "sha256": "71771bc9c153e4ccb97d1992cb4a534a7baeeb672abfcd854150ce7c10f0e7b8",
+      "state": "Synthetic public demonstration, wallet closed; no actual user data or proof of live operations"
+    },
+    {
+      "file": "docs/images/daily-preview.png",
+      "bytes": 1017740,
+      "sha256": "c779501e31da8d791d01788265e521f3142e374f00a52d0922c7f3e9419d65f2",
+      "state": "Synthetic public demonstration, wallet closed; no actual user data or proof of live operations"
+    }
+  ]
+}

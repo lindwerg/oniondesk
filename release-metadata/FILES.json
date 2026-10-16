@@ -1,0 +1,125 @@
+{
+  "kind": "INFORMATIONAL; trust pins are compiled catalogs",
+  "files": [
+    {
+      "path": "Android/README.txt",
+      "bytes": 2975,
+      "sha256": "359fdcb226f08398d1618dfee986bd37a6c84f096678f89f3a5c063ce824abdf"
+    },
+    {
+      "path": "Android/SOURCE-PROVENANCE.json",
+      "bytes": 3570,
+      "sha256": "353f7a3d37bc51df311f162515fbd79323a7fbe0a60ded1afaff5504182ea4b1"
+    },
+    {
+      "path": "Android/tor-browser-android-aarch64-15.0.25.apk.asc",
+      "bytes": 833,
+      "sha256": "57438cbcb2df12e0afdd536f6697db2b34019c098322eb896eb53d24b900182d"
+    },
+    {
+      "path": "Android/tor-browser-android-armv7-15.0.25.apk.asc",
+      "bytes": 833,
+      "sha256": "c692a3d074babf4f74bc8a042cad4ad6ca6418a9d84fb20f5e73af7eea3f6b6d"
+    },
+    {
+      "path": "Android/tor-browser-android-x86_64-15.0.25.apk.asc",
+      "bytes": 833,
+      "sha256": "a10345ef8f0a20a53d6b81f9d4b27c018e99f172485a71e9f5ebb1ee88ad90a0"
+    },
+    {
+      "path": "Feather/feather-2.8.1-arm64.AppImage.asc",
+      "bytes": 833,
+      "sha256": "935a24807ae3b1572c28400223b8624e6204005f2484fe825226ba4f7bdf1890"
+    },
+    {
+      "path": "Feather/feather-2.8.1-linux.zip.asc",
+      "bytes": 833,
+      "sha256": "f648a80903bcd40917dddb8eec26d4b340b0eee9e87094e66ceb7debe98b5294"
+    },
+    {
+      "path": "Feather/feather-2.8.1-mac-arm64.zip.asc",
+      "bytes": 833,
+      "sha256": "b0ec5e783e12988dcedf8518c8c63889d836fda1bf42573c856734e68d15f799"
+    },
+    {
+      "path": "Feather/feather-2.8.1-win.zip.asc",
+      "bytes": 833,
+      "sha256": "5cafdf23a27d65308d1b9c0a56ebe5303bb140979972c98d75cdcb34d50c7ade"
+    },
+    {
+      "path": "Feather/hashes-2.8.1.txt",
+      "bytes": 2882,
+      "sha256": "0d3a92b54eeb48e06ae4326fa713610565fb2f1264d0ef77346ae8b30cc62097"
+    },
+    {
+      "path": "Monero/binaryfate.asc",
+      "bytes": 5438,
+      "sha256": "7dcb19c87d41a4399b4877054111f7dbfd30531545678bc2be218bd56903904c"
+    },
+    {
+      "path": "Monero/hashes.txt",
+      "bytes": 3041,
+      "sha256": "a6acc804b7d7b7df920445e2498830ab17224e8206d2799f03538876754ad568"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1357,
+      "sha256": "be7e45ddaa9414a8490bed76fc754b3f28e0059d784e50d55594273372b83a41"
+    },
+    {
+      "path": "licenses/Feather-BSD-3-Clause.txt",
+      "bytes": 1495,
+      "sha256": "cda7a6df24e5e3d69b33c15261c9630f6d7f9787832a3e9a3788237fa6020b26"
+    },
+    {
+      "path": "licenses/Feather-SOURCES.txt",
+      "bytes": 1112,
+      "sha256": "cfc46a7a0f2fa7d9a461df37b7319faa2e259562533b3dbad608dd1074b5ecb2"
+    },
+    {
+      "path": "licenses/Feather-about.txt",
+      "bytes": 1537,
+      "sha256": "3cf4d023c0258de0f1108966f1449ecdcfb05d127928274ddcb7abdb036542ef"
+    },
+    {
+      "path": "licenses/Feather-acknowledgements.txt",
+      "bytes": 1272,
+      "sha256": "1dad485903e27f6266f10591eb6c70d5bf59115e2db8474af5924812f33be6dc"
+    },
+    {
+      "path": "publisher-keys/featherwallet.asc",
+      "bytes": 3139,
+      "sha256": "bc01e20d05f84827191486f62c606deda454e6b28926e91061f264c40e158250"
+    },
+    {
+      "path": "publisher-keys/tails-signing.asc",
+      "bytes": 1383243,
+      "sha256": "c1f19b5ece12d8562fb40313a2d8a41bb6ac47dea4d94dbbbbc606ab66a1ca37"
+    },
+    {
+      "path": "publisher-keys/tor-browser-developers.asc",
+      "bytes": 39452,
+      "sha256": "7cec103d0be11b608f61850143101e56f0ba45383b61f44835300ff54ef93032"
+    },
+    {
+      "path": "tails/tails-amd64-7.15.img.sig",
+      "bytes": 228,
+      "sha256": "99ad6a16e3bd1c2717a95f5a9ca9b822f9867a7c8a5c16ad334d30ef5fae612d"
+    },
+    {
+      "path": "tor-browser/tor-browser-linux-x86_64-15.0.25.tar.xz.asc",
+      "bytes": 833,
+      "sha256": "d318920393b2c297b06ed4d0a2e7b45e42436e3f0ad7215a4dbec3b82b6c2eff"
+    },
+    {
+      "path": "tor-browser/tor-browser-macos-15.0.25.dmg.asc",
+      "bytes": 833,
+      "sha256": "b1e94539e1385a5d5da363462d173f40c840cc44153c406e7f76148859b4c4a7"
+    },
+    {
+      "path": "tor-browser/tor-browser-windows-x86_64-portable-15.0.25.exe.asc",
+      "bytes": 833,
+      "sha256": "5e9da290109d34a32af2aba2609c868be0ab551bf08d985c82190705b8a5c484"
+    }
+  ]
+}

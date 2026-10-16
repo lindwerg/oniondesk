@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OnionDesk · ваше первое задание</title>
+<link rel="preload" href="/fonts/JetBrainsMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="/fonts/JetBrainsMono-Bold.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="icon" type="image/png" href="/assets/hacker-mark.png">
+<link rel="stylesheet" href="/style.css">
+<script src="/app.js" defer></script>
+</head>
+<body data-scene="0">
+<a class="skip" href="#main">К содержимому</a><div class="app-shell">
+<aside class="sidebar" aria-label="Этапы настройки"><div class="brand">
+<img class="brand-mark" src="/assets/hacker-mark.png" width="40" height="40" alt="" aria-hidden="true"><div>ONION<span>DESK</span><small>ЛИЧНОЕ ДЕЛО / 001</small>
+</div>
+</div>
+<p class="sidebar-intro">Первое задание.<br><strong>Одно действие за раз.</strong></p>
+<section id="wallet-corner" class="wallet-corner" data-state="loading" aria-labelledby="wallet-corner-title">
+<button id="wallet-corner-toggle" class="wallet-corner-toggle" type="button" aria-expanded="false" aria-controls="wallet-corner-controls"><span class="wallet-corner-heading"><span id="wallet-corner-title">Мой кошелёк</span><span class="wallet-corner-indicator" aria-hidden="true"></span></span><span id="wallet-corner-state" class="wallet-corner-state" role="status">Проверяю файлы…</span><span class="wallet-corner-chevron" aria-hidden="true">›</span></button>
+<div id="wallet-corner-controls" class="wallet-corner-controls" hidden>
+<p id="wallet-corner-detail" class="wallet-corner-detail">Кошелёк хранится на этом компьютере.</p>
+<div class="wallet-corner-actions">
+<button id="wallet-corner-open" type="button" class="button small secondary" disabled>Открыть</button><button id="wallet-corner-words" type="button" class="button small secondary" disabled>25 слов</button><button id="wallet-corner-receive" type="button" class="button small secondary" disabled>Получить XMR</button><button id="wallet-corner-lock" type="button" class="button small secondary" disabled>Закрыть</button>
+</div>
+<details class="wallet-corner-help"><summary>Где он сохранён?</summary><p>Зашифрованное хранилище остаётся на этом компьютере после закрытия приложения. При следующем запуске откройте его тем же паролем.</p><p>Это обычный кошелёк Monero основной сети. Деньги контролируете вы: 25 английских слов позволяют восстановить тот же кошелёк в Feather или Monero GUI без OnionDesk и без его сервера.</p><p>На другое устройство, в Tails или на сервер кошелёк автоматически не переносится. Для 25 слов выберите «25 слов» и следуйте подсказке с паролем.</p><button type="button" class="button small secondary" data-action-go="3" data-action-index="1">Использовать без OnionDesk</button></details>
+</div>
+</section>
+<nav id="steps" aria-label="Этапы мастера"><div class="nav-group" role="group" aria-label="Подготовка">
+<span class="nav-group-title">Подготовка</span><button data-step="0" class="step active" aria-current="step"><span class="step-no">00</span><span>План и устройство<small>Понять, с чего начать</small></span></button><button data-step="1" class="step"><span class="step-no">01</span><span>Подключить Tor<small>Проверить соединение</small></span></button><button data-step="2" class="step"><span class="step-no">02</span><span>Создать кошелёк<small>Сохранить ключи XMR</small></span></button><button data-step="3" class="step"><span class="step-no">03</span><span>Получить XMR<small>Подготовить оплату</small></span></button><button data-step="4" class="step"><span class="step-no">04</span><span>VPN · по желанию<small>Дополнительный маршрут</small></span></button><button data-step="5" class="step"><span class="step-no">05</span><span>Записать Tails USB<small>Подготовить флешку</small></span></button>
+</div>
+<div class="nav-group" role="group" aria-label="Сервер">
+<span class="nav-group-title">Сервер</span><button data-step="6" class="step"><span class="step-no">06</span><span>Арендовать сервер<small>Выбрать отдельный компьютер</small></span></button><button data-step="7" class="step"><span class="step-no">07</span><span>Номер Telegram<small>Сохранить контроль номера</small></span></button><button data-step="8" class="step"><span class="step-no">08</span><span>Установить сервер<small>Подключение и установка</small></span></button><button data-step="9" class="step"><span class="step-no">09</span><span>Первый запуск Whonix<small>Открыть рабочий стол</small></span></button><button data-step="10" class="step"><span class="step-no">10</span><span>Сохранить доступ<small>Памятка и аудит</small></span></button>
+</div>
+<div class="nav-group" role="group" aria-label="Работа">
+<span class="nav-group-title">Работа</span><button data-step="11" class="step"><span class="step-no">11</span><span>Загрузить Tails и Tor<small>Войти с готовой флешки</small></span></button><button data-step="12" class="step"><span class="step-no">12</span><span>Ежедневный вход<small>Компьютер или телефон</small></span></button><button data-step="13" class="step"><span class="step-no">13</span><span>Очистить данные файла<small>Подготовить копию к отправке</small></span></button>
+</div></nav><div class="sidebar-footer">
+<span class="status-dot" aria-hidden="true"></span>ПРИЛОЖЕНИЕ НА ВАШЕМ УСТРОЙСТВЕ<small>Слова скрываются при переходе</small><button id="quit" class="text-button">Завершить приложение</button>
+</div>
+</aside><div class="workspace">
+<header class="topbar"><div>
+<span class="eyebrow">ОПЕРАЦИЯ «СВОЙ КАБИНЕТ»</span><p id="step-position">Этап 0 из 13 · План и устройство</p>
+</div>
+<div class="topbar-tools">
+<button id="view-scene" class="scene-button" aria-haspopup="dialog">Иллюстрация <span aria-hidden="true">↗</span></button><span class="local-badge"><span aria-hidden="true">●</span> Локальный мастер</span>
+</div></header>
+<div id="notice" class="notice" role="alert" hidden></div>
+<aside id="operation-panel" class="operation-panel" aria-label="Текущая операция" hidden><div class="operation-top">
+<div><span class="eyebrow" id="job-kind">ХОД ЗАДАНИЯ</span><p id="job-message" role="status" aria-live="polite">Начинаю…</p></div>
+<button id="cancel-job" class="button small secondary" hidden>Остановить загрузку</button>
+</div>
+<div class="operation-progress"><progress id="job-progress" max="100" aria-label="Ход операции"></progress><span id="job-status">Выполняется</span></div><details><summary>Подробности операции</summary><pre id="job-events"></pre></details></aside>
+<aside id="phone-session-panel" class="phone-session-panel" aria-labelledby="phone-session-title" hidden><div><span class="eyebrow" id="phone-session-title">USB-ПОДКЛЮЧЕНИЕ ANDROID</span><p id="phone-session-state" role="status"></p><p class="field-help">После установки выключите «Отладку по USB» на телефоне, отзовите разрешения подключённых компьютеров и отсоедините кабель.</p></div><button id="phone-close" type="button" class="button small secondary">Завершить USB-подключение</button></aside>
+<main id="main" tabindex="-1"><section class="page" data-page="0" data-scene-id="0" aria-labelledby="heading-0"><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 0: План и устройство"><img class="goal-art-image" data-goal-image="0" data-fallback-src="/assets/agent-cover.png" src="/assets/agent-cover.png" alt="Художественная иллюстрация: План и устройство" width="1536" height="1024" fetchpriority="high" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 00</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">00</span><div class="briefing-copy">
+<span class="eyebrow">00 / ПЛАН И УСТРОЙСТВО</span><h1 id="heading-0">Ваше первое тайное задание.</h1>
+<p class="lead">Открывайте Telegram на отдельном компьютере, который арендуете через интернет. Его экран будет виден на вашем ноутбуке или телефоне.</p>
+<span class="briefing-tag">ЦЕЛЬ: ПОНЯТЬ, С ЧЕГО НАЧАТЬ</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Понять, с чего начать.</p>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g00-s01" aria-labelledby="action-heading-0-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-0-0" tabindex="-1">Посмотрите, что мы собираем.</h2>
+<p><strong>Gateway</strong> отвечает за Tor, <strong>Workstation</strong> — за Telegram. Ваше устройство показывает этот удалённый экран.</p>
+<div class="three-grid">
+<article class="info-card"><span class="card-index">01 / УСТРОЙСТВО</span><h3>Ваш компьютер</h3>
+<p>С него запускается этот мастер. Для ежедневного входа нужен Tor Browser. Tails на флешке — отдельный вариант для совместимого компьютера.</p></article><article class="info-card"><span class="card-index">02 / СОЕДИНЕНИЕ</span><h3>Tor</h3>
+<p>Tor помогает скрыть ваш обычный интернет-адрес от сайта. Мастер проверит его соединение перед загрузкой и настройкой.</p></article><article class="info-card"><span class="card-index">03 / РАБОЧИЙ СТОЛ</span><h3>Сервер + Whonix</h3>
+<p>Сервер — компьютер в аренду. Whonix разделяет его на два экрана: первый отвечает за Tor, на втором вы работаете в Telegram.</p></article>
+</div>
+<div class="callout">
+<strong>Отделяем этот кабинет от личных аккаунтов.</strong><p>В этой схеме сервер оплачивается Monero, для Telegram используются отдельный номер и отдельный аккаунт, а кабинет открывается через Tor. Личные аккаунты и контакты сюда не переносим.</p><p>Эти меры снижают связь с личными реквизитами. Telegram, сервис номера и владелец сервера всё ещё могут сохранять данные. Данные Telegram останутся на арендованном компьютере; полной невидимости схема не гарантирует.</p>
+</div>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы понимаете три части маршрута: ваше устройство → Tor → удалённый рабочий стол.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Сервер здесь означает отдельный компьютер в аренду. Команды наизусть знать не нужно: мастер покажет или выполнит их.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g00-s02" aria-labelledby="action-heading-0-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-0-1" tabindex="-1">Проверьте своё устройство.</h2>
+<div class="device-card">
+<span class="device-icon" aria-hidden="true"></span><div>
+<span class="eyebrow">ОБНАРУЖЕНО</span><h2 id="device-name">Определяю устройство…</h2>
+<p id="device-message">Мастер читает только сведения о системе.</p>
+</div>
+<span class="pill">ЛОКАЛЬНАЯ ПРОВЕРКА</span>
+</div>
+<div id="apple-note" class="callout amber" hidden>
+<strong>На Mac с Apple Silicon Tails не запускается.</strong><p>Откройте Tor Browser на этом Mac — дополнительный компьютер для входа не нужен. Пропустите этапы 5 и 11, если не готовите флешку Tails для другого совместимого компьютера Intel или AMD.</p>
+</div>
+<p>Мастер запускается в обычной Windows, macOS или Linux. Tails пока запускать не нужно.</p>
+<p>Для Tails нужна флешка от 8 ГБ. Позже с неё можно загрузить этот же компьютер, если он совместим с Tails и работает на Intel или AMD. Другой компьютер нужен только если текущий несовместим, а вы хотите использовать Tails.</p>
+<p>Арендованный сервер — отдельный удалённый компьютер: флешку к нему не подключают. Android и iPhone не могут загрузить Tails; телефон пригодится для инструкции и кодов.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы выбрали Tor Browser в обычной системе или Tails на совместимом компьютере. Арендованный сервер будет отдельной частью маршрута.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если устройство не определилось, перезапустите мастер через его значок. Не выбирайте образ Tails для ARM: такого маршрута здесь нет.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions"><button type="button" class="button secondary" data-go="1">Следующий этап: Подключить Tor</button></div>
+</div></section><section class="page" data-page="1" data-scene-id="1" aria-labelledby="heading-1" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 1: Подключить Tor"><img class="goal-art-image" data-goal-image="1" data-fallback-src="/assets/steps/01-device.png" src="/assets/steps/01-device.png" alt="Художественная иллюстрация: Подключить Tor" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 01</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">01</span><div class="briefing-copy">
+<span class="eyebrow">01 / ПОДКЛЮЧИТЬ TOR</span><h1 id="heading-1">Открываем защищённый маршрут.</h1>
+<p class="lead">Сначала подготовим Tor Browser. Затем отдельная проверка подтвердит соединение мастера.</p>
+<span class="briefing-tag">ЦЕЛЬ: ПРОВЕРИТЬ СОЕДИНЕНИЕ</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Проверить соединение.</p>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g01-s01" aria-labelledby="action-heading-1-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-1-0" tabindex="-1">Выберите маршрут соединения.</h2>
+<label for="connection-choice">Как вы будете подключаться?</label><select id="connection-choice"><option value="tor">Tor с мостами — начать с этого</option>
+<option value="vpn">Сначала VPN, затем Tor — дополнительный вариант</option>
+<option value="tails">Позже войти через Tails с флешки</option></select>
+<p id="connection-advice" class="field-help route-context" role="status">Мосты помогают подключиться при блокировках. В копии Tor Browser из комплекта они уже включены.</p>
+
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Выбран порядок действий. Соединение ещё не проверено.</p>
+</div>
+<details class="action-context"><summary>Подробнее: VPN и Tails</summary><p>VPN необязателен и настраивается на этапе 4 перед Tor. В Tails используется встроенный Tor Connection; вход с готовой флешки разобран на этапе 11.</p><button type="button" class="button secondary" data-go="4">Перейти к дополнительному VPN</button></details><details class="action-help"><summary>У меня другой результат</summary><p>Если Tor не подключается, используйте встроенную настройку мостов Tor Browser. После изменения маршрута нужна новая проверка.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g01-s02" aria-labelledby="action-heading-1-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-1-1" tabindex="-1">Подготовьте Tor Browser.</h2>
+<p>Установочные файлы уже в комплекте. Не перемещайте комплект, пока идёт подготовка.</p>
+<button id="launch-tor" class="button primary">Подготовить и открыть Tor Browser</button><p id="bundle-state" class="muted" role="status">Проверяю файлы полного комплекта…</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Tor Browser подготовлен или открылся его установщик. Личный браузер не меняется.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если кнопка недоступна, прочитайте состояние комплекта выше. Если полного комплекта нет, официальный адрес можно перенести в свой браузер.</p></details><button type="button" class="button secondary" data-copy="https://www.torproject.org/download/">Копировать официальный сайт Tor</button><p class="field-help">Кнопки «Копировать…» сохраняют адрес. Вставьте его в адресную строку Tor Browser и нажмите Enter.</p></article><article class="action-card" data-inner-step="2" data-art-key="g01-s03" aria-labelledby="action-heading-1-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-1-2" tabindex="-1">Подключитесь в окне Tor Browser.</h2>
+
+<figure class="guide-shot" data-guide-shot="tor-first-connect" hidden></figure><figure class="guide-shot" data-guide-shot="tor-browser-ready" hidden></figure><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Открылась стартовая страница Tor Browser. Мастер ещё должен проверить свой маршрут отдельно.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если соединение не установилось, проверьте сеть и используйте встроенные мосты. Названия окон в Windows и Linux могут отличаться от снимков на Mac.</p></details><button type="button" class="button secondary" data-copy="https://tb-manual.torproject.org/bridges/">Копировать помощь по мостам</button></article><article class="action-card" data-inner-step="3" data-art-key="g01-s04" aria-labelledby="action-heading-1-3" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 04</span><h2 id="action-heading-1-3" tabindex="-1">Проверьте соединение мастера.</h2>
+<button id="check-tor" class="button primary">Проверить Tor</button><p id="tor-state" class="muted">Пока не проверен</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Мастер сообщил, что его соединение через Tor работает. Tor Browser остаётся открытым.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если проверка не удалась, оставьте Tor Browser открытым и дождитесь соединения. Мастер не переключается на прямой интернет. Проверка относится только к этому мастеру и текущему запуску. При подключении к серверу мастер проверит соединение ещё раз.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="0">← Предыдущий этап</button><button type="button" class="button secondary" data-go="2">Следующий этап: Создать кошелёк</button>
+</div>
+</div></section><section class="page" data-page="2" data-scene-id="2" aria-labelledby="heading-2" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 2: Создать кошелёк"><img class="goal-art-image" data-goal-image="2" data-fallback-src="/assets/steps/03-purchase.png" src="/assets/steps/03-purchase.png" alt="Художественная иллюстрация: Создать кошелёк" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 02</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">02</span><div class="briefing-copy">
+<span class="eyebrow">02 / СОЗДАТЬ КОШЕЛЁК</span><h1 id="heading-2">Ваш кошелёк. Ваши ключи.</h1>
+<p class="lead">Мастер создаст локальный кошелёк Monero в зашифрованном хранилище. Фразу восстановления сохраните сами.</p>
+<span class="briefing-tag">ЦЕЛЬ: СОХРАНИТЬ КЛЮЧИ XMR</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Сохранить ключи XMR.</p>
+</div>
+<div class="optional-row">
+<p>Кошелёк уже есть или XMR не нужен?</p>
+<button class="button ghost small" data-go="3">Пропустить этап →</button>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g02-s01" aria-labelledby="action-heading-2-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-2-0" tabindex="-1">Создайте кошелёк с отдельным паролем.</h2>
+<p>XMR — монеты Monero. Кошелёк создаётся на этом компьютере без подключения к сети.</p>
+<p>На Mac мастер создаст защищённое хранилище сам. На Windows и Linux сначала нужен уже зашифрованный носитель. Если защита не подтверждена, создание остановится.</p>
+<p class="field-help">После закрытия приложения кошелёк остаётся в том же зашифрованном хранилище на этом компьютере. В следующий раз выберите его ниже и введите прежний пароль. На другие устройства, в Tails и на сервер он автоматически не переносится.</p>
+<form id="wallet-create-form" class="wallet-form">
+<label for="wallet-password">Новый пароль кошелька — от 12 до 256 символов</label><input id="wallet-password" type="password" minlength="12" maxlength="256" autocomplete="new-password" required><label for="wallet-password-confirm">Повторите этот пароль</label><input id="wallet-password-confirm" type="password" minlength="12" maxlength="256" autocomplete="new-password" required><p class="field-help">Сохраните пароль в своём менеджере паролей. Ввод очищается сразу при отправке.</p>
+<button id="wallet-create" class="button primary" type="submit">Создать зашифрованный кошелёк</button>
+</form>
+<p id="wallet-state" class="readiness" role="status">Проверяю доступность кошелька…</p>
+<details id="wallet-existing"><summary>У меня уже есть хранилище OnionDesk</summary><label for="wallet-vault">Зашифрованное хранилище</label><select id="wallet-vault"><option value="">Хранилища ещё не найдены</option></select><form id="wallet-unlock-form">
+<label for="wallet-unlock-password">Пароль выбранного хранилища</label><input id="wallet-unlock-password" type="password" minlength="12" maxlength="256" autocomplete="off" required><button id="wallet-unlock" class="button secondary" type="submit">Открыть хранилище</button>
+</form></details><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Дождитесь сообщения операции: кошелёк создан в защищённом хранилище. Затем перейдите к записи слов.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если система не подтверждает шифрование диска, создание остановится. Используйте уже зашифрованный носитель по инструкции своей системы; мастер не форматирует диск. На Mac создаётся хранилище AES-256. На Windows и Linux мастер проверяет защиту BitLocker/LUKS; незашифрованная папка не подходит.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g02-s02" aria-labelledby="action-heading-2-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-2-1" tabindex="-1">Сохраните и проверьте 25 слов.</h2>
+<p>Кто знает эти <strong>25 английских слов</strong>, получает полный доступ к деньгам. Бумажную запись храните отдельно от устройства.</p>
+<button id="wallet-seed" type="button" class="button primary" disabled>Показать 25 слов</button><p class="field-help">Слова не раскрываются автоматически. Они исчезнут менее чем через три минуты или при скрытии страницы. Для повторного показа откройте раздел ниже и введите пароль.</p>
+<div id="wallet-seed-panel" hidden>
+<ol id="wallet-words" class="seed-grid" aria-label="25 слов восстановления"></ol>
+<form id="wallet-backup-form">
+<h3>Проверьте бумажную копию</h3>
+<p>Введите три слова из своей записи. Номера будут показаны после раскрытия фразы.</p>
+<div class="backup-answers">
+<div>
+<label id="wallet-answer-label-0" for="wallet-answer-0">Слово</label><input id="wallet-answer-0" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="32" required>
+</div>
+<div>
+<label id="wallet-answer-label-1" for="wallet-answer-1">Слово</label><input id="wallet-answer-1" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="32" required>
+</div>
+<div>
+<label id="wallet-answer-label-2" for="wallet-answer-2">Слово</label><input id="wallet-answer-2" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="32" required>
+</div>
+</div>
+<button id="wallet-confirm-backup" class="button primary" type="submit">Проверить резервную копию</button>
+</form>
+<button id="wallet-hide-seed" type="button" class="button secondary">Скрыть и забыть слова в мастере</button>
+</div>
+<p id="wallet-backup-state" role="status" class="muted">Резервная копия ещё не проверена в этом запуске.</p>
+<details id="wallet-reveal-help"><summary>Слова скрыты или кошелёк создан раньше</summary><p>Сначала откройте своё хранилище на предыдущем действии. Затем нажмите «Показать кошельки открытого хранилища», выберите кошелёк и введите пароль. После подготовки нажмите «Показать 25 слов» выше.</p>
+<button id="wallet-load" type="button" class="button secondary">Показать кошельки открытого хранилища</button><label for="wallet-select">Кошелёк</label><select id="wallet-select"><option value="">Сначала загрузите список</option></select><form id="wallet-reveal-form">
+<label for="wallet-reveal-password">Пароль кошелька</label><input id="wallet-reveal-password" type="password" minlength="12" maxlength="256" autocomplete="off" required><button id="wallet-reveal" type="submit" class="button secondary">Подготовить слова для просмотра</button>
+</form></details><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>После проверки трёх слов мастер сообщит, подтверждена ли резервная копия. Бумага с полной фразой остаётся у вас. Эти 25 английских слов восстанавливают тот же обычный кошелёк Monero без OnionDesk.</p><button type="button" class="button secondary" data-action-go="3" data-action-index="1">Использовать без OnionDesk</button>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если слова исчезли, откройте раздел «Слова скрыты или кошелёк создан раньше», выберите свой кошелёк и введите его пароль. Затем нажмите «Показать 25 слов». Не создавайте другой кошелёк вместо восстановления существующего.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g02-s03" aria-labelledby="action-heading-2-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-2-2" tabindex="-1">Перейдите к получению XMR.</h2>
+
+<p>Полную фразу и пароль храните отдельно. Файл кошелька должен оставаться на зашифрованном носителе. Завершив работу, закройте хранилище отдельной кнопкой.</p>
+<button type="button" class="button secondary" id="wallet-lock">Закрыть хранилище кошелька</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Хранилище остаётся открытым для получения адреса на следующем этапе.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если система занята файлом кошелька, закройте использующую его программу и повторите. Мастер не объявляет хранилище закрытым при ошибке. Закрытие подтверждается только успешным сообщением операции.</p></details><details><summary>Альтернатива: создать кошелёк вручную в Feather</summary><p>Это отдельный путь. Новый Feather использует 16 слов Polyseed; их нельзя путать с 25 словами встроенного кошелька Monero CLI. При этом пути получайте XMR на адрес именно альтернативного кошелька Feather. Инструкции ниже относятся только к нему.</p>
+<article><h3>1. Подготовьте личный кошелёк.</h3>
+<p>Используйте собственное доверенное устройство. На арендуемый сервер секретные ключи не переносите: его владелец может прочитать память. Удобный вариант — Feather, кошелёк Monero для Windows, macOS, Linux и Tails.</p>
+<ol>
+<li>Откройте официальный сайт Feather. Выберите свою систему и архитектуру.</li>
+<li>Пройдите проверку подписи из официальной инструкции и только затем запускайте программу. Лаунчер пока не устанавливает и не проверяет Feather автоматически.</li>
+<li>Для Tails сначала создайте Persistent Storage, перезагрузитесь и разблокируйте его; специальный AppImage Tails/Whonix сохраняйте в Persistent. Не записывайте кошелёк поверх образа Tails.</li>
+</ol>
+<button class="button small secondary" data-copy="https://featherwallet.org/download/">Копировать загрузку Feather</button><button class="text-button" data-copy="https://docs.featherwallet.org/">Инструкции по вашей системе</button><button class="text-button" data-copy="https://docs.featherwallet.org/guides/tails">Установка и проверка в Tails</button></article>
+<article><h3>2. Создайте кошелёк и сохраните восстановление.</h3>
+<ol>
+<li>В Feather выберите Create new wallet и пройдите его мастер.</li>
+<li>Запишите показанные 16 слов Polyseed на бумаге в правильном порядке. Проверьте каждое слово.</li>
+<li>Задайте длинный пароль файла кошелька. Сохраните кошелёк на зашифрованном носителе; в Tails — в разблокированном Persistent.</li>
+<li>Храните бумагу отдельно. Кто знает слова, тот может потратить деньги. Потеря слов и файла может лишить доступа навсегда.</li>
+</ol>
+<p>Слова Feather не вводятся в OnionDesk, сайты, чат поддержки или Telegram. Не делайте скриншот фразы для инструкции. Восстановление проверяйте сами в официальном кошельке до значительной суммы.</p>
+<button class="button small secondary" data-copy="https://docs.featherwallet.org/guides/create-wallet">Копировать инструкцию создания</button></article>
+<article><h3>3. Проверьте сеть кошелька.</h3>
+<p>В первом мастере Feather выберите <strong>Always over Tor</strong>. Для существующего кошелька: Settings → Network → Proxy. Обычный вариант по умолчанию разрешает начальную синхронизацию без Tor; для выбранного здесь маршрута он не подходит.</p>
+<p>Дождитесь подключения и завершения синхронизации. Через Tor она может идти долго. Если соединения нет, остановитесь и используйте помощь Feather; не переключайтесь на прямой интернет только ради скорости. В Tails внешняя сеть уже направляется через Tor самой системой.</p>
+<button class="button small secondary" data-copy="https://docs.featherwallet.org/guides/first-start">Копировать первый запуск</button></article>
+</details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="1">← Предыдущий этап</button><button type="button" class="button secondary" data-go="3">Следующий этап: Получить XMR</button>
+</div>
+</div></section><section class="page" data-page="3" data-scene-id="3" aria-labelledby="heading-3" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 3: Получить XMR"><img class="goal-art-image" data-goal-image="3" data-fallback-src="/assets/steps/03-purchase.png" src="/assets/steps/03-purchase.png" alt="Художественная иллюстрация: Получить XMR" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 03</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">03</span><div class="briefing-copy">
+<span class="eyebrow">03 / ПОЛУЧИТЬ XMR</span><h1 id="heading-3">Подготовим XMR к оплате.</h1>
+<p class="lead">Получение денег и платежи вы подтверждаете лично. Мастер показывает адрес только по вашей кнопке.</p>
+<span class="briefing-tag">ЦЕЛЬ: ПОДГОТОВИТЬ ОПЛАТУ</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Подготовить оплату.</p>
+</div>
+<div class="optional-row">
+<p>XMR уже подготовлены?</p>
+<button class="button ghost small" data-go="4">Пропустить этап →</button>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g03-s01" aria-labelledby="action-heading-3-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-3-0" tabindex="-1">Подготовьте проверенный Feather.</h2>
+<p>OnionDesk создаёт кошелёк и показывает адрес. Баланс и переводы проверяйте в самом Feather.</p>
+<p>Feather работает внутри открытого зашифрованного хранилища. На следующем действии восстановите свои 25 слов в его окне; мастер не передаёт их автоматически.</p>
+<p id="feather-version" class="muted">Проверяю версию Feather в комплекте…</p>
+<button id="feather-action" type="button" class="button primary" disabled>Подготовить Feather</button>
+<button id="feather-connect" aria-describedby="feather-network-help" type="button" class="button secondary" hidden disabled>Подключить через Tor</button>
+<p id="feather-state" class="readiness" role="status">Проверяю доступность Feather…</p>
+<p id="feather-network-help" class="field-help" hidden>Для подключения откройте Tor Browser из комплекта и дождитесь соединения. Закройте Feather через File → Quit, затем нажмите «Подключить через Tor». Дождитесь синхронизации в окне Feather; запуск ещё не подтверждает готовность платежа.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Feather открыл собственное окно. Запуск не подтверждает синхронизацию или готовность платежа. Секретные ключи на арендованный сервер не переносите.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если хранилище закрыто, первая кнопка откроет действие с выбором хранилища и вводом его пароля. Затем вернитесь сюда. Подготовка проверяет файлы и подпись; при ошибке прочитайте сообщение операции и повторите действие после устранения причины.</p><p>Перед закрытием хранилища закройте окно Feather штатной командой File → Quit. Затем нажмите «Проверить завершение Feather». Данные кошелька остаются в зашифрованном хранилище. Для Tails используйте специальную сборку и разблокированное Persistent Storage по официальной инструкции Feather.</p><button id="feather-stop" type="button" class="button secondary" hidden disabled>Проверить завершение Feather</button><button type="button" class="button small secondary" data-copy="https://docs.featherwallet.org/">Копировать официальную справку Feather</button></details></article><article class="action-card" data-inner-step="1" data-art-key="g03-s02" aria-labelledby="action-heading-3-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-3-1" tabindex="-1">Восстановите именно кошелёк своих 25 слов.</h2>
+
+<p>Это восстановление <strong>того же кошелька</strong>. Создание нового кошелька с 16 словами Polyseed откроет другой пустой кошелёк. Слова нельзя вставлять на сайт, в чат или Telegram.</p>
+<p>OnionDesk и его сервер для восстановления не нужны. Файл кошелька сохраните под паролем на зашифрованном носителе; слова вводите только в проверенную программу на своём устройстве.</p>
+<button type="button" class="button secondary" data-copy="https://docs.featherwallet.org/guides/seed-scheme">Копировать поддерживаемые форматы Feather</button>
+<button type="button" class="button secondary" data-copy="https://docs.featherwallet.org/guides/restore-from-seed">Копировать официальное восстановление</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Feather принял 25 слов Monero и продолжил восстановление вашего кошелька.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если формат 25 слов не выбран или программа не принимает запись, остановитесь и проверьте формат и порядок слов по официальной инструкции.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g03-s03" aria-labelledby="action-heading-3-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-3-2" tabindex="-1">Сохраните файл Feather на зашифрованном носителе.</h2><p>Если зашифрованного носителя пока нет, сначала подготовьте его по инструкции своей системы.</p>
+<p>В Tails используйте разблокированное <strong>Persistent Storage</strong>.</p>
+<p>Сохраните пароль отдельно. Файл Feather — дополнительная локальная копия тех же ключей; бумажные 25 слов всё равно нужны для восстановления.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Файл Feather сохранён на выбранном зашифрованном носителе с отдельным паролем.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если вы не уверены, что выбранное место зашифровано, пока не сохраняйте там ключи. Следуйте штатной инструкции BitLocker, LUKS или зашифрованного образа macOS.</p></details></article><article class="action-card" data-inner-step="3" data-art-key="g03-s04" aria-labelledby="action-heading-3-3" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 04</span><h2 id="action-heading-3-3" tabindex="-1">Выберите соединение Feather через Tor.</h2>
+<p>Первый мастер: <strong>Always over Tor</strong>. Уже созданный кошелёк: <strong>Settings → Network → Proxy</strong>. Загрузка истории через Tor может занять время.</p>
+<p>В Tails внешняя сеть направляется через Tor самой системой.</p>
+<button type="button" class="button secondary" data-copy="https://docs.featherwallet.org/guides/first-start">Копировать первый запуск Feather</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Feather подключён через Tor и завершил синхронизацию. Только Feather проверяет баланс и возможность перевода.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>При ошибке соединения используйте официальную помощь Feather. Не переходите на прямой интернет только ради скорости.</p></details></article><article class="action-card" data-inner-step="4" data-art-key="g03-s05" aria-labelledby="action-heading-3-4" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 05</span><h2 id="action-heading-3-4" tabindex="-1">Покажите и сверьте адрес того же кошелька.</h2>
+<p>Отправителю XMR передают только адрес получения. Фразу, пароль и секретные ключи не передавайте. Хранилище сначала откройте на этапе 2. Для нового отдельного кошелька Feather используйте его собственный адрес <strong>Receive</strong>.</p>
+<button id="wallet-receive-list" type="button" class="button primary">Показать адрес моего кошелька</button><div id="wallet-receive-panel" hidden>
+<label for="wallet-receive-select">Кошелёк в открытом хранилище</label><select id="wallet-receive-select"></select><label for="wallet-address">Адрес получения Monero (XMR)</label><textarea id="wallet-address" rows="4" readonly autocomplete="off" spellcheck="false"></textarea><button id="wallet-copy-address" type="button" class="button secondary">Копировать адрес XMR</button><p id="wallet-receive-backup" class="field-help"></p>
+</div>
+<p class="muted">Список и адрес загружаются только по этой кнопке. Баланс и переводы встроенный мастер не выполняет.</p>
+
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Основные адреса совпадают: восстановлен тот же кошелёк. Только после сверки передавайте адрес отправителю.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если адреса отличаются, остановитесь и проверьте восстановление и выбранный основной адрес. Если встроенный адрес не появился, откройте хранилище на этапе 2. Адрес относится к основной сети Monero. Для отдельного нового кошелька Feather используйте его собственный адрес.</p></details><details><summary>Адрес в Feather</summary><article><h3>4. Получите адрес для входящего XMR.</h3>
+<ol>
+<li>В Feather откройте Receive. Для отдельной цели используйте новый адрес получения из этого кошелька.</li>
+<li>Скопируйте адрес полностью. При переносе сверяйте начало и конец; для крупного перевода проверьте весь адрес.</li>
+<li>Этот адрес передаётся отправителю XMR. Он не является фразой восстановления; слова и ключи отправителю не нужны.</li>
+</ol>
+<p>Не путайте адрес вашего кошелька с адресом счёта продавца. Начните с небольшой проверочной суммы. Зачисление и возможность потратить деньги появляются после сетевых подтверждений и разблокировки.</p>
+<button class="button small secondary" data-copy="https://docs.featherwallet.org/guides/receive-transaction">Копировать получение XMR</button></article>
+</details></article><article class="action-card" data-inner-step="5" data-art-key="g03-s06" aria-labelledby="action-heading-3-5" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 06</span><h2 id="action-heading-3-5" tabindex="-1">Выберите, откуда получить XMR.</h2>
+<article><h3>5. Где взять первые XMR.</h3>
+<p>До перевода проверьте комиссии, требования к документам и доступность сервиса в вашей стране. При обмене другой криптовалюты отдельно сверьте условия получения XMR.</p>
+<details><summary>Что нужно проверить перед сделкой Haveno</summary><p><strong>Haveno</strong> — программа для прямых сделок между людьми через Tor. Сам проект не управляет и не гарантирует коммерческие сети. Перед выбором сети отдельно проверяются её оператор, подпись приложения, доступные предложения, арбитраж и условия.</p></details>
+<p>В Haveno обычная сделка требует XMR для залога и комиссии, поэтому для первых XMR этот путь может не подойти. Ни один вариант здесь не гарантирует покупку без сведений о вас.</p>
+<button class="button small secondary" data-copy="https://docs.haveno.exchange/users/getting-started/">Копировать начало работы Haveno</button><button class="text-button" data-copy="https://haveno.exchange/faq/">Прочитать ограничения и залог</button></article>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы сами выбрали источник и ознакомились с его правилами. Лаунчер не регистрирует аккаунт и не оформляет покупку.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если сервис требует проверку личности, условия изменились или вы сомневаетесь в контрагенте, остановитесь. Новый кошелёк не удаляет сведения о покупке. Банковские реквизиты известны банку и получателю; новый кошелёк эту связь не отменяет. Мастер не покупает XMR за вас.</p></details></article><article class="action-card" data-inner-step="6" data-art-key="g03-s07" aria-labelledby="action-heading-3-6" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 07</span><h2 id="action-heading-3-6" tabindex="-1">Проверьте небольшое поступление.</h2>
+<p>Перед получением сверьте весь адрес кошелька.</p>
+<p>Встроенный мастер не показывает баланс. Для наблюдения и отправки используйте официальный кошелёк на своём доверенном устройстве; не переносите секретные ключи на арендованный сервер.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>В Feather полученная сумма доступна для использования.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если платежа ещё нет, проверьте адрес и статус в кошельке или сервисе отправителя. Не передавайте слова восстановления в поддержку. Для доступного баланса нужны сетевые подтверждения и разблокировка поступления. Секретные ключи на арендованный сервер не переносите.</p></details></article><article class="action-card" data-inner-step="7" data-art-key="g03-s08" aria-labelledby="action-heading-3-7" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 08</span><h2 id="action-heading-3-7" tabindex="-1">Получите новый счёт продавца в XMR.</h2>
+<p>Это подсказка на случай, когда вы уже выбрали VPN, сервер или номер и получили счёт. Если счёта ещё нет, пока никому не переводите деньги: продолжите к следующим этапам и выберите услугу. К этой подсказке можно вернуться кнопкой «Нужна помощь с оплатой XMR» рядом с покупкой.</p>
+<button type="button" class="button secondary" data-go="4">Счёта пока нет — к выбору услуг →</button>
+<p>В актуальном счёте должны быть <strong>Monero / XMR</strong>, адрес, точная сумма и срок действия. Сохраните номер заказа.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Если услуга уже выбрана, у вас актуальный счёт продавца в XMR. Его адрес отличается от вашего адреса получения. Если счёта нет, вы продолжаете выбор услуги без перевода денег.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если счёт истёк или реквизиты изменились, получите новый счёт на официальном сайте. Не переводите по случайной ссылке из чата.</p></details></article><article class="action-card" data-inner-step="8" data-art-key="g03-s09" aria-labelledby="action-heading-3-8" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 09</span><h2 id="action-heading-3-8" tabindex="-1">Подтвердите оплату самостоятельно в Feather.</h2>
+<p>Выполняйте это действие только для выбранной вами услуги и действующего счёта. Если счёта нет или покупать пока не решили, перейдите дальше без оплаты.</p>
+<p>В восстановленном кошельке откройте <strong>Send</strong>: в <strong>Pay to</strong> — адрес счёта, в <strong>Amount</strong> — точную сумму XMR. <strong>Send all</strong> не выбирайте, если это не требуется.</p>
+<p>Проверьте комиссию. Переводы обычно необратимы; мастер не подписывает платёж за вас.</p>
+<button type="button" class="button secondary" data-copy="https://docs.featherwallet.org/guides/send-transaction">Копировать отправку XMR в Feather</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>После вашего подтверждения Feather показывает отправленный платёж с нужными реквизитами.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если средств недостаточно или адрес не совпал, не подтверждайте перевод. Закрытый встроенный мастер не влияет на подтверждения сети.</p></details></article><article class="action-card" data-inner-step="9" data-art-key="g03-s10" aria-labelledby="action-heading-3-9" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 10</span><h2 id="action-heading-3-9" tabindex="-1">Дождитесь статуса оплаты у продавца.</h2>
+<p>Сохраните номер заказа и подтверждение. Если ничего не оплачивали, продолжайте к следующим этапам. Секретные ключи и слова восстановления продавцу не нужны.</p>
+<p>Отсутствие проверки документов не означает, что банк, обменник, сервис или устройство не сохраняют сведения.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Продавец подтвердил оплату своего счёта в заказе. Мастер не проверяет покупку и не оформляет аккаунт.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если оплата не засчитана, сверяйте статус и реквизиты через официальный сервис продавца и свой кошелёк. Не платите повторно вслепую.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="2">← Предыдущий этап</button><button type="button" class="button secondary" data-go="4">Следующий этап: VPN · по желанию</button>
+</div>
+</div></section><section class="page" data-page="4" data-scene-id="4" aria-labelledby="heading-4" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 4: VPN · по желанию"><img class="goal-art-image" data-goal-image="4" data-fallback-src="/assets/steps/01-device.png" src="/assets/steps/01-device.png" alt="Художественная иллюстрация: VPN · по желанию" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 04</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">04</span><div class="briefing-copy">
+<span class="eyebrow">04 / VPN · ПО ЖЕЛАНИЮ</span><h1 id="heading-4">VPN — отдельное решение.</h1>
+<p class="lead">Этот этап можно пропустить. Для начала достаточно Tor с мостами.</p>
+<span class="briefing-tag">ЦЕЛЬ: ДОПОЛНИТЕЛЬНЫЙ МАРШРУТ</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Дополнительный маршрут.</p>
+</div>
+<div class="optional-row">
+<p>VPN необязателен.</p>
+<button class="button ghost small" data-go="5">Пропустить этап →</button>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g04-s01" aria-labelledby="action-heading-4-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-4-0" tabindex="-1">Решите, нужен ли вам VPN.</h2>
+<p>VPN меняет того, кому вы доверяете соединение. Сервис видит ваш исходный адрес; аккаунт и оплата могут связывать действия с вами. Tor Project советует новичкам начинать без сочетания VPN и Tor.</p>
+<p>Если Tor с мостами работает и дополнительный VPN не нужен, этот этап можно пропустить.</p>
+<button type="button" class="button secondary" data-copy="https://support.torproject.org/tor-browser/general/vpn-with-tor/">Копировать объяснение Tor Project</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы решили, нужен ли дополнительный VPN. Это личный выбор, а не автоматическая проверка защиты.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Внутри Tails используйте Tor Connection. В Workstation VPN не устанавливайте: её сеть уже проходит через Gateway.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g04-s02" aria-labelledby="action-heading-4-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-4-1" tabindex="-1">Создайте аккаунт выбранного VPN.</h2>
+
+<p>По опубликованным условиям номер создаётся без имени, телефона и почты. Это описание условий сервиса, а не гарантия анонимности.</p>
+<button type="button" class="button secondary" data-copy="https://mullvad.net/en">Копировать сайт Mullvad</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>У вас сохранён номер своего аккаунта. Мастер его не получает.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Проверяйте адрес сайта и актуальные условия. Не отправляйте номер аккаунта в чат поддержки без необходимости.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g04-s03" aria-labelledby="action-heading-4-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-4-2" tabindex="-1">Добавьте время на свой аккаунт.</h2>
+<p>Перед оплатой сверьте сумму, валюту, адрес и срок счёта. Перевод подтверждайте самостоятельно.</p>
+<button type="button" class="button secondary" data-action-go="3" data-action-index="7">Нужна помощь с оплатой XMR</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Сервис сам подтверждает пополнение времени. Мастер не проверяет и не оплачивает счёт.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если пополнение не видно, проверьте подтверждения перевода в кошельке и инструкцию сервиса. Не оплачивайте старый истёкший счёт.</p></details></article><article class="action-card" data-inner-step="3" data-art-key="g04-s04" aria-labelledby="action-heading-4-3" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 04</span><h2 id="action-heading-4-3" tabindex="-1">Установите и подключите приложение VPN.</h2>
+<article>
+<ol>
+<li>С официального сайта Mullvad установите приложение для своей Windows, macOS или Linux. Подтвердите стандартное системное разрешение на VPN.</li>
+<li>Откройте приложение и введите сохранённый номер аккаунта.</li>
+<li>Нажмите Secure my connection / Connect. Дождитесь зелёного состояния соединения.</li>
+</ol>
+<p>Внутри Tails этот вариант не настраивается: используйте его штатный Tor Connection. В арендованную Workstation VPN тоже не устанавливайте — её сеть уже проходит через Gateway.</p>
+<button class="button small secondary" data-copy="https://mullvad.net/en/download/vpn">Копировать официальную загрузку</button></article>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Приложение VPN на вашей обычной системе показывает подключение. Это ещё не проверка Tor.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если приложение показывает ошибку, используйте его официальную помощь. Не устанавливайте несколько VPN одновременно.</p></details></article><article class="action-card" data-inner-step="4" data-art-key="g04-s05" aria-labelledby="action-heading-4-4" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 05</span><h2 id="action-heading-4-4" tabindex="-1">Выберите поведение при отключении VPN.</h2>
+<article><h3>3. Решите, нужен ли запрет интернета без VPN.</h3>
+<p>Защита Mullvad при неожиданном разрыве работает автоматически. <strong>Lockdown mode</strong> дополнительно блокирует интернет после ручного Disconnect или выхода из приложения.</p>
+<p>Lockdown mode намеренно блокирует интернет, пока VPN отключён. Чтобы вернуть обычный интернет, откройте приложение и отключите этот режим. Не устанавливайте несколько VPN одновременно. Tor Browser должен оставаться внутри VPN; не добавляйте его в исключения приложения.</p>
+<button class="button small secondary" data-copy="https://mullvad.net/en/help/using-mullvad-vpn-app">Копировать инструкцию приложения</button></article>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы понимаете, оставлен ли Lockdown mode включённым и как вернуть обычный интернет.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если интернет заблокирован после Disconnect, откройте приложение и отключите Lockdown mode. Tor Browser должен оставаться внутри VPN; не добавляйте его в исключения приложения.</p></details></article><article class="action-card" data-inner-step="5" data-art-key="g04-s06" aria-labelledby="action-heading-4-5" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 06</span><h2 id="action-heading-4-5" tabindex="-1">После VPN подключите и проверьте Tor.</h2>
+<article><h3>4. Теперь откройте Tor Browser.</h3>
+<ol><li>Оставьте VPN подключённым.</li><li>Подключитесь в Tor Browser.</li><li>Нажмите «Открыть проверку Tor», затем «Проверить Tor» на этапе 1.</li></ol>
+<details><summary>Как проверить сам VPN</summary><p>Мастер не подтверждает работу VPN по галочке или внешнему адресу. Страница проверки Mullvad открывается в обычном браузере и проверяет его путь; внутри Tor она будет видеть выход Tor. После изменения VPN повторите проверку Tor.</p></details>
+<button class="button small secondary" data-copy="https://mullvad.net/en/check">Копировать проверку Mullvad</button></article>
+<button type="button" class="button secondary" data-go="1">Открыть проверку Tor</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Мастер подтвердил своё соединение через Tor после подключения VPN.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Страница Mullvad в Tor видит выход Tor. Для проверки самого VPN следуйте инструкции сервиса в обычном браузере.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="3">← Предыдущий этап</button><button type="button" class="button secondary" data-go="5">Следующий этап: Записать Tails USB</button>
+</div>
+</div></section><section class="page" data-page="5" data-scene-id="5" aria-labelledby="heading-5" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 5: Записать Tails USB"><img class="goal-art-image" data-goal-image="5" data-fallback-src="/assets/steps/02-usb.png" src="/assets/steps/02-usb.png" alt="Художественная иллюстрация: Записать Tails USB" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 05</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">05</span><div class="briefing-copy">
+<span class="eyebrow">05 / ЗАПИСАТЬ TAILS USB</span><h1 id="heading-5">Флешка для будущего входа.</h1>
+<p class="lead">Здесь только подготовка и запись USB. Загрузка компьютера с флешки будет на отдельном этапе 11.</p>
+<span class="briefing-tag">ЦЕЛЬ: ПОДГОТОВИТЬ ФЛЕШКУ</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Подготовить флешку.</p>
+</div>
+<div class="optional-row">
+<p>Флешка необязательна. На Mac Apple Silicon используйте Tor Browser в обычной системе.</p>
+<button class="button ghost small" data-go="6">Пропустить этап →</button>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g05-s01" aria-labelledby="action-heading-5-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-5-0" tabindex="-1">Подготовьте проверенный образ Tails.</h2>
+<article class="info-card"><span class="card-index">ШАГ A</span><h2>Подготовить и проверить</h2>
+<p>Перед записью мастер проверит подлинность и целостность образа. Если нужна загрузка, оставьте Tor подключённым.</p>
+<button id="download-tails" class="button primary">Подготовить Tails из комплекта</button><p id="usb-verified" class="muted">Образ ещё не проверен</p>
+<details><summary>Почему нужна проверка подписи?</summary><p>Проверка помогает обнаружить подменённый файл. Она встроена в готовые приложения для macOS, Windows и Linux. Если проверка не пройдена, запись не начнётся.</p></details></article><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Результат выше сообщает, прошла ли проверка образа и подписи в этом запуске. До неё запись не начнётся.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если комплект повреждён, замените его проверенной копией. Повреждённый файл не подменяется непроверенной загрузкой. Мастер сверяет контрольную сумму и подпись издателя. Запись доступна только после успешной проверки; повреждённый комплект не подменяется непроверенной загрузкой.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g05-s02" aria-labelledby="action-heading-5-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-5-1" tabindex="-1">Найдите именно вашу флешку.</h2>
+<article class="info-card"><span class="card-index">ШАГ B → C</span><h2>Выбрать и записать</h2>
+<p>Вставьте флешку от 8 ГБ в этот компьютер, где сейчас открыт мастер. К арендованному серверу её подключать не нужно. Отключите другие внешние диски, чтобы не перепутать их с флешкой.</p>
+<p>Сейчас вы только готовите USB. Загрузка компьютера с готовой флешки будет на этапе 11.</p>
+<button id="refresh-disks" class="button secondary">Найти флешку</button><label for="usb-disk">Флешка для записи</label><select id="usb-disk"><option value="">Сначала обновите список</option></select><p id="disk-hint" class="muted">Системные диски не предлагаются.</p>
+<p class="muted">Пароль администратора может запросить сама система. В поля этого мастера его вводить не нужно.</p></article><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>В списке выбран носитель с ожидаемым названием и размером. Выбор ещё ничего не стирает.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Отключите остальные внешние диски, переподключите флешку и обновите список. Системные или неоднозначные диски не предлагаются.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g05-s03" aria-labelledby="action-heading-5-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-5-2" tabindex="-1">Подтвердите стирание и дождитесь записи.</h2>
+<div class="erase-box">
+<strong>Все данные выбранной флешки будут удалены.</strong><label for="erase-confirmation">Введите СТЕРЕТЬ, чтобы подтвердить запись</label><input id="erase-confirmation" autocomplete="off" spellcheck="false" placeholder="СТЕРЕТЬ"><button id="write-usb" class="button danger">Стереть флешку и записать Tails</button>
+</div>
+<p>Во время записи не вынимайте USB. Пароль администратора может запросить сама система; в этот мастер его не вводят.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>В ходе операции мастер должен сообщить, что запись и проверка завершены. Только после этого безопасно извлеките USB. Сейчас компьютер перезагружать не нужно.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>При ошибке запись не считается готовой. Сохраните доступ к серверу и переходите к загрузке Tails только на этапе 11.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="4">← Предыдущий этап</button><button type="button" class="button secondary" data-go="6">Следующий этап: Арендовать сервер</button>
+</div>
+</div></section><section class="page" data-page="6" data-scene-id="6" aria-labelledby="heading-6" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 6: Арендовать сервер"><img class="goal-art-image" data-goal-image="6" data-fallback-src="/assets/steps/03-purchase.png" src="/assets/steps/03-purchase.png" alt="Художественная иллюстрация: Арендовать сервер" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 06</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">06</span><div class="briefing-copy">
+<span class="eyebrow">06 / АРЕНДОВАТЬ СЕРВЕР</span><h1 id="heading-6">Выбираем компьютер в аренду.</h1>
+<p class="lead">Проверьте совместимость до оплаты. Заказ и оплату на сайте провайдера выполняете вы.</p>
+<span class="briefing-tag">ЦЕЛЬ: ВЫБРАТЬ ОТДЕЛЬНЫЙ КОМПЬЮТЕР</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Выбрать отдельный компьютер.</p>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g06-s01" aria-labelledby="action-heading-6-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-6-0" tabindex="-1">Сверьте требования до заказа.</h2>
+<div class="callout amber">
+<strong>До оплаты проверьте четыре пункта.</strong><p>Попросите провайдера подтвердить каждый пункт. Обычный дешёвый VPS может не позволять запуск Whonix.</p>
+<div class="check-grid" role="list" aria-label="Четыре требования к серверу">
+<span role="listitem"><strong>1. Отдельный компьютер Intel или AMD.</strong> Он целиком выделен вам. Обычный VPS, где один компьютер делят несколько клиентов, не подходит.</span><span role="listitem"><strong>2. Разрешён запуск Whonix.</strong> Включена аппаратная виртуализация и доступен KVM — функция процессора и системы, позволяющая запустить два отдельных компьютера Whonix внутри сервера.</span><span role="listitem"><strong>3. Подходят система и объём памяти.</strong> Можно установить Debian 13 amd64; есть минимум 8 ГБ оперативной памяти и 50 ГБ свободного места на диске.</span><span role="listitem"><strong>4. Есть консоль управления у провайдера.</strong> Через неё можно независимо узнать контрольную строку сервера — отпечаток SSH — и восстановить доступ, если обычное подключение перестало работать.</span>
+</div>
+</div>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Провайдер подтвердил все четыре требования. Вы сохранили его ответ и можете проверять предложение перед оплатой.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Обычный дешёвый VPS может не разрешать запуск Whonix. Если поддержка не подтверждает совместимость, не оплачивайте его.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g06-s02" aria-labelledby="action-heading-6-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-6-1" tabindex="-1">Попросите провайдера подтвердить совместимость.</h2>
+<details><summary>Готовый текст для проверки у провайдера</summary><p>Ниже — готовый текст для обращения в поддержку.</p>
+<div class="copy-block">
+<pre id="provider-question">Нужен отдельный физический сервер для двух Whonix KVM VM. Подтвердите Debian 13 amd64, включённые VT-x/AMD-V и EPT/NPT, доступный /dev/kvm, минимум 8 ГБ RAM и 50 ГБ диска, а также доступ к консоли управления для получения SSH fingerprint. Подтвердите оплату XMR и актуальные условия проверки личности до заказа.</pre>
+<button class="button small secondary" data-copy-from="provider-question">Копировать текст</button>
+</div></details>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>У вас есть ответ на требования перед оплатой. Мастер не отправляет обращение от вашего имени.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Без консоли управления вы не сможете независимо получить отпечаток SSH. Сначала убедитесь, что консоль доступна.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g06-s03" aria-labelledby="action-heading-6-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-6-2" tabindex="-1">Сравните актуальные условия провайдеров.</h2>
+<div class="two-grid">
+<article class="provider-card"><span class="card-index">ПРОВЕРЕНА ПУБЛИЧНАЯ ФОРМА / БЕЗ ПОКУПКИ</span><h3>Privex · LX64-SSD-FIN</h3>
+<p>Публичная форма предлагает отдельный Intel/AMD сервер с Debian 13. На проверке показано $85 в месяц и $15 при заказе; подготовка ориентировочно 2–3 дня. Наличие, цену и совместимость подтвердите у провайдера.</p>
+<details><summary>Поля проверенной формы Privex</summary><p>В форме нет отдельных полей телефона и почтового адреса. Есть Name, Email, Hostname и Purpose of Use. Поле Name разрешает псевдоним; это не обещание отсутствия сведений о заказе.</p></details>
+<button class="button primary" data-copy="https://pay.privex.io/order/package/lx64-ssd-fin">Копировать проверенную форму Privex</button></article><article class="provider-card"><span class="card-index">ЗАПАСНОЙ КАНДИДАТ / НАЛИЧИЕ НЕ ПОДТВЕРЖДЕНО</span><h3>NiceVPS · DEDI E3</h3>
+<p>Запасной вариант: €189 по публичной странице. Наличие не подтверждено — сначала получите ответ провайдера.</p>
+<details><summary>Регистрация и условия оплаты NiceVPS</summary><p>Регистрация: имя пользователя, email, пароль и CAPTCHA. Для Monero указаны автоматическое зачисление после четырёх подтверждений и отсутствие Phone Verification. Это условия оплаты, а не подтверждение наличия сервера.</p></details>
+<button class="button secondary" data-copy="https://www.nicevps.net/products/configure/DEDI_E3-4v3">Копировать конфигурацию NiceVPS</button></article>
+</div>
+<figure class="guide-shot" data-guide-shot="provider-nice-config" hidden></figure><p class="footnote">Проверены только публичные страницы 15 октября 2026 года. Реальная покупка не выполнялась. Перед покупкой заново сверьте цену, обязательные поля и наличие.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы нашли актуальное предложение, но пока не оплатили его. Следующим действием отдельно проверим форму регистрации.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Доступность, цена и требования к личности могут измениться. Оплата XMR не исключает журналы или данные заказа.</p></details></article><article class="action-card" data-inner-step="3" data-art-key="g06-s04" aria-labelledby="action-heading-6-3" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 04</span><h2 id="action-heading-6-3" tabindex="-1">Просмотрите поля регистрации до покупки.</h2>
+<p>В проверенной форме Privex: Name — разрешён псевдоним; Email — адрес для заказа; Hostname — имя компьютера; Purpose of Use — назначение сервера. Отдельных полей телефона и почтового адреса там не было.</p>
+<p>В проверенной форме NiceVPS были имя пользователя, email, пароль и «Я не робот». Условия могут меняться. Если обязательные сведения вам не подходят, остановитесь до регистрации и оплаты.</p>
+<figure class="guide-shot" data-guide-shot="provider-privex" hidden></figure><figure class="guide-shot" data-guide-shot="provider-nice-registration" hidden></figure><button type="button" class="button secondary" data-copy="https://www.nicevps.net/login">Копировать вход / регистрацию NiceVPS</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы проверили текущие обязательные поля и решили, подходят ли вам условия.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если форма изменилась или назначение поля непонятно, получите объяснение провайдера до покупки. Не подменяйте обязательные сведения случайными данными.</p></details></article><article class="action-card" data-inner-step="4" data-art-key="g06-s05" aria-labelledby="action-heading-6-4" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 05</span><h2 id="action-heading-6-4" tabindex="-1">Разберитесь с полем Hostname и доменом.</h2>
+<p>Для этого кабинета <strong>покупать домен не нужно</strong>. Сервер сам бесплатно создаст свой <strong>.onion-адрес</strong> после настройки.</p>
+<p><strong>Hostname</strong> — имя арендованного компьютера. Если поле принимает простое имя, можно указать <code>oniondesk</code>. Для другого формата сначала прочитайте подсказку провайдера.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>В форме указано имя компьютера. Будущий .onion-адрес будет создан после настройки сервера.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Дополнительные DNS, сайт и покупной домен этому маршруту не нужны. Не оплачивайте их автоматически из-за похожего названия поля.</p></details></article><article class="action-card" data-inner-step="5" data-art-key="g06-s06" aria-labelledby="action-heading-6-5" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 06</span><h2 id="action-heading-6-5" tabindex="-1">Оформите подходящий заказ самостоятельно.</h2>
+<p>В заказе сверьте: физический сервер, <strong>Debian 13 amd64</strong>, сумму и валюту. Purpose of Use в Privex заполните своим понятным описанием задачи.</p>
+<p>Для NiceVPS сначала получите подтверждение наличия DEDI E3. На проверке доступное местоположение выбрать не удалось. До подтверждения провайдера не оплачивайте заказ.</p>
+<p>Сохраните номер заказа и условия продления.</p>
+<figure class="guide-shot" data-guide-shot="provider-privex-xmr" hidden></figure><figure class="guide-shot" data-guide-shot="provider-nice-payment" hidden></figure><button type="button" class="button secondary" data-copy="https://www.nicevps.net/index/payments">Копировать условия оплаты NiceVPS</button><button type="button" class="button secondary" data-action-go="3" data-action-index="7">Нужна помощь с оплатой XMR</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Только после вашей покупки провайдер может подтвердить заказ и оплату. Мастер не проверяет покупку и не оплачивает её.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если обязательные сведения, оборудование или сумма не совпадают с проверенным предложением, не подтверждайте оплату.</p></details></article><article class="action-card" data-inner-step="6" data-art-key="g06-s07" aria-labelledby="action-heading-6-6" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 07</span><h2 id="action-heading-6-6" tabindex="-1">Получите доступ к свежему Debian 13.</h2>
+<p>Сохраните в менеджере паролей доступ к панели, числовой IP-адрес и первоначальный пароль администратора — <strong>root</strong>.</p>
+<p>Откройте консоль управления и убедитесь, что можете войти. На этапе 8 через неё получим отпечаток SSH.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>У вас есть IP, root-пароль и рабочая консоль управления. Значения не нужно угадывать заранее.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если на сервере есть нужные файлы или другие сервисы, остановитесь: установка предназначена для отдельного свежего компьютера.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="5">← Предыдущий этап</button><button type="button" class="button secondary" data-go="7">Следующий этап: Номер Telegram</button>
+</div>
+</div></section><section class="page" data-page="7" data-scene-id="7" aria-labelledby="heading-7" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 7: Номер Telegram"><img class="goal-art-image" data-goal-image="7" data-fallback-src="/assets/steps/03-purchase.png" src="/assets/steps/03-purchase.png" alt="Художественная иллюстрация: Номер Telegram" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 07</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">07</span><div class="briefing-copy">
+<span class="eyebrow">07 / НОМЕР TELEGRAM</span><h1 id="heading-7">Номер должен остаться вашим.</h1>
+<p class="lead">Выберите способ получать коды и восстанавливать доступ. Покупку и регистрацию выполняете сами.</p>
+<span class="briefing-tag">ЦЕЛЬ: СОХРАНИТЬ КОНТРОЛЬ НОМЕРА</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Сохранить контроль номера.</p>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g07-s01" aria-labelledby="action-heading-7-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-7-0" tabindex="-1">Выберите номер под своим контролем.</h2>
+<div class="callout amber">
+<strong>Сначала проверьте, подходит ли вам способ входа Telegram.</strong><p>Новый аккаунт может потребовать официальный Telegram на телефоне. Если такой путь вам не подходит, пока не покупайте номер.</p>
+</div>
+<div class="two-grid">
+<article class="info-card recommended"><span class="card-index">НОМЕР С ПРОДЛЕНИЕМ / MONERO</span><h3>Crypton.sh: физический номер</h3>
+<p>Выберите Physical SIM / Long-term или Short-term. Virtual number и Travel eSIM для регистрации Telegram не подходят. Официальный сайт указывает Monero; аренду нужно продлевать.</p>
+<p>Ориентиры на 15.10.2026: UK от €14/месяц; долгосрочные пакеты от €43 за 3 месяца. Проверены опубликованные предложения, покупка и получение кода не проводились.</p>
+<button class="button primary" data-copy="https://crypton.sh/">Копировать сайт Crypton.sh</button><button class="text-button" data-copy="https://crypton.sh/terms-and-conditions">Копировать условия</button></article><article class="info-card"><span class="card-index">НОМЕР ТОЛЬКО ДЛЯ TELEGRAM</span><h3>Fragment +888</h3>
+<p>Номер привязан к вашему TON-кошельку. Коды Telegram получаете на Fragment; обычных SMS и звонков нет. XMR не подходит для прямой оплаты, цены могут быть очень высокими.</p>
+<p>Проверка личности для каждой покупки не исключена. История кошелька публична. Сохраните его ключ восстановления — продавцу и мастеру он не нужен.</p>
+<button class="button secondary" data-copy="https://fragment.com/numbers">Копировать каталог Fragment</button><button class="text-button" data-copy="https://fragment.com/my/numbers">Копировать страницу кодов</button></article>
+</div>
+<details><summary>Нужен только один код? Есть отдельный вариант.</summary><p>Crypton.sh публикует гостевую активацию Telegram с Bitcoin и Monero без регистрации, на 30 минут. Это временный доступ к коду, а не номер под вашим постоянным контролем. Для важного аккаунта выбирайте продлеваемый номер.</p>
+<button class="button small secondary" data-copy="https://crypton.sh/verification/guest/service/telegram">Копировать гостевую активацию</button></details>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы понимаете, как продлевать номер и где получать коды. Одноразовая активация не даёт постоянного контроля и не гарантирует регистрацию Telegram Desktop.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Virtual number и Travel eSIM у указанных сервисов могут не подходить для Telegram. У Fragment нет обычных SMS и звонков; прямой оплаты XMR нет.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g07-s02" aria-labelledby="action-heading-7-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-7-1" tabindex="-1">Оформите номер и сохраните восстановление.</h2>
+<p>На официальном сайте проверьте текущие цену, продление и способ получения кода именно для Telegram. Сохраните доступ к сервису и дату продления.</p>
+<p>Мастер не покупал номер и не проверял получение кода.</p>
+<button type="button" class="button secondary" data-action-go="3" data-action-index="7">Нужна помощь с оплатой XMR</button>
+<details><summary>Что именно было проверено у сервиса</summary><p>FREE API access у Crypton означает доступ к программному интерфейсу сервиса, а не бесплатный номер или SMS. Публичный каталог Telegram ответил HTTP 200 — это только доступность справочника. Покупка, списание денег, получение SMS и регистрация аккаунта не выполнялись.</p><figure class="guide-shot" data-guide-shot="crypton-api" hidden></figure></details><p>Для Fragment сохраните восстановление TON-кошелька отдельно. Фразу нельзя передавать продавцу или мастеру. История TON публична; требования к личности могут применяться.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Если вы решили покупать номер, вы сохранили доступ к своему сервису номера, срок продления и способ получения кодов. Конкретный код проверяется отдельно.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Не покупайте готовый аккаунт Telegram: прежний владелец может вернуть его через номер или сохранённый вход.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g07-s03" aria-labelledby="action-heading-7-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-7-2" tabindex="-1">Решите, как войти в Telegram.</h2>
+<p>Сам вход на удалённом рабочем столе выполните после этапа 9. Код Telegram отличается от кода аутентификатора кабинета.</p>
+<p>Для нового аккаунта Telegram Desktop может не предоставить регистрацию или получение SMS. Официальная документация Telegram указывает: в некоторых случаях SMS доступны только официальному мобильному приложению.</p>
+<p>После успешного входа настройте отдельный пароль двухэтапной проверки Telegram и сохраняйте контроль номера. Мастер не подтверждает регистрацию аккаунта.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы знаете, какой способ входа вам подходит. Успешный вход позднее подтвердит сам Telegram.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если код не приходит, сначала определите допустимый способ входа по официальной документации. Не покупайте повторные SMS вслепую. Код кабинета из аутентификатора для Telegram не подходит.</p></details><details><summary>Desktop не предлагает новую регистрацию или SMS: что выбрать?</summary><p>Если аккаунт уже есть, используйте предусмотренный Telegram вход в Desktop. Если нужен новый аккаунт и Telegram требует официальное мобильное приложение, решите, подходит ли вам этот путь. Если мобильный этап вам не подходит, остановитесь до покупки номера.</p>
+<p>Не обходите аттестацию приложения и ограничения Telegram. Повторная покупка SMS не устраняет требование мобильного клиента. Документация описывает возможные способы доставки кода, а не обещает регистрацию с любым номером.</p>
+<button type="button" class="button secondary" data-copy="https://core.telegram.org/api/auth">Копировать официальное объяснение Telegram</button></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="6">← Предыдущий этап</button><button type="button" class="button secondary" data-go="8">Следующий этап: Установить сервер</button>
+</div>
+</div></section><section class="page" data-page="8" data-scene-id="8" aria-labelledby="heading-8" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 8: Установить сервер"><img class="goal-art-image" data-goal-image="8" data-fallback-src="/assets/steps/04-setup.png" src="/assets/steps/04-setup.png" alt="Художественная иллюстрация: Установить сервер" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 08</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">08</span><div class="briefing-copy">
+<span class="eyebrow">08 / УСТАНОВИТЬ СЕРВЕР</span><h1 id="heading-8">Мастер настроит сервер.</h1>
+<p class="lead">Сначала сверим сервер, затем установим Whonix и страницу доступа.</p>
+<span class="briefing-tag">ЦЕЛЬ: ПОДКЛЮЧЕНИЕ И УСТАНОВКА</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Подключение и установка.</p>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g08-s01" aria-labelledby="action-heading-8-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-8-0" tabindex="-1">Получите отпечаток через консоль провайдера.</h2>
+<article class="info-card fingerprint-help"><span class="card-index">ГДЕ ВЗЯТЬ SHA256</span><h2>Одна команда в консоли провайдера</h2>
+<ol>
+<li>Откройте панель вашего сервера и раздел Console / VNC / KVM.</li>
+<li>Войдите как root с первоначальным паролем.</li>
+<li>Вставьте команду ниже.</li>
+<li>Скопируйте строку, начинающуюся с <code>SHA256:</code>. Вставьте её в поле «Отпечаток SSH-ключа» на следующем действии.</li>
+</ol>
+<div class="copy-block">
+<pre id="fingerprint-command">ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub -E sha256</pre>
+<button class="button small secondary" data-copy-from="fingerprint-command">Копировать команду</button>
+</div>
+<p class="muted">Отпечаток из непроверенного окна подключения не подходит. При несовпадении SSH-ключа мастер остановится.</p></article><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>У вас скопирован код, начинающийся с SHA256:. Он получен через независимую консоль вашего сервера.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>При несовпадении ключа остановитесь и проверьте консоль заново. Не берите код из непроверенного окна SSH.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g08-s02" aria-labelledby="action-heading-8-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-8-1" tabindex="-1">Подключите мастер к своему серверу.</h2>
+<form id="connect-form">
+<label for="server-host">IP компьютера в дата-центре</label><input id="server-host" inputmode="decimal" autocomplete="off" placeholder="Например, 203.0.113.10" required><p class="field-help">Числовой адрес из панели провайдера. Без http:// и порта.</p>
+<label for="root-password">Первоначальный пароль root</label><div class="secret-input">
+<input id="root-password" type="password" autocomplete="off" required><button type="button" class="reveal" data-toggle="root-password" aria-label="Показать первоначальный пароль" aria-pressed="false">Показать</button>
+</div>
+<p class="field-help">root — администратор компьютера. Пароль присылает провайдер или показывает его панель. Это не пароль вашего компьютера.</p>
+<label for="ssh-fingerprint">Отпечаток SSH-ключа</label><input id="ssh-fingerprint" autocomplete="off" spellcheck="false" placeholder="SHA256:…" required><p class="field-help">Код сверки: подтверждает, что мастер подключается к вашему компьютеру.</p>
+<button type="submit" class="button primary">Проверить и подключиться</button><p id="connection-state" class="muted">Соединение ещё не установлено</p>
+</form>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Сообщение выше подтверждает соединение и сверку SSH-ключа в этом запуске.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если Tor не проверен или ключ не совпадает, мастер не подключится. Проверьте три поля; root-пароль после отправки очищается.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g08-s03" aria-labelledby="action-heading-8-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-8-2" tabindex="-1">Запустите установку на свежем сервере.</h2>
+<article class="install-card"><div>
+<span class="eyebrow">АВТОМАТИЧЕСКАЯ ЧАСТЬ</span><h2>Настроить рабочий стол</h2>
+<p>Мастер передаст проверенные файлы и настроит удалённый рабочий стол. Оставьте приложение открытым: загрузка может занять время.</p>
+<label class="checkline"><input id="fresh-server" type="checkbox"> Это отдельный свежий Debian 13; у меня нет нужных данных на нём.</label><label class="checkline"><input id="accept-licenses" type="checkbox"> Я ознакомился с лицензией и условиями Whonix и принимаю их.</label><div class="inline-links">
+<button class="text-button" data-copy="https://www.whonix.org/wiki/License_Agreement">Копировать лицензию</button><button class="text-button" data-copy="https://www.whonix.org/wiki/Terms_of_Service">Копировать условия</button>
+</div>
+</div>
+<div class="install-controls"><button id="install-server" class="button primary">Начать настройку</button></div></article>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Мастер сообщил об окончании установки. Теперь можно получить карточку доступа в следующем действии.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Галочки означают ваше согласие и сведения о сервере. Они не подтверждают готовность или безопасность автоматически. Файлы передаются через SFTP внутри Tor; мастер сверяет SHA-256. Загружать архивы в панель провайдера самостоятельно не нужно.</p></details></article><article class="action-card" data-inner-step="3" data-art-key="g08-s04" aria-labelledby="action-heading-8-3" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 04</span><h2 id="action-heading-8-3" tabindex="-1">Проверьте итог установки.</h2>
+<p>Если приложение закрыли или связь пропала, восстановите наблюдение за тем же заданием. Не начинайте новую установку вслепую.</p>
+<button id="resume-install" class="button secondary">Установка прервалась: проверить и продолжить</button><button id="recover-card" class="button secondary">Сервер уже настроен: получить карточку</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Мастер сообщает фактический результат задания и получает карточку доступа с сервера. Дальше — первый запуск Whonix.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>После перезапуска мастера сначала заново подключитесь к тому же серверу тремя полями. Кнопка продолжения проверяет уже существующее задание.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="7">← Предыдущий этап</button><button type="button" class="button secondary" data-go="9">Следующий этап: Первый запуск Whonix</button>
+</div>
+</div></section><section class="page" data-page="9" data-scene-id="9" aria-labelledby="heading-9" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 9: Первый запуск Whonix"><img class="goal-art-image" data-goal-image="9" data-fallback-src="/assets/steps/05-access.png" src="/assets/steps/05-access.png" alt="Художественная иллюстрация: Первый запуск Whonix" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 09</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">09</span><div class="briefing-copy">
+<span class="eyebrow">09 / ПЕРВЫЙ ЗАПУСК WHONIX</span><h1 id="heading-9">Первый вход в ваш кабинет.</h1>
+<p class="lead">Мастер наблюдает автоматическую подготовку Whonix: обслуживание, установка Telegram, выключение и обычный запуск. Готовность подтвердит живая проверка.</p>
+<span class="briefing-tag">ЦЕЛЬ: ОТКРЫТЬ РАБОЧИЙ СТОЛ</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Открыть рабочий стол.</p>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g09-s01" aria-labelledby="action-heading-9-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-9-0" tabindex="-1">Откройте свой кабинет в Tor Browser.</h2>
+<div class="credential-box">
+<div>
+<span class="eyebrow">ТОЛЬКО ДЛЯ ВАС</span><h2>Карточка доступа</h2>
+<p>Сохраните карточку в менеджере паролей. Ключ кодов добавьте в свой аутентификатор: TOTP, 6 цифр, 30 секунд. Секретные поля раскрываются только по вашей кнопке.</p>
+</div>
+<button id="show-card" class="button primary">Показать мою карточку</button><div id="secret-card" hidden>
+<div id="secret-fields"></div>
+<details><summary>Как добавить ключ в приложение кодов</summary><p class="muted">Добавьте ключ кодов вручную в ваш аутентификатор: TOTP, 6 цифр, 30 секунд. На странице кабинета нужны имя, пароль и текущий код из этого приложения.</p></details>
+<button id="hide-card" class="button secondary">Скрыть карточку</button><button id="clear-card" class="text-button">Удалить карточку из памяти мастера</button>
+</div>
+</div>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Страница onion-адреса открылась в Tor Browser. Вы вошли с именем, паролем и текущим кодом аутентификатора.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если карточки нет, вернитесь на этап 8 и получите её с настроенного сервера. Ключ TOTP добавьте в аутентификатор: 6 цифр, 30 секунд.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g09-s02" aria-labelledby="action-heading-9-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-9-1" tabindex="-1">Проверьте подключение Gateway.</h2>
+<p><strong>Gateway</strong> отвечает за соединение Workstation с Tor.</p>
+<details><summary>О соединении и снимке экрана</summary><p>Автоматический маршрут использует публичный мост obfs4 из официального комплекта Whonix. Он может быть заблокирован в вашей сети. Снимок показывает реальный интерфейс из проверки; порядок первых окон при новой установке может отличаться.</p></details>
+<figure class="guide-shot" data-guide-shot="whonix-gateway" hidden></figure><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>В Gateway подтверждено соединение с Tor. Готовность всего рабочего стола проверим в последнем действии этапа.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если Tor не подключается, прочитайте диагностическое сообщение. Не переключайтесь на прямой интернет только ради продолжения; для заблокированного моста нужна штатная настройка Whonix.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g09-s03" aria-labelledby="action-heading-9-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-9-2" tabindex="-1">Наблюдайте автоматический запуск обслуживания.</h2>
+<p>Для первоначальной настройки мастер сам включает режим обслуживания Workstation. Пока установка работает, не выбирайте режим и не открывайте терминал вручную.</p>
+
+<figure class="guide-shot" data-guide-shot="whonix-grub" hidden></figure><figure class="guide-shot" data-guide-shot="whonix-maintenance" hidden></figure><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Workstation открыта в режиме обслуживания, первоначальная настройка продолжается.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если операция остановилась, сначала прочитайте её сообщение и восстановите наблюдение на этапе 8. Не запускайте параллельную ручную установку. Название режима на экране: PERSISTENT Mode | SYSMAINT Session. Переход к следующей подсказке не подтверждает завершение установки.</p></details></article><article class="action-card" data-inner-step="3" data-art-key="g09-s04" aria-labelledby="action-heading-9-3" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 04</span><h2 id="action-heading-9-3" tabindex="-1">Дождитесь установки Telegram и выключения.</h2>
+<p>Telegram и необходимые инструменты устанавливаются автоматически.</p>
+<p>Не закрывайте приложение и не выключайте гостевую систему вручную, пока идёт эта операция. Команду из терминала при нормальном ходе вводить не нужно.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>После успешной установки Workstation выключилась сама.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>При ошибке автоматической установки вернитесь к сообщению операции. Ручная команда ниже относится только к диагностике в подтверждённой SYSMAINT Session. Мастер устанавливает гостевой агент QGA, чтобы проверять фактическое состояние системы.</p></details><details><summary>Диагностика: ручная команда в SYSMAINT</summary><p>Используйте только после остановки автоматического задания и выяснения причины. В Workstation выберите SYSMAINT и откройте терминал System Maintenance Panel. Не запускайте эту команду одновременно с автоматической установкой.</p>
+<div class="copy-block">
+<pre id="guest-setup-command">sudo /usr/local/sbin/oniondesk-workstation-setup</pre>
+<button class="button small secondary" data-copy-from="guest-setup-command">Копировать диагностическую команду</button>
+</div>
+<figure class="guide-shot" data-guide-shot="whonix-terminal" hidden></figure></details></article><article class="action-card" data-inner-step="4" data-art-key="g09-s05" aria-labelledby="action-heading-9-4" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 05</span><h2 id="action-heading-9-4" tabindex="-1">Дождитесь обычной USER Session.</h2>
+<p><strong>USER Session</strong> запускается автоматически после завершения обслуживания.</p>
+<p>Пока автоматическая операция работает, не запускайте вторую. Если позднее вы сами выключите рабочий стол, его можно включить отдельной кнопкой восстановления ниже.</p>
+<figure class="guide-shot" data-guide-shot="whonix-telegram" hidden></figure><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Workstation должна перейти в обычную USER Session. Следующее действие проверит Telegram и соединение Tor внутри неё.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если перезапускали мастер, сначала подключитесь к тому же серверу на этапе 8. Сам запуск рабочего стола ещё не подтверждает готовность Telegram. Полное имя режима: PERSISTENT Mode | USER Session; состояние читает гостевой агент QGA.</p></details><details><summary>Восстановление: рабочий стол выключен после завершения настройки</summary><button id="start-workstation" class="button primary">Запустить рабочий стол</button><p>Сначала убедитесь, что автоматическая установка уже закончилась. После запуска повторите проверку готовности.</p>
+<div class="copy-block">
+<pre id="server-start-command">sudo /opt/oniondesk/server/control.sh start
+sudo /opt/oniondesk/server/control.sh status</pre>
+<button class="button small secondary" data-copy-from="server-start-command">Копировать команды восстановления</button>
+</div></details></article><article class="action-card" data-inner-step="5" data-art-key="g09-s06" aria-labelledby="action-heading-9-5" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 06</span><h2 id="action-heading-9-5" tabindex="-1">Дождитесь живой проверки готовности.</h2>
+<p>Проверка читает установленный Telegram и фактическое соединение Tor в Workstation. Она не регистрирует аккаунт Telegram и не получает SMS.</p>
+<button id="check-ready" class="button secondary">Проверить готовность сейчас</button><p id="ready-state" class="readiness">Готовность пока не подтверждена</p>
+
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Мастер показал зелёное подтверждение готовности рабочего стола.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если проверка не подтверждает готовность, прочитайте сообщение операции и диагностику этапа 8. Не подтверждайте результат вручную и не обходите найденную проблему. Проверка выполняется, когда другая операция не работает, и повторяется не чаще одного раза в 15 секунд, пока готовность не подтверждена. Сам переход к следующей подсказке готовность не устанавливает.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="8">← Предыдущий этап</button><button type="button" class="button secondary" data-go="10">Следующий этап: Сохранить доступ</button>
+</div>
+</div></section><section class="page" data-page="10" data-scene-id="10" aria-labelledby="heading-10" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 10: Сохранить доступ"><img class="goal-art-image" data-goal-image="10" data-fallback-src="/assets/steps/05-access.png" src="/assets/steps/05-access.png" alt="Художественная иллюстрация: Сохранить доступ" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 10</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">10</span><div class="briefing-copy">
+<span class="eyebrow">10 / СОХРАНИТЬ ДОСТУП</span><h1 id="heading-10">Сохраняем путь обратно.</h1>
+<p class="lead">Сохраните доступ отдельно, проверьте сервер и подготовьте адрес перед переходом в Tails.</p>
+<span class="briefing-tag">ЦЕЛЬ: ПАМЯТКА И АУДИТ</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Памятка и аудит.</p>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g10-s01" aria-labelledby="action-heading-10-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-10-0" tabindex="-1">Сохраните доступ отдельно от мастера.</h2>
+<p>Сохраните адрес кабинета, имя, пароль и ключ аутентификатора. Отдельно — доступ к панели провайдера и восстановление номера.</p>
+<button type="button" class="button secondary" data-go="9">Открыть карточку на этапе 9</button><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы сами проверили, что сможете открыть свою сохранённую карточку после закрытия мастера. Мастер не проверяет содержимое вашего менеджера паролей.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Не рассчитывайте на память этого запуска. Потерянную карточку можно получить через root-доступ к серверу; потерянные ключи кошелька мастер не восстанавливает.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g10-s02" aria-labelledby="action-heading-10-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-10-1" tabindex="-1">Запустите проверку серверных настроек.</h2>
+<article class="info-card"><span class="card-index">ОТДЕЛЬНАЯ ПРОВЕРКА</span><h2>Проверить защитные настройки сервера</h2>
+<p>Проверка не оценивает ваши аккаунты, доверие к владельцу сервера и все возможные утечки.</p>
+<button id="audit-server" class="button secondary">Проверить защиту сервера</button><p id="safety-state" class="readiness" role="status">Защитные настройки сервера пока не проверены</p>
+<div id="safety-details" class="copy-block" hidden><pre id="safety-report" aria-label="Результат проверки защиты сервера"></pre></div></article>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>В отчёте виден результат каждого проверенного пункта и найденные проблемы.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Проверка не оценивает аккаунты, владельца сервера и все возможные утечки. При найденной проблеме прочитайте отчёт и исправьте её перед работой.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g10-s03" aria-labelledby="action-heading-10-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-10-2" tabindex="-1">Подготовьте адрес для перехода в Tails.</h2>
+<article class="info-card"><span class="card-index">ПЕРЕХОД В TAILS / ДО ПЕРЕЗАГРУЗКИ</span><h2>Возьмите адрес с собой</h2>
+<ol><li>Сохраните имя, пароль кабинета и ключ приложения кодов отдельно от мастера.</li><li>Нажмите «Подготовить адрес для Tails», затем «Копировать памятку».</li><li>Вставьте памятку в текстовый редактор и сохраните на второй носитель или распечатайте. Не записывайте её поверх флешки Tails.</li></ol>
+<p>Памятка не содержит имени входа, пароля или ключа кодов. Адрес раскрывает местоположение вашего кабинета: храните его осмотрительно. Мастер не переносит секреты и не меняет образ Tails.</p>
+<button id="prepare-handoff" class="button secondary">Подготовить адрес для Tails</button><div id="handoff-panel" class="copy-block" hidden>
+<label for="handoff-note">Памятка для переноса — без паролей</label><textarea id="handoff-note" rows="12" readonly autocomplete="off" spellcheck="false" aria-describedby="handoff-help"></textarea><button id="copy-handoff" class="button small secondary">Копировать памятку</button><p id="handoff-help" class="muted">Вставьте текст в редактор, сохраните на второй носитель или распечатайте. Не записывайте файл поверх флешки Tails. При закрытии карточки, смене этапа или закрытии страницы текст здесь очищается; буфер обмена очистите самостоятельно.</p>
+</div></article>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>У вас сохранена памятка с адресом кабинета. Имя, пароль и ключ кодов сохранены отдельно.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Адрес показывает местоположение кабинета: храните осмотрительно. Не записывайте памятку поверх флешки Tails. При переходе на другой этап поле очистится. После подключения Tor в Tails откройте памятку со второго USB через «Файлы» и скопируйте адрес в Tor Browser. Если памятка на бумаге, введите полный onion-адрес вручную; файл не нужен. Для сохранения закладки включите Tor Browser Bookmarks в Persistent Storage.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="9">← Предыдущий этап</button><button type="button" class="button secondary" data-go="11">Следующий этап: Загрузить Tails и Tor</button>
+</div>
+</div></section><section class="page" data-page="11" data-scene-id="11" aria-labelledby="heading-11" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 11: Загрузить Tails и Tor"><img class="goal-art-image" data-goal-image="11" data-fallback-src="/assets/steps/02-usb.png" src="/assets/steps/02-usb.png" alt="Художественная иллюстрация: Загрузить Tails и Tor" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 11</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">11</span><div class="briefing-copy">
+<span class="eyebrow">11 / ЗАГРУЗИТЬ TAILS И TOR</span><h1 id="heading-11">Теперь можно загрузить Tails.</h1>
+<p class="lead">Сервер уже должен быть настроен, доступ — сохранён. Здесь мы загружаемся с готового USB, а не записываем его.</p>
+<span class="briefing-tag">ЦЕЛЬ: ВОЙТИ С ГОТОВОЙ ФЛЕШКИ</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Войти с готовой флешки.</p>
+</div>
+<div class="optional-row">
+<p>Без Tails — Tor Browser в обычной системе.</p>
+<button class="button ghost small" data-go="12">Пропустить этап →</button>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g11-s01" aria-labelledby="action-heading-11-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-11-0" tabindex="-1">Подготовьтесь к выключению компьютера.</h2>
+<p>Перед этим этапом должны быть готовы сервер на этапах 8–10, памятка с адресом и отдельно сохранённые имя, пароль кабинета и ключ кодов.</p>
+<p>Этот мастер в Tails автоматически не продолжится. PDF-инструкцию комплекта откройте на телефоне или распечатайте этап 11.</p>
+<p>Когда запись USB завершена, сохраните работу и закройте мастер. Подключите готовую флешку к совместимому компьютеру Intel или AMD, на котором будете запускать Tails: это может быть этот же компьютер. Затем выключите его. Одно подключение USB не переключает работающий компьютер в Tails.</p>
+<div class="callout amber">
+<strong>Для чужого компьютера есть предел доверия.</strong><p>На чужом или неизвестном компьютере могут записываться ваши нажатия и другие данные. Tails не устраняет такую угрозу. Вводите важные секреты только на устройстве, которому доверяете.</p>
+</div>
+<details><summary>Как выглядит первая подготовка после загрузки с USB</summary><p>Этот экран появится позже, после выбора флешки в меню загрузки. Он показывает подготовку самой Tails, а не завершение записи флешки мастером.</p>
+<figure class="guide-shot" data-guide-shot="tails-preparing" hidden></figure></details><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Инструкция открыта на телефоне или распечатана, доступ к серверу сохранён отдельно. Совместимый компьютер выключен с готовой флешкой.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если сервер ещё не готов, вернитесь к этапам 8–10. На Mac Apple Silicon используйте Tor Browser в обычной системе. Tails не защищает от аппаратного кейлоггера или заражённой прошивки.</p></details><button type="button" class="button secondary" data-copy="https://tails.net/doc/first_steps/start/">Копировать официальную помощь Tails</button></article><article class="action-card" data-inner-step="1" data-art-key="g11-s02" aria-labelledby="action-heading-11-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-11-1" tabindex="-1">Включить компьютер и открыть меню загрузки.</h2>
+<label for="computer-brand">Марка компьютера</label><select id="computer-brand"><option value="dell">Dell</option>
+<option value="lenovo">Lenovo</option>
+<option value="hp">HP</option>
+<option value="asus">ASUS</option>
+<option value="mac">Mac с Intel</option>
+<option value="other">Другой компьютер</option></select><p id="boot-key" class="boot-key">При включении несколько раз нажмите F12, пока не появится меню загрузки.</p>
+<p>Клавиша меню зависит от модели; ниже — типичный путь производителя.</p>
+<p class="muted">Mac с Apple Silicon: этот путь не подходит. Для него вернитесь на этап 1 и используйте Tor Browser.</p>
+<figure class="guide-shot" data-guide-shot="tails-boot" hidden></figure><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>В меню загрузки выбрана флешка, началась загрузка Tails.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Полностью выключите компьютер и повторите клавишу сразу при включении. Если USB отсутствует, попробуйте другой порт и руководство вашей модели. Не меняйте настройки безопасности наугад.</p></details><button type="button" class="button secondary" data-copy="https://tails.net/doc/first_steps/start/">Копировать официальную помощь Tails</button></article><article class="action-card" data-inner-step="2" data-art-key="g11-s03" aria-labelledby="action-heading-11-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-11-2" tabindex="-1">Выберите язык и запустите Tails.</h2>
+<p>Для первого обычного входа пароль администратора Tails не нужен.</p>
+<p>Если вы уже создали <strong>Persistent Storage</strong> — зашифрованное хранилище Tails, — разблокируйте его своей парольной фразой. Это другой пароль, не пароль администратора сервера.</p>
+<figure class="guide-shot" data-guide-shot="tails-welcome" hidden></figure><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Появился рабочий стол Tails.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если загрузилась прежняя система, компьютер выбрал свой диск. Повторите выбор USB. Для чёрного экрана или ошибки смотрите Starting Tails в официальной помощи.</p></details><button type="button" class="button secondary" data-copy="https://tails.net/doc/first_steps/start/">Копировать официальную помощь Tails</button></article><article class="action-card" data-inner-step="3" data-art-key="g11-s04" aria-labelledby="action-heading-11-3" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 04</span><h2 id="action-heading-11-3" tabindex="-1">Wi-Fi с вашим паролем — или кабель.</h2>
+
+<p>Мастер не знает пароль чужой сети и не вводит его автоматически. Если Wi-Fi не определяется, попробуйте кабель или совместимый USB Wi-Fi адаптер по инструкции Tails.</p>
+<div class="url-card">
+<code>https://tails.net/doc/anonymous_internet/no-wifi/</code><button class="button small secondary" data-copy="https://tails.net/doc/anonymous_internet/no-wifi/">Копировать помощь Wi-Fi</button>
+</div>
+<figure class="guide-shot" data-guide-shot="tails-network" hidden></figure><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Tails подключена к вашей сети или кабелю.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Проверьте Wi-Fi в системном меню, попробуйте кабель. Tails поддерживает не все адаптеры. Если сеть сначала просит войти на отдельной веб-странице, откройте официальную инструкцию Tails по входу в такую сеть.</p></details><button type="button" class="button secondary" data-copy="https://tails.net/doc/first_steps/start/">Копировать официальную помощь Tails</button></article><article class="action-card" data-inner-step="4" data-art-key="g11-s05" aria-labelledby="action-heading-11-4" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 05</span><h2 id="action-heading-11-4" tabindex="-1">Пройти встроенный мастер Tor.</h2>
+<p>Обычная сеть — автоматическое подключение. При блокировке выберите <strong>bridges / мосты</strong> и следуйте подсказкам Tails.</p>
+<p>Если ваша сеть сначала требует входа на отдельной веб-странице, следуйте подсказкам Tails. <strong>Unsafe Browser</strong> используйте только для входа в сеть и после этого закройте его. Сам кабинет открывайте в <strong>Tor Browser</strong>.</p>
+<div class="url-card">
+<code>https://tails.net/doc/anonymous_internet/tor/</code><button class="button small secondary" data-copy="https://tails.net/doc/anonymous_internet/tor/">Копировать помощь Tor</button>
+</div>
+<figure class="guide-shot" data-guide-shot="tails-tor" hidden></figure><figure class="guide-shot" data-guide-shot="tails-tor-auto" hidden></figure><figure class="guide-shot" data-guide-shot="tails-tor-bridge" hidden></figure><figure class="guide-shot" data-guide-shot="tails-tor-success" hidden></figure><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Tor Connection сообщает об успешном подключении.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Проверьте интернет, дату и время. При блокировке выберите bridges. Не считайте значок браузера подтверждением соединения.</p></details><button type="button" class="button secondary" data-copy="https://tails.net/doc/first_steps/start/">Копировать официальную помощь Tails</button></article><article class="action-card" data-inner-step="5" data-art-key="g11-s06" aria-labelledby="action-heading-11-5" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 06</span><h2 id="action-heading-11-5" tabindex="-1">Открыть сохранённый onion-адрес.</h2>
+
+<p>Если памятка сохранена на втором USB, подключите его к этому компьютеру. Через «Файлы» откройте памятку, скопируйте полный onion-адрес и вставьте в Tor Browser. Не ищите памятку на флешке с самой Tails.</p>
+<p>Если памятка распечатана, введите с бумаги полный onion-адрес в Tor Browser. Файл и второй USB для этого не нужны.</p>
+<p>На странице кабинета введите отдельно сохранённые имя, пароль и текущий код приложения кодов. Затем выберите экран Workstation. Памятка не содержит этих секретов.</p>
+<p>Если сервер ещё не настроен, вернитесь к этапам 8–10 мастера на исходном компьютере. Образ Tails сам по себе не создаёт удалённый кабинет.</p>
+<div class="callout">
+<strong>При желании включите Persistent Storage.</strong><details><summary>Как сохранить адрес в Tails</summary><p>Создайте хранилище штатным приложением Tails и включите Tor Browser Bookmarks. Сохраните сам onion-адрес закладкой в Tor Browser. Wi-Fi и Tor Bridge включайте по необходимости. В следующих запусках вы сначала вводите его парольную фразу. Мастер не сохраняет на USB root-пароль, ключ кодов или данные Telegram.</p></details>
+</div>
+<details><summary>Что защищает это соединение</summary><p class="muted">Tor защищает свои соединения, а HTTPS — соединение до сайта. Это не шифрование всей радиосети и не удаление данных вашего оператора.</p></details>
+<details><summary>Если Tor ещё не подключился</summary><p>Сначала дождитесь подтверждения в Tor Connection. Снимок ниже показывает неудачное прямое подключение и ожидание встроенных мостов в проверке Tails. Готовность Tor Browser на нём не подтверждена.</p>
+<figure class="guide-shot" data-guide-shot="tails-tor-failure" hidden></figure></details><div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Ваш кабинет открыт в Tor Browser из Tails, Workstation доступна.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Проверьте весь onion-адрес, соединение Tor и оплату сервера. Код кабинета нужен из аутентификатора; код Telegram — из Telegram или сервиса номера.</p></details><button type="button" class="button secondary" data-copy="https://tails.net/doc/first_steps/start/">Копировать официальную помощь Tails</button></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="10">← Предыдущий этап</button><button type="button" class="button secondary" data-go="12">Следующий этап: Ежедневный вход</button>
+</div>
+</div></section><section class="page" data-page="12" data-scene-id="12" aria-labelledby="heading-12" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 12: Ежедневный вход"><img class="goal-art-image" data-goal-image="12" data-fallback-src="/assets/steps/06-daily.png" src="/assets/steps/06-daily.png" alt="Художественная иллюстрация: Ежедневный вход" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 12</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">12</span><div class="briefing-copy">
+<span class="eyebrow">12 / ЕЖЕДНЕВНЫЙ ВХОД</span><h1 id="heading-12">Ваш кабинет ждёт вас.</h1>
+<p class="lead">Для обычного входа достаточно Tor, адреса кабинета и карточки доступа. Мастер заново устанавливать не нужно.</p>
+<span class="briefing-tag">ЦЕЛЬ: КОМПЬЮТЕР ИЛИ ТЕЛЕФОН</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Компьютер или телефон.</p>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g12-s01" aria-labelledby="action-heading-12-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-12-0" tabindex="-1">Подключите Tor на своём устройстве.</h2>
+<label for="daily-device">С какого устройства вы входите?</label><select id="daily-device"><option value="">Выберите устройство</option>
+<option value="windows">Windows</option><option value="macos">macOS</option><option value="linux">Linux</option><option value="tails">Tails с флешки</option><option value="android">Телефон Android</option><option value="iphone">iPhone</option></select>
+<p id="daily-device-advice" class="callout" role="status">Выберите устройство — мастер покажет только подходящие для него действия.</p>
+<div id="daily-android-method" hidden><label for="daily-method">Как подготовить Android?</label><select id="daily-method"><option value="usb">Через USB с этого компьютера</option><option value="phone">Без USB — на самом телефоне</option></select></div>
+<section id="daily-guide" class="device-guide" aria-labelledby="daily-guide-title" hidden>
+<div class="device-guide-top"><span id="daily-guide-position" class="eyebrow"></span><progress id="daily-guide-progress" aria-label="Подсказки для выбранного устройства"></progress></div>
+<h3 id="daily-guide-title" tabindex="-1"></h3><p id="daily-guide-text"></p>
+<button id="daily-open-stage" type="button" class="button secondary" data-action-go="1" data-action-index="1" hidden>Открыть подготовку Tor Browser</button>
+<button id="daily-source" type="button" class="button secondary" data-copy="" hidden>Копировать официальный адрес</button>
+<div id="daily-phone-find" hidden><button id="phone-list" type="button" class="button primary">Найти подключённый Android</button></div>
+<div id="daily-phone-choose" hidden><label for="phone-device">Ваш Android в найденном списке</label><select id="phone-device"><option value="">Сначала найдите подключённый телефон</option></select><p class="field-help">Выберите именно своё устройство. Если разрешение ещё не дано, подтвердите его на телефоне и повторите поиск.</p></div>
+<div id="daily-phone-install" hidden><p id="phone-selected-device" class="field-help"></p><button id="phone-install" type="button" class="button primary">Установить Tor Browser</button></div>
+<div id="daily-phone-cleanup" hidden><button id="phone-close-guide" type="button" class="button secondary">Завершить USB-подключение</button><p class="field-help">Эта кнопка завершает подключение на компьютере. Выключение отладки и отзыв разрешений выполните сами на телефоне.</p></div>
+<div id="daily-phone-status" hidden><p id="phone-state" class="readiness" role="status"></p><p id="phone-guidance" class="field-help"></p><p id="phone-installed" class="field-help"></p></div>
+<details id="daily-usb-help" class="action-help" hidden><summary>Android не найден по USB</summary>
+<p>Проверьте кабель для передачи данных, разблокируйте телефон и подтвердите на нём запрос USB-подключения. Затем повторите поиск.</p>
+<p>В Windows может понадобиться USB-драйвер от производителя телефона. Установите его вручную по официальной инструкции Android для своей модели.</p>
+<button type="button" class="button secondary" data-copy="https://developer.android.com/studio/run/oem-usb">Копировать помощь по драйверу Windows</button>
+<p>В Ubuntu может понадобиться настройка прав доступа к USB: правила udev и группа plugdev. Следуйте разделу Ubuntu Linux в официальной инструкции Android. Мастер не меняет эти права автоматически.</p>
+<button type="button" class="button secondary" data-copy="https://developer.android.com/studio/run/device">Копировать помощь по USB в Ubuntu</button>
+<p>Если настройка USB не подходит, выберите выше «Без USB — на самом телефоне» и установите Tor Browser на Android по официальной ссылке.</p></details>
+<div class="device-guide-actions"><button id="daily-guide-back" type="button" class="button ghost">← Предыдущий шаг</button><button id="daily-guide-next" type="button" class="button secondary">Следующий шаг →</button></div>
+
+</section>
+<div class="expected-result"><span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Сам браузер сообщает о соединении с Tor. Установленный браузер ещё не означает, что Tor подключён. На телефоне удалённый экран может быть менее удобным.</p></div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Вернитесь к нужному шагу подсказки для своего устройства. Разрешения системы и подключение Tor подтверждаете вы. Telegram остаётся на удалённом рабочем столе; устанавливать его на этот телефон для входа в кабинет не нужно.</p></details></article><article class="action-card" data-inner-step="1" data-art-key="g12-s02" aria-labelledby="action-heading-12-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-12-1" tabindex="-1">Откройте сохранённый адрес кабинета.</h2>
+
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Открылась страница входа вашего кабинета.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если адрес не открывается, проверьте соединение Tor, весь адрес и состояние оплаченного сервера.</p></details></article><article class="action-card" data-inner-step="2" data-art-key="g12-s03" aria-labelledby="action-heading-12-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-12-2" tabindex="-1">Введите данные карточки и код.</h2>
+
+<p>Код кабинета и код Telegram — разные коды. Проверьте автоматические дату и время телефона.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>В кабинете появились экраны Gateway и Workstation.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если код не подходит, дождитесь следующего кода и проверьте время. При потере ключа карточка восстанавливается через root-доступ к серверу.</p></details></article><article class="action-card" data-inner-step="3" data-art-key="g12-s04" aria-labelledby="action-heading-12-3" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 04</span><h2 id="action-heading-12-3" tabindex="-1">Откройте Workstation и Telegram.</h2>
+<p>Если Telegram просит войти, используйте свой номер и код от Telegram или сервиса номера.</p>
+<details><summary>Обновления и личные файлы</summary><p>Периодически обновляйте Whonix в режиме обслуживания по руководству комплекта. Этот мастер не переносит личные файлы с вашего устройства на компьютер в аренду. Перетаскивание файла в окно удалённого экрана тоже не переносит его.</p></details>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы работаете в Telegram на удалённом компьютере. Данные остаются на диске Workstation.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если Telegram не готов, вернитесь к этапу 9. Если нужно отправить документ, сначала очистите поддерживаемые метаданные на этапе 13.</p></details></article><article class="action-card" data-inner-step="4" data-art-key="g12-s05" aria-labelledby="action-heading-12-4" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 05</span><h2 id="action-heading-12-4" tabindex="-1">Завершите работу в кабинете.</h2>
+<p>Закрытие браузера не удаляет Telegram с сервера.</p>
+<div class="expected-result">
+<span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Страница кабинета закрыта. Если вы открывали кошелёк, мастер отдельно подтвердил закрытие его хранилища.</p>
+</div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если мастер сообщает об ошибке закрытия хранилища, устраните её и повторите. Не считайте окно браузера проверкой закрытия диска.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="11">← Предыдущий этап</button><button type="button" class="button secondary" data-go="13">Следующий этап: Очистить данные файла</button>
+</div>
+</div></section><section class="page" data-page="13" data-scene-id="13" aria-labelledby="heading-13" hidden><figure class="goal-art-frame" tabindex="-1" aria-label="Иллюстрация этапа 13: Очистить данные файла"><img class="goal-art-image" data-goal-image="13" data-fallback-src="/assets/steps/06-daily.png" src="/assets/steps/06-daily.png" alt="Художественная иллюстрация: Очистить данные файла" width="1536" height="1024" loading="lazy" decoding="async"><figcaption class="goal-art-label"><span data-art-step-label>ДОСЬЕ / 13</span><span>ИЛЛЮСТРАЦИЯ</span></figcaption></figure><div class="mission-sheet">
+<div class="page-heading briefing">
+<span class="chapter-number" aria-hidden="true">13</span><div class="briefing-copy">
+<span class="eyebrow">13 / ОЧИСТИТЬ ДАННЫЕ ФАЙЛА</span><h1 id="heading-13">Отправляем чистую копию.</h1>
+<p class="lead">Автоочистка готовит отдельные копии новых загрузок внутри удалённой Workstation. Исходники остаются на месте, а отправку копии подтверждаете вы.</p>
+<span class="briefing-tag">ЦЕЛЬ: ПОДГОТОВИТЬ КОПИЮ К ОТПРАВКЕ</span>
+</div>
+</div>
+<div class="goal-outcome">
+<span class="eyebrow">РЕЗУЛЬТАТ ЭТАПА</span><p>Подготовить копию к отправке.</p>
+</div>
+<div class="goal-guide" data-goal-guide>
+<div class="goal-guide-top">
+<span class="eyebrow" data-inner-position></span><progress data-inner-progress aria-label="Действия внутри этапа"></progress>
+</div>
+<article class="action-card" data-inner-step="0" data-art-key="g13-s01" aria-labelledby="action-heading-13-0"><span class="card-index">ОДНО ДЕЙСТВИЕ / 01</span><h2 id="action-heading-13-0" tabindex="-1">Проверьте автоматическую очистку.</h2>
+<p>На удалённом рабочем столе Workstation автоочистка следит за папками <strong>Downloads</strong> и <strong>Downloads/Telegram Desktop</strong>. После окончания загрузки и минимум шести секунд без изменений файл попадает в обработку.</p>
+<p>Отдельные обработанные копии появляются в <strong>OnionDesk-Clean</strong> в домашней папке Workstation. Исходники остаются на месте. Ничего не отправляется автоматически.</p>
+<p id="auto-cleaner-state" class="readiness" role="status">Состояние автоочистки пока не проверено.</p><p id="auto-cleaner-guidance" class="field-help"></p>
+<div class="button-row cleaner-actions"><button id="auto-cleaner-check" type="button" class="button primary">Проверить автоочистку</button><button id="auto-cleaner-connect" type="button" class="button secondary" data-action-go="8" data-action-index="1" hidden>Открыть подключение к серверу</button><button id="auto-cleaner-session" type="button" class="button secondary" data-action-go="9" data-action-index="4" hidden>Открыть Workstation</button></div>
+<p class="field-help">На этом этапе мастер сам повторяет проверку не чаще раза в 15 секунд, когда другая операция не работает. Проверка службы не означает, что любой файл уже обработан.</p>
+<div class="expected-result"><span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Мастер получил свежий отчёт о работающей автоочистке. Если сервер не подключён или проверка не удалась, готовность не показывается.</p></div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Подключитесь к тому же серверу на этапе 8 и восстановите наблюдение установки. Не запускайте новую установку поверх сервера с нужными данными. Если отчёт не появился, повторите проверку и прочитайте сообщение операции.</p></details>
+<details><summary>Диагностика: ручной инструмент</summary><p>Только для разбора ошибки можно открыть в Workstation меню «Очистить данные файла». Это отдельный ручной инструмент; в обычном сценарии выбирать входной файл здесь не требуется. Снимки ниже показывают именно ручной инструмент.</p><figure class="guide-shot" data-guide-shot="whonix-metadata" hidden></figure><figure class="guide-shot" data-guide-shot="metadata-picker" hidden></figure></details></article>
+<article class="action-card" data-inner-step="1" data-art-key="g13-s02" aria-labelledby="action-heading-13-1" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 02</span><h2 id="action-heading-13-1" tabindex="-1">Дождитесь обработанных копий.</h2>
+<p>Пока файл загружается или меняется, автоочистка ждёт. Если новых файлов нет, ожидание — нормальное состояние.</p>
+<dl class="cleaner-counts" aria-label="Последний отчёт автоочистки"><div><dt>Ждут обработки</dt><dd id="auto-cleaner-pending">—</dd></div><div><dt>Сейчас обрабатываются</dt><dd id="auto-cleaner-processing">—</dd></div><div><dt>Копий создано всего</dt><dd id="auto-cleaner-cleaned">—</dd></div><div><dt>Не удалось обработать</dt><dd id="auto-cleaner-failed">—</dd></div><div><dt>Формат не поддерживается</dt><dd id="auto-cleaner-unsupported">—</dd></div><div><dt>Ещё загружаются</dt><dd id="auto-cleaner-downloading">—</dd></div></dl>
+<p id="auto-cleaner-last-result" role="status" class="field-help">Жду свежий отчёт.</p><p id="auto-cleaner-limits" class="field-help"></p>
+<div class="expected-result"><span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Счётчик созданных копий растёт после успешной обработки. Ошибка или неподдерживаемый формат не означают готовую копию. Названия и содержимое ваших файлов в этот мастер не передаются.</p></div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если файл продолжает изменяться, дождитесь окончания загрузки. При ошибке, лимите или неподдерживаемом формате копия не объявляется готовой. На предыдущем действии повторите проверку автоочистки.</p><p>Снимок ниже относится к результату отдельного ручного инструмента, а не к доказательству работы автоматической службы.</p><figure class="guide-shot" data-guide-shot="metadata-result" hidden></figure></details></article>
+<article class="action-card" data-inner-step="2" data-art-key="g13-s03" aria-labelledby="action-heading-13-2" hidden><span class="card-index">ОДНО ДЕЙСТВИЕ / 03</span><h2 id="action-heading-13-2" tabindex="-1">Используйте копию из OnionDesk-Clean.</h2>
+<p>Счётчик по последнему отчёту: <strong id="auto-cleaner-ready-count">—</strong> копий создано всего. Это не список текущих файлов папки.</p>
+<p>Имена, лица, текст и переписку оцениваете вы. Для отправки прикрепите обработанную копию в Telegram внутри Workstation. Мастер ничего не отправляет за вас.</p>
+<div class="expected-result"><span>ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ</span><p>Вы просмотрели нужную обработанную копию. Автоочистка удаляет поддерживаемые скрытые сведения, например GPS и автора, но не смысл и видимое содержимое. Зелёное состояние службы не означает, что все файлы анонимны.</p></div>
+<details class="action-help"><summary>У меня другой результат</summary><p>Если готовой копии нет, вернитесь к счётчикам и свежей проверке. Не подменяйте её исходником с неизвестными свойствами. Этот мастер не переносит личные файлы с вашего компьютера на сервер и не переносит данные Telegram.</p></details></article><div class="inner-actions">
+<button type="button" class="button ghost" data-inner-back>Предыдущее действие</button><button type="button" class="button primary" data-inner-next>Следующее действие →</button>
+</div>
+<p class="progress-explanation">Переход вперёд меняет только подсказку. Результат операций подтверждает мастер отдельно.</p>
+</div>
+<div class="page-actions">
+<button type="button" class="button ghost" data-go="12">← Предыдущий этап</button><button type="button" class="button secondary" data-go="0">К плану задания</button>
+</div>
+</div></section></main>
+<footer class="workspace-footer"><span>ONIONDESK / ПОЛЕВОЙ МАСТЕР</span><span>Действия под вашим контролем</span></footer>
+</div>
+</div>
+<dialog id="guide-shot-viewer" class="shot-viewer" aria-labelledby="guide-shot-viewer-title" aria-describedby="guide-shot-viewer-caption">
+<div class="shot-viewer-header">
+<h2 id="guide-shot-viewer-title">Снимок экрана</h2>
+<div class="shot-viewer-controls">
+<button id="guide-shot-viewer-size" type="button" class="button secondary" aria-pressed="false">Исходный размер</button><button id="guide-shot-viewer-close" type="button" class="button secondary" autofocus>Закрыть снимок</button>
+</div>
+</div>
+<p class="shot-viewer-hint">Esc — закрыть. В исходном размере снимок можно прокручивать.</p>
+<figure><div id="guide-shot-viewer-frame" class="shot-viewer-frame" tabindex="0" aria-label="Снимок экрана, область прокрутки"><img id="guide-shot-viewer-image" alt=""></div>
+<figcaption id="guide-shot-viewer-caption"></figcaption></figure>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
+
