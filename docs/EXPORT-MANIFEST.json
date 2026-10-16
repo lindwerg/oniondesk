@@ -2,7 +2,7 @@
   "schema": 2,
   "status": "LOCAL DRAFT; frozen UI synchronized; independent review, root approval and fresh private verification required before push",
   "policy": "Explicit reviewed source classes; no workspace, user data, raw proofs, downloaded executables or disk images",
-  "tree_sha256_excluding_this_manifest": "71d4a1c06c5e531ed7b71003dfaff26813e781b1da92e3829b5a76e7c790ddcf",
+  "tree_sha256_excluding_this_manifest": "32ba058950c017b442e3f40dddb1db5f3dbd863018a1890449ea9f3d32d5ed70",
   "allowlisted_source_tree_sha256": "e900eec129531b888143da674e8d6aee2b76b822bdc3694d60f1bd1d6244684b",
   "files": [
     {
@@ -974,8 +974,8 @@
     },
     {
       "path": "docs/DOWNLOADS.md",
-      "bytes": 5613,
-      "sha256": "1a92658e3cab725c28766ce841f76b94927f4ab242f62f5006dfb87d93c5a408"
+      "bytes": 7959,
+      "sha256": "68e597bdba994af5a2239e05459c367cab2895f3fa0f1725b800a2ea981af99c"
     },
     {
       "path": "docs/EXPORT-POLICY.md",
