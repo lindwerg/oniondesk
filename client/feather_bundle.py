@@ -6,6 +6,7 @@ secrets, start a bundled Tor, or fetch software in the user's runtime.
 """
 from __future__ import annotations
 
+import errno
 import hashlib
 import json
 import os
@@ -16,6 +17,7 @@ import shutil
 import stat
 import subprocess
 import tempfile
+import threading
 from typing import Callable, Literal, TypedDict
 import zipfile
 
@@ -27,6 +29,173 @@ from wallet_engine import WalletError, _private_directory, _private_file
 
 class FeatherError(WalletError):
     pass
+
+
+_LOCK_NAME = "feather-oniondesk.lock"
+_LOCK_LIMIT = 4096
+_LOCK_MESSAGE = "Блокировку Feather нельзя безопасно связать с завершённым собственным запуском. Файл и хранилище сохранены."
+
+
+def _lock_cleanup_supported() -> bool:
+    # Qt 6.9 qlockfile_unix.cpp uses flock, except on Android. A retained
+    # ordinary Python FD on Windows can itself prevent Qt's normal deletion.
+    return os.name == "posix" and platform.system() in {"Darwin", "Linux"}
+
+
+def _flock(fd: int, *, unlock: bool = False) -> None:
+    import fcntl
+    operation = fcntl.LOCK_UN if unlock else fcntl.LOCK_EX | fcntl.LOCK_NB
+    fcntl.flock(fd, operation)
+
+
+def _private_lock_info(info: os.stat_result, device: int) -> None:
+    if (not stat.S_ISREG(info.st_mode) or info.st_nlink != 1
+            or info.st_uid != os.getuid() or info.st_mode & 0o077
+            or info.st_dev != device or not 0 < info.st_size <= _LOCK_LIMIT):
+        raise FeatherError(_LOCK_MESSAGE)
+
+
+def _lock_present(directory: Path) -> bool:
+    for path in (directory, *directory.parents):
+        try:
+            info = path.lstat()
+        except FileNotFoundError:
+            continue
+        if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+            raise FeatherError(_LOCK_MESSAGE)
+    try:
+        (directory / _LOCK_NAME).lstat()
+    except FileNotFoundError:
+        return False
+    return True
+
+
+class _LaunchLock:
+    """In-memory witness for one original Popen child, never a PID adoption.
+
+    The nonce identifies this launch, and the retained descriptors prevent
+    inode reuse. Qt's lock must be observed held while that child is still
+    alive. Nothing is persisted that a fresh controller could later adopt.
+    """
+
+    def __init__(self, directory: Path, directory_fd: int,
+                 process: subprocess.Popen[bytes], nonce: str) -> None:
+        self.directory = directory
+        self.directory_fd = directory_fd
+        self.directory_info = os.fstat(directory_fd)
+        self.process = process
+        self.pid = process.pid
+        self.nonce = nonce
+        self.file_fd: int | None = None
+        self.payload: bytes | None = None
+
+    def _check_directory(self) -> None:
+        for path in (self.directory, *self.directory.parents):
+            info = path.lstat()
+            if stat.S_ISLNK(info.st_mode):
+                raise FeatherError(_LOCK_MESSAGE)
+        current = self.directory.lstat()
+        held = os.fstat(self.directory_fd)
+        if (not stat.S_ISDIR(current.st_mode) or current.st_uid != os.getuid()
+                or current.st_mode & 0o077
+                or (current.st_dev, current.st_ino) != (held.st_dev, held.st_ino)
+                or (held.st_dev, held.st_ino) !=
+                (self.directory_info.st_dev, self.directory_info.st_ino)):
+            raise FeatherError(_LOCK_MESSAGE)
+
+    def _read(self, fd: int) -> bytes:
+        before = os.fstat(fd)
+        _private_lock_info(before, self.directory_info.st_dev)
+        os.lseek(fd, 0, os.SEEK_SET)
+        payload = os.read(fd, _LOCK_LIMIT + 1)
+        after = os.fstat(fd)
+        if (len(payload) != before.st_size or
+                (before.st_size, before.st_mtime_ns, before.st_ctime_ns) !=
+                (after.st_size, after.st_mtime_ns, after.st_ctime_ns)):
+            raise FeatherError(_LOCK_MESSAGE)
+        return payload
+
+    def _same_path(self, fd: int) -> None:
+        current = os.stat(_LOCK_NAME, dir_fd=self.directory_fd, follow_symlinks=False)
+        held = os.fstat(fd)
+        _private_lock_info(current, self.directory_info.st_dev)
+        _private_lock_info(held, self.directory_info.st_dev)
+        if (current.st_dev, current.st_ino) != (held.st_dev, held.st_ino):
+            raise FeatherError(_LOCK_MESSAGE)
+
+    def capture(self) -> None:
+        """One bounded read; a not-yet-created lock can be retried while alive."""
+        if self.file_fd is not None or self.process.poll() is not None:
+            return
+        self._check_directory()
+        try:
+            fd = os.open(_LOCK_NAME, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC,
+                         dir_fd=self.directory_fd)
+        except FileNotFoundError:
+            return
+        try:
+            info = os.fstat(fd)
+            # Qt creates, locks, then writes the file. An empty first snapshot
+            # isn't ownership evidence; later polling may observe the full blob.
+            if stat.S_ISREG(info.st_mode) and info.st_size == 0:
+                return
+            payload = self._read(fd)
+            fields = payload.splitlines()
+            if (len(fields) != 5 or not payload.endswith(b"\n") or b"\0" in payload
+                    or fields[0] != str(self.pid).encode("ascii") or not fields[1]):
+                raise FeatherError(_LOCK_MESSAGE)
+            try:
+                _flock(fd)
+            except OSError as error:
+                if error.errno not in {errno.EAGAIN, errno.EWOULDBLOCK}:
+                    raise
+            else:
+                _flock(fd, unlock=True)
+                raise FeatherError(_LOCK_MESSAGE)
+            self._same_path(fd)
+            if self.process.poll() is not None:
+                return  # Never arm from a file first observed after child exit.
+            self.file_fd, self.payload = fd, payload
+            fd = -1
+        finally:
+            if fd >= 0:
+                os.close(fd)
+
+    def remove(self, process: subprocess.Popen[bytes], nonce: str) -> None:
+        """Remove only our unchanged, natively unlocked, exit-code-zero lock."""
+        fd = self.file_fd
+        if (process is not self.process or nonce != self.nonce or process.pid != self.pid
+                or process.poll() != 0 or fd is None or self.payload is None):
+            raise FeatherError(_LOCK_MESSAGE)
+        self._check_directory()
+        _flock(fd)
+        try:
+            self._same_path(fd)
+            if self._read(fd) != self.payload or process.poll() != 0:
+                raise FeatherError(_LOCK_MESSAGE)
+            self._check_directory()
+            self._same_path(fd)
+            # The private directory and Qt-compatible native lock serialize
+            # cooperative users. POSIX has no unlink-if-inode syscall; this
+            # does not claim protection against a hostile writer of our UID.
+            os.unlink(_LOCK_NAME, dir_fd=self.directory_fd)
+            try:
+                os.stat(_LOCK_NAME, dir_fd=self.directory_fd, follow_symlinks=False)
+            except FileNotFoundError:
+                return
+            raise FeatherError(_LOCK_MESSAGE)
+        finally:
+            _flock(fd, unlock=True)
+
+    def close(self) -> None:
+        try:
+            if self.file_fd is not None:
+                fd, self.file_fd = self.file_fd, None
+                os.close(fd)
+        finally:
+            if self.directory_fd >= 0:
+                fd, self.directory_fd = self.directory_fd, -1
+                os.close(fd)
 
 
 ProgressCallback = Callable[[dict[str, object]], None]
@@ -344,14 +513,46 @@ class FeatherSession:
         self._record: catalog.ReleaseRecord | None = None
         self._key: str | None = None
         self._process: subprocess.Popen[bytes] | None = None
+        self._launch_nonce: str | None = None
+        self._lock_watch: _LaunchLock | None = None
+        self._lock_capture_failed = False
+        self._witness_lock = threading.RLock()
         self._network_mode: Literal["offline", "tor"] = "offline"
 
     def state(self) -> FeatherState:
+        self._capture_lock()
         result = status()
         result["prepared"] = self._folder is not None
         result["running"] = self._process is not None and self._process.poll() is None
         result["network_mode"] = self._network_mode
+        if self._lock_capture_failed:
+            result["message"] = _LOCK_MESSAGE
         return result
+
+    def _capture_lock(self) -> None:
+        with self._witness_lock:
+            self._capture_lock_locked()
+
+    def _capture_lock_locked(self) -> None:
+        watch = self._lock_watch
+        if watch is None or self._lock_capture_failed:
+            return
+        try:
+            watch.capture()
+        except (OSError, FeatherError):
+            # Polling must remain usable, but an unsuccessful witness is never
+            # reusable. Surface the failure in state and refuse later cleanup.
+            watch.close()
+            self._lock_watch = None
+            self._lock_capture_failed = True
+
+    def _release_lock_watch(self) -> None:
+        with self._witness_lock:
+            if self._lock_watch is not None:
+                self._lock_watch.close()
+                self._lock_watch = None
+            self._launch_nonce = None
+            self._lock_capture_failed = False
 
     @staticmethod
     def _emit(emit, message, percent):
@@ -359,8 +560,8 @@ class FeatherSession:
             emit({"stage": "feather", "message": message, "percent": percent})
 
     def prepare(self, root: Path, emit: ProgressCallback | None = None) -> None:
-        if self._process is not None and self._process.poll() is None:
-            raise FeatherError("Сначала закройте Feather.")
+        if self._process is not None:
+            self.stop()  # Do not replace unresolved evidence with another root.
         key = _platform_key()
         record = catalog.PLATFORMS[key]
         source = offline._find_root()
@@ -397,8 +598,8 @@ class FeatherSession:
         self._launch(root, emit)
 
     def connect(self, root: Path, emit: ProgressCallback | None = None) -> None:
-        if self._process is not None and self._process.poll() is None:
-            raise FeatherError("Сначала закройте Feather командой File → Quit, затем повторите подключение через Tor.")
+        if self._process is not None:
+            self.stop()
         if self._folder is None or self._root != Path(root).absolute():
             raise FeatherError("Сначала подготовьте Feather в открытом зашифрованном хранилище.")
         # Reuse the launcher's TLS-verified Tor route check. Never accept a
@@ -410,9 +611,10 @@ class FeatherSession:
             raise FeatherError("Маршрут Tor не прошёл проверку. Прямого подключения не будет.")
         self._launch(root, emit, verified_tor_port=port)
 
-    def _launch(self, root, emit=None, *, verified_tor_port=None):
-        if self._process is not None and self._process.poll() is None:
-            raise FeatherError("Feather уже открыт. Используйте его отдельное окно.")
+    def _launch(self, root: Path, emit: ProgressCallback | None = None, *,
+                verified_tor_port: int | None = None) -> None:
+        if self._process is not None:
+            self.stop()
         if self._root != Path(root).absolute() or self._folder is None:
             raise FeatherError("Сначала подготовьте Feather в открытом зашифрованном хранилище.")
         folder = _safe_directory(self._folder)
@@ -421,7 +623,7 @@ class FeatherSession:
         data = _safe_directory(folder / "feather_data")
         home = _safe_directory(folder / "home")
         temporary = _safe_directory(folder / "tmp")
-        if (temporary / "feather-oniondesk.lock").exists():
+        if _lock_present(temporary):
             raise FeatherError("В этом хранилище найден незавершённый сеанс Feather. Закройте его штатно; чужой процесс и файл блокировки не изменяются.")
         for path in (data / "wallets", home / "config", home / "cache", home / "data", home / "local"):
             _safe_directory(path)
@@ -457,21 +659,44 @@ class FeatherSession:
             output.flush()
             os.fsync(output.fileno())
         self._emit(emit, "Открываю Feather внутри зашифрованного хранилища…", 80)
+        directory_fd = -1
         try:
+            if _lock_cleanup_supported():
+                directory_fd = os.open(temporary, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+                # Check again at the spawn boundary, including broken links.
+                try:
+                    os.stat(_LOCK_NAME, dir_fd=directory_fd, follow_symlinks=False)
+                except FileNotFoundError:
+                    present = False
+                else:
+                    present = True
+                if present:
+                    raise FeatherError(_LOCK_MESSAGE)
             options = {"umask": 0o077, "start_new_session": True} if os.name != "nt" else {
-                "creationflags": subprocess.CREATE_NEW_PROCESS_GROUP}
+                "creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)}
             self._process = subprocess.Popen([str(binary), "--quiet", "--use-local-tor"],
                                              stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
                                              stderr=subprocess.DEVNULL, cwd=folder,
                                              env=_environment(home, temporary), **options)
+            with self._witness_lock:
+                self._launch_nonce = secrets.token_hex(32)
+                if directory_fd >= 0:
+                    self._lock_watch = _LaunchLock(temporary, directory_fd, self._process, self._launch_nonce)
+                    directory_fd = -1  # The launch witness owns this descriptor.
+            self._capture_lock()
             try:
                 self._process.wait(timeout=1)
             except subprocess.TimeoutExpired:
-                pass
+                self._capture_lock()
             else:
                 raise FeatherError("Feather не открыл окно. Проверьте поддержку системы; файлы кошельков сохранены.")
+            if self._lock_capture_failed:
+                raise FeatherError(_LOCK_MESSAGE)
         except OSError:
             raise FeatherError("Система не смогла открыть Feather. Файлы кошельков сохранены.") from None
+        finally:
+            if directory_fd >= 0:
+                os.close(directory_fd)
         self._network_mode = "tor" if verified_tor_port is not None else "offline"
         message = ("Feather открыт через проверенный Tor. Дождитесь синхронизации в его окне; готовность оплаты здесь не подтверждается."
                    if verified_tor_port is not None else "Feather открыт автономно. Восстановление 25 слов выполняется только в его окне.")
@@ -479,14 +704,24 @@ class FeatherSession:
 
     def stop(self) -> None:
         process = self._process
+        self._capture_lock()  # A pending witness may only arm while still alive.
         if process is not None and process.poll() is None:
             # A GUI may hold unsaved wallet changes. Ask for a normal exit in
             # Feather; never kill it or any process found by name/PID scanning.
             raise FeatherError("Закройте окно Feather штатной командой File → Quit. Затем повторите закрытие сеанса или хранилища.")
-        if self._folder is not None and (self._folder / "tmp/feather-oniondesk.lock").exists():
-            raise FeatherError("Блокировка Feather ещё существует. Закройте его штатно; хранилище и чужие процессы сохранены.")
-        self._process = None
-        self._network_mode = "offline"
+        with self._witness_lock:
+            try:
+                if self._lock_watch is not None:
+                    self._lock_watch._check_directory()
+                if self._folder is not None and _lock_present(self._folder / "tmp"):
+                    if process is None or self._lock_watch is None or self._launch_nonce is None:
+                        raise FeatherError(_LOCK_MESSAGE)
+                    self._lock_watch.remove(process, self._launch_nonce)
+            except OSError:
+                raise FeatherError(_LOCK_MESSAGE) from None
+            self._release_lock_watch()
+            self._process = None
+            self._network_mode = "offline"
 
     def close(self) -> None:
         self.stop()  # A running/foreign process never permits a vault detach.

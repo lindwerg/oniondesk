@@ -1,5 +1,6 @@
 """Offline, valueless Feather fixtures; no real wallet, process or network."""
 from contextlib import ExitStack
+import errno
 import hashlib
 import json
 import os
@@ -11,6 +12,9 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 import zipfile
+
+if os.name == "posix":
+    import fcntl
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "client"))
 import feather_bundle as bundle
@@ -101,9 +105,285 @@ class FeatherBundle(unittest.TestCase):
 
     def process(self):
         process = Mock()
+        process.pid = 12345
         process.poll.return_value = None
         process.wait.side_effect = subprocess.TimeoutExpired("fixture", 1)
         return process
+
+    def launch_with_lock(self, *, payload=None, held=True):
+        """The fixture holds a real Qt-compatible flock; no process is started."""
+        self.prepare()
+        process = self.process()
+        holder = []
+
+        def spawn(*args, **kwargs):
+            lock = Path(kwargs["env"]["TMPDIR"]) / bundle._LOCK_NAME
+            fd = os.open(lock, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            self.addCleanup(os.close, fd)
+            if held:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            raw = payload if payload is not None else b"12345\nfixture-feather\nfixture-host\nfixture-machine\nfixture-boot\n"
+            os.write(fd, raw)
+            holder.append(fd)
+            return process
+
+        with patch.object(bundle.subprocess, "Popen", side_effect=spawn):
+            self.session.launch(self.vault)
+        self.addCleanup(self.session._release_lock_watch)
+        return process, self.session._folder / "tmp" / bundle._LOCK_NAME, holder[0]
+
+    def exited_owned_lock(self):
+        process, lock, holder = self.launch_with_lock()
+        fcntl.flock(holder, fcntl.LOCK_UN)
+        process.poll.return_value = 0
+        return process, lock, holder
+
+    def test_exit_zero_removes_only_observed_own_lock_and_closes_descriptors(self):
+        process, lock, _ = self.exited_owned_lock()
+        sentinel = lock.parent / "sentinel"
+        sentinel.write_bytes(b"preserve")
+        watch = self.session._lock_watch
+        descriptors = (watch.directory_fd, watch.file_fd)
+        self.session.stop()
+        self.session.stop()  # Idempotent, with no witness left to reuse.
+        self.assertFalse(lock.exists())
+        self.assertEqual(sentinel.read_bytes(), b"preserve")
+        self.assertIsNone(self.session._process)
+        self.assertIsNone(self.session._launch_nonce)
+        self.assertIsNone(self.session._lock_watch)
+        for fd in descriptors:
+            with self.assertRaises(OSError):
+                os.fstat(fd)
+        process.kill.assert_not_called()
+        process.terminate.assert_not_called()
+
+    def test_live_owned_lock_is_preserved_until_original_child_exits(self):
+        process, lock, holder = self.launch_with_lock()
+        original = lock.read_bytes()
+        with self.assertRaises(WalletError):
+            self.session.stop()
+        self.assertEqual(lock.read_bytes(), original)
+        process.kill.assert_not_called()
+        process.terminate.assert_not_called()
+        fcntl.flock(holder, fcntl.LOCK_UN)
+        process.poll.return_value = 0
+        self.session.close()
+        self.assertFalse(lock.exists())
+
+    def test_controller_stop_ack_then_close_after_owned_normal_exit(self):
+        _, lock, _ = self.exited_owned_lock()
+        vault = OpenedVaultFixture(self.vault)
+        vault.create("synthetic fixture password")
+        controller = wallet_controller.WalletController(vault_manager=vault)
+        controller._workspace_root = self.vault
+        controller._engine = SimpleNamespace(root=self.vault)
+        controller._feather = self.session
+        controller.stop_feather()
+        self.assertFalse(lock.exists())
+        self.assertEqual(vault.detach_attempts, 0)
+        self.assertIsNotNone(vault.active_id)
+        controller.close()
+        self.assertEqual(vault.detach_attempts, 1)
+        self.assertIsNone(vault.active_id)
+
+    def test_nonzero_exit_never_removes_even_attested_own_lock(self):
+        process, lock, _ = self.exited_owned_lock()
+        process.poll.return_value = -9
+        before = lock.read_bytes()
+        with self.assertRaises(WalletError):
+            self.session.stop()
+        self.assertEqual(lock.read_bytes(), before)
+        self.assertIs(self.session._process, process)
+
+    def test_lock_without_live_launch_attestation_cannot_be_adopted_after_exit(self):
+        self.prepare()
+        process = self.process()
+        with patch.object(bundle.subprocess, "Popen", return_value=process):
+            self.session.launch(self.vault)
+        self.addCleanup(self.session._release_lock_watch)
+        process.poll.return_value = 0
+        lock = self.session._folder / "tmp" / bundle._LOCK_NAME
+        lock.write_bytes(b"12345\nfixture-feather\nfixture-host\nfixture-machine\nfixture-boot\n")
+        lock.chmod(0o600)
+        with self.assertRaises(WalletError):
+            self.session.stop()
+        self.assertTrue(lock.exists())
+        self.assertIsNone(self.session._lock_watch.file_fd)
+
+    def test_wrong_pid_or_missing_native_lock_cannot_arm_ownership(self):
+        for payload, held in ((b"99999\nforeign\nhost\nmachine\nboot\n", True), (None, False)):
+            with self.subTest(payload=payload, held=held):
+                with self.assertRaises(WalletError):
+                    self.launch_with_lock(payload=payload, held=held)
+                lock = self.session._folder / "tmp" / bundle._LOCK_NAME
+                before = lock.read_bytes()
+                self.session._process.poll.return_value = 0
+                with self.assertRaises(WalletError):
+                    self.session.stop()
+                self.assertEqual(lock.read_bytes(), before)
+                self.assertIsNone(self.session._lock_watch)
+                lock.unlink()  # Fixture owner only, between the two subcases.
+                self.session.stop()
+
+    def test_replaced_process_object_or_nonce_cannot_remove_owned_lock(self):
+        process, lock, _ = self.exited_owned_lock()
+        before = lock.read_bytes()
+        replacement = self.process()
+        replacement.poll.return_value = 0
+        self.session._process = replacement
+        with self.assertRaises(WalletError):
+            self.session.stop()
+        self.session._process = process
+        self.session._launch_nonce = "changed-nonce"
+        with self.assertRaises(WalletError):
+            self.session.stop()
+        self.assertEqual(lock.read_bytes(), before)
+
+    def test_changed_pid_blob_or_inode_is_preserved(self):
+        for change in ("pid", "content", "inode"):
+            with self.subTest(change=change):
+                _, lock, _ = self.exited_owned_lock()
+                original = lock.read_bytes()
+                if change == "inode":
+                    lock.unlink()
+                    lock.write_bytes(original)
+                    lock.chmod(0o600)
+                else:
+                    lock.write_bytes(original.replace(b"12345", b"54321") if change == "pid"
+                                     else original.replace(b"fixture-host", b"changed-host"))
+                changed = lock.read_bytes(), lock.stat().st_ino
+                with self.assertRaises(WalletError):
+                    self.session.stop()
+                self.assertEqual((lock.read_bytes(), lock.stat().st_ino), changed)
+                lock.unlink()
+                self.session.stop()
+
+    def test_link_replacements_and_redirected_parent_preserve_foreign_files(self):
+        for kind in ("symlink", "hardlink", "parent"):
+            with self.subTest(kind=kind):
+                _, lock, _ = self.exited_owned_lock()
+                other = self.folder / ("foreign-" + kind)
+                other.write_bytes(b"foreign sentinel")
+                other.chmod(0o600)
+                original_directory = None
+                if kind == "parent":
+                    original_directory = lock.parent.with_name("original-tmp")
+                    lock.parent.rename(original_directory)
+                    lock.parent.symlink_to(self.folder, target_is_directory=True)
+                else:
+                    lock.unlink()
+                    if kind == "symlink":
+                        lock.symlink_to(other)
+                    else:
+                        os.link(other, lock)
+                with self.assertRaises(WalletError):
+                    self.session.stop()
+                self.assertEqual(other.read_bytes(), b"foreign sentinel")
+                if original_directory is not None:
+                    lock.parent.unlink()
+                    original_directory.rename(lock.parent)
+                else:
+                    lock.unlink()
+                self.session.stop()
+
+    def test_still_held_qt_flock_blocks_cleanup_then_allows_safe_retry(self):
+        process, lock, holder = self.launch_with_lock()
+        process.poll.return_value = 0
+        before = lock.read_bytes()
+        with self.assertRaises(WalletError):
+            self.session.stop()
+        self.assertEqual(lock.read_bytes(), before)
+        fcntl.flock(holder, fcntl.LOCK_UN)
+        self.session.stop()
+        self.assertFalse(lock.exists())
+
+    def test_read_error_preserves_lock_and_evidence_for_retry(self):
+        _, lock, _ = self.exited_owned_lock()
+        before = lock.read_bytes()
+        with patch.object(bundle.os, "read", side_effect=OSError(errno.EIO, "fixture read error")):
+            with self.assertRaises(WalletError):
+                self.session.stop()
+        self.assertEqual(lock.read_bytes(), before)
+        self.session.stop()
+        self.assertFalse(lock.exists())
+
+    def test_pending_lock_is_captured_on_later_live_poll_only(self):
+        self.prepare()
+        process = self.process()
+        with patch.object(bundle.subprocess, "Popen", return_value=process):
+            self.session.launch(self.vault)
+        self.addCleanup(self.session._release_lock_watch)
+        self.assertIsNone(self.session._lock_watch.file_fd)
+        lock = self.session._folder / "tmp" / bundle._LOCK_NAME
+        fd = os.open(lock, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        self.addCleanup(os.close, fd)
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        os.write(fd, b"12345\nfixture-feather\nfixture-host\nfixture-machine\nfixture-boot\n")
+        self.assertTrue(self.session.state()["running"])
+        self.assertIsNotNone(self.session._lock_watch.file_fd)
+        fcntl.flock(fd, fcntl.LOCK_UN)
+        process.poll.return_value = 0
+        self.session.stop()
+        self.assertFalse(lock.exists())
+
+    def test_capture_read_error_closes_fds_and_cannot_rearm(self):
+        with patch.object(bundle.os, "read", side_effect=OSError(errno.EIO, "fixture read error")):
+            with self.assertRaises(WalletError):
+                self.launch_with_lock()
+        process = self.session._process
+        lock = self.session._folder / "tmp" / bundle._LOCK_NAME
+        self.assertIsNone(self.session._lock_watch)
+        self.assertTrue(self.session._lock_capture_failed)
+        self.assertEqual(self.session.state()["message"], bundle._LOCK_MESSAGE)
+        process.poll.return_value = 0
+        with self.assertRaises(WalletError):
+            self.session.stop()
+        self.assertTrue(lock.exists())
+
+    def test_unsafe_mode_and_excessive_payload_never_allow_cleanup(self):
+        for change in ("mode", "size"):
+            with self.subTest(change=change):
+                _, lock, _ = self.exited_owned_lock()
+                if change == "mode":
+                    lock.chmod(0o640)
+                else:
+                    lock.write_bytes(b"x" * (bundle._LOCK_LIMIT + 1))
+                before = lock.read_bytes(), lock.stat().st_mode
+                with self.assertRaises(WalletError):
+                    self.session.stop()
+                self.assertEqual((lock.read_bytes(), lock.stat().st_mode), before)
+                lock.unlink()
+                self.session.stop()
+
+    def test_new_prepare_cannot_discard_nonzero_exit_evidence(self):
+        process, lock, _ = self.exited_owned_lock()
+        process.poll.return_value = 7
+        watch = self.session._lock_watch
+        with patch.object(bundle, "_verify_publisher") as verify:
+            with self.assertRaises(WalletError):
+                self.session.prepare(self.vault)
+        verify.assert_not_called()
+        self.assertIs(self.session._lock_watch, watch)
+        self.assertTrue(lock.exists())
+
+    def test_normal_qt_unlink_releases_witness_without_second_deletion(self):
+        _, lock, _ = self.exited_owned_lock()
+        lock.unlink()  # Model Qt's ordinary successful unlock.
+        with patch.object(bundle.os, "unlink") as unlink:
+            self.session.stop()
+        unlink.assert_not_called()
+        self.assertIsNone(self.session._lock_watch)
+
+    def test_unsupported_platform_retains_conservative_lock_refusal(self):
+        with patch.object(bundle, "_lock_cleanup_supported", return_value=False):
+            process, lock, holder = self.launch_with_lock()
+        self.assertIsNone(self.session._lock_watch)
+        process.poll.return_value = 0
+        fcntl.flock(holder, fcntl.LOCK_UN)
+        before = lock.read_bytes()
+        with self.assertRaises(WalletError):
+            self.session.stop()
+        self.assertEqual(lock.read_bytes(), before)
 
     def test_prepare_checks_signature_and_cached_binary_without_launch(self):
         with patch.object(bundle.subprocess, "Popen") as popen:

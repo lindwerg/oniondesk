@@ -1,7 +1,7 @@
 {
   "schema": 2,
-  "status": "Source v3 backend manifest and frozen UI retained; runtime inputs match; export-only Linux builder resource path delta requires focused review",
-  "backend_manifest_sha256": "951448663e0c2fc72761171934dfe7d5a90f446f9ffba246b1fee919522382db",
+  "status": "Source v4 backend and frozen UI retained; export-only Linux builder resource path difference is documented separately",
+  "backend_manifest_sha256": "f4b575c3ec2c6b9a81f9675a37213353b45694fe59821ff430b5c547648a6be5",
   "source_backend": [
     {
       "path": "client/app.py",
@@ -17,7 +17,7 @@
     },
     {
       "path": "client/feather_bundle.py",
-      "sha256": "b66b213eb0dde5c0654a26de6cde0805f0eeb6f0bff71550bbbd2f4332e8490e"
+      "sha256": "829407afcee377e61da74b01b5b24828a882821f0bc150096aa17a083f17cf4e"
     },
     {
       "path": "client/feather_catalog.py",
@@ -61,8 +61,8 @@
     },
     {
       "path": "client/feather_bundle.py",
-      "sha256": "b66b213eb0dde5c0654a26de6cde0805f0eeb6f0bff71550bbbd2f4332e8490e",
-      "source_sha256": "b66b213eb0dde5c0654a26de6cde0805f0eeb6f0bff71550bbbd2f4332e8490e",
+      "sha256": "829407afcee377e61da74b01b5b24828a882821f0bc150096aa17a083f17cf4e",
+      "source_sha256": "829407afcee377e61da74b01b5b24828a882821f0bc150096aa17a083f17cf4e",
       "matches_reviewed_source": true
     },
     {

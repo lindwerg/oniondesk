@@ -2,8 +2,8 @@
   "schema": 2,
   "status": "LOCAL DRAFT; frozen UI synchronized; independent review, root approval and fresh private verification required before push",
   "policy": "Explicit reviewed source classes; no workspace, user data, raw proofs, downloaded executables or disk images",
-  "tree_sha256_excluding_this_manifest": "20ad5bb8ed33222f7349adcbc4616a72ac6f52013c7981d59a13b408baf74ab4",
-  "allowlisted_source_tree_sha256": "23c41f143bcbf31f7db42b1c2e2ca86643ad2c88435ecf2b00b139392c785fab",
+  "tree_sha256_excluding_this_manifest": "b5e5b41188e40ce87ad76b69d313c600139f0e7eaa7661cd9ebdc5e1d3930711",
+  "allowlisted_source_tree_sha256": "e900eec129531b888143da674e8d6aee2b76b822bdc3694d60f1bd1d6244684b",
   "files": [
     {
       "path": ".gitignore",
@@ -777,9 +777,9 @@
     },
     {
       "path": "client/feather_bundle.py",
-      "bytes": 27777,
-      "sha256": "b66b213eb0dde5c0654a26de6cde0805f0eeb6f0bff71550bbbd2f4332e8490e",
-      "source_snapshot_sha256": "b66b213eb0dde5c0654a26de6cde0805f0eeb6f0bff71550bbbd2f4332e8490e",
+      "bytes": 37278,
+      "sha256": "829407afcee377e61da74b01b5b24828a882821f0bc150096aa17a083f17cf4e",
+      "source_snapshot_sha256": "829407afcee377e61da74b01b5b24828a882821f0bc150096aa17a083f17cf4e",
       "modified_from_source": false
     },
     {
@@ -984,8 +984,8 @@
     },
     {
       "path": "docs/FROZEN-SOURCE.json",
-      "bytes": 4798,
-      "sha256": "2f54f391d905b8d9526b149a59c08d10993d42e76f5e3e7e226ab5d9939d1e1f"
+      "bytes": 4773,
+      "sha256": "ed82677f1c157a48f2627abf8b8a67df922957eb00752d00cc3d416520dcf60e"
     },
     {
       "path": "docs/GUIDE-IMAGE-MANIFEST.json",
@@ -1004,8 +1004,8 @@
     },
     {
       "path": "docs/RECOVERY.md",
-      "bytes": 3791,
-      "sha256": "ee4f240340a1cbfd948831e928c890a3ef50bf443a10464e8c1225a971618205"
+      "bytes": 3821,
+      "sha256": "30df93f48a958c7067fd85ba61ce1b04c7d080d56c5c41f43ac7631e8f93dd80"
     },
     {
       "path": "docs/RELEASE-PLAN.md",
@@ -1024,8 +1024,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 7316,
-      "sha256": "503e1378ed7ab7e38be074fa9a74a17885e10bcdea3ba10da832daf4d3049f43"
+      "bytes": 8704,
+      "sha256": "0ebfda81c7afa9b353de26975130698c4d2b0d9e49fbfc75dc191ad3e22cbbfa"
     },
     {
       "path": "docs/images/daily-preview.png",
@@ -1671,9 +1671,9 @@
     },
     {
       "path": "tests/docker/unit/test_feather_bundle.py",
-      "bytes": 20093,
-      "sha256": "0ca3e2420e36aec3c2df13e53c4e2309bb2c3da7761c9c53264bad6b0ca146c6",
-      "source_snapshot_sha256": "0ca3e2420e36aec3c2df13e53c4e2309bb2c3da7761c9c53264bad6b0ca146c6",
+      "bytes": 32950,
+      "sha256": "fc35ea23303737a85ccc653cf56f987d8c5622c33855fffe718328d0e5f3b2d5",
+      "source_snapshot_sha256": "fc35ea23303737a85ccc653cf56f987d8c5622c33855fffe718328d0e5f3b2d5",
       "modified_from_source": false
     },
     {
@@ -2355,8 +2355,8 @@
     },
     {
       "path": "client/feather_bundle.py",
-      "bytes": 27777,
-      "sha256": "b66b213eb0dde5c0654a26de6cde0805f0eeb6f0bff71550bbbd2f4332e8490e"
+      "bytes": 37278,
+      "sha256": "829407afcee377e61da74b01b5b24828a882821f0bc150096aa17a083f17cf4e"
     },
     {
       "path": "client/feather_catalog.py",
@@ -2740,8 +2740,8 @@
     },
     {
       "path": "tests/docker/unit/test_feather_bundle.py",
-      "bytes": 20093,
-      "sha256": "0ca3e2420e36aec3c2df13e53c4e2309bb2c3da7761c9c53264bad6b0ca146c6"
+      "bytes": 32950,
+      "sha256": "fc35ea23303737a85ccc653cf56f987d8c5622c33855fffe718328d0e5f3b2d5"
     },
     {
       "path": "tests/docker/unit/test_first_boot.py",
