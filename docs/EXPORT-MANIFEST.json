@@ -1,9 +1,9 @@
 {
   "schema": 3,
-  "status": "Reviewed V5 source export; local native frozen16/UI3/art32 match; GitHub native wrapper delivery is separately gated",
+  "status": "Reviewed V5 source export with owner-approved GPLv3; six media assets actual remote readback PASS; native delivery remains separately gated",
   "policy": "Explicit reviewed source classes only; no user data, raw logs, downloaded executable payloads or disk images",
   "baseline": "v5-frozen16-ui3-art32-data43",
-  "tree_sha256_excluding_this_manifest": "bd8723de069ad79911b0d7318d3fd46eb93a29e67ddccb2cc4b1767e08021ce9",
+  "tree_sha256_excluding_this_manifest": "c9fc39ab9333e80b270eb31ac1a2500f712af680121d685e788b8988ffb571cf",
   "allowlisted_source_tree_sha256": "1ebf8a462bbdca580db726b71feb9351ad35d3b1107d7c13237d33f75f5eaba6",
   "files": [
     {
@@ -23,8 +23,13 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 9468,
-      "sha256": "cdbca3a210b17a8c27a887adbc573233a43eb01991bca4cd8c4742e09a13301b"
+      "bytes": 9471,
+      "sha256": "c6d024ef3498822411d2d129bedb6a6cda55a78694e91a5b34f7cbd8e38ade2c"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
     },
     {
       "path": "LICENSES/Android/GOOGLE-ANDROID-SDK-LICENSE.txt",
@@ -84,8 +89,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 12837,
-      "sha256": "47ef9e5fd4326cc9d25c4b915cd9e6258a1a1926f7ac7429f75ea63383d598f5"
+      "bytes": 12736,
+      "sha256": "d6007215c376f203a3ac472e990c7e72554878bca0524869edf41b67917ecce5"
     },
     {
       "path": "SECURITY.md",
@@ -94,8 +99,8 @@
     },
     {
       "path": "START-HERE.md",
-      "bytes": 1014,
-      "sha256": "06ac634c6e9af080d14158b2a243206fdba828544e123cdb1debc44d515f216b"
+      "bytes": 1556,
+      "sha256": "4ee03d2ad8c4133eef0777295960d54cfd9b4f17b167d1a891afd5cbcfa8b4f0"
     },
     {
       "path": "assets/agent-cover.png",
@@ -1204,8 +1209,8 @@
     },
     {
       "path": "docs/DOWNLOADS.md",
-      "bytes": 8738,
-      "sha256": "be38abc14d60e9e14908212dc946cb41e67ad3f0fce2f107f44ea18e9f2cb762"
+      "bytes": 9907,
+      "sha256": "6966c6de4d3a24477b26a895f6208a95d8fa572eb8d83db7123667d6a7fdf493"
     },
     {
       "path": "docs/EXPORT-POLICY.md",
@@ -1224,8 +1229,8 @@
     },
     {
       "path": "docs/LICENSES.md",
-      "bytes": 2437,
-      "sha256": "76687a49a79bdcc873d4953af184a7978d97271fc9a5d13892a23f34e5a31162"
+      "bytes": 4102,
+      "sha256": "34b37de402dde2cc1f9cba4861fecb252252047d416f62f9a2fd726607f8a2c6"
     },
     {
       "path": "docs/MONERO-USDT.md",
@@ -1259,8 +1264,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 16445,
-      "sha256": "dc36c385ba6e924ce0a55978cff6838693a2ccc77ae4c02ed08edc05eb92e84a"
+      "bytes": 16606,
+      "sha256": "e1171c75955cb52e962527054f44d2d13afe6a81e2ce0382632768eda83a4862"
     },
     {
       "path": "docs/WEBSITES.md",
