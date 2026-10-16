@@ -2,7 +2,7 @@
   "schema": 2,
   "status": "LOCAL DRAFT; frozen UI synchronized; independent review, root approval and fresh private verification required before push",
   "policy": "Explicit reviewed source classes; no workspace, user data, raw proofs, downloaded executables or disk images",
-  "tree_sha256_excluding_this_manifest": "b5e5b41188e40ce87ad76b69d313c600139f0e7eaa7661cd9ebdc5e1d3930711",
+  "tree_sha256_excluding_this_manifest": "71d4a1c06c5e531ed7b71003dfaff26813e781b1da92e3829b5a76e7c790ddcf",
   "allowlisted_source_tree_sha256": "e900eec129531b888143da674e8d6aee2b76b822bdc3694d60f1bd1d6244684b",
   "files": [
     {
@@ -1024,8 +1024,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 8704,
-      "sha256": "0ebfda81c7afa9b353de26975130698c4d2b0d9e49fbfc75dc191ad3e22cbbfa"
+      "bytes": 9963,
+      "sha256": "c0271a838e928aa80f6b23caf178aa61077873ed5632c0a936720f617e4fe879"
     },
     {
       "path": "docs/images/daily-preview.png",
