@@ -1,11 +1,29 @@
 {
-  "archive_verification": "LOCAL_POINTER_ONLY; no remote materialized download verified",
+  "archive_verification": "LOCAL_POINTER_ONLY for this derivative; local root GUI mode-fixture PASS does not verify a new remote full ZIP/TAR",
+  "base_frozen_source_sha256": {
+    "engine": "c75806bf6818ccea1e3022c3d8db018631566478bf3c8d20f25cb488f0a4eba1",
+    "linux": "dc72c8f67c66da472aad8ed6057e382bc54553c481f707a267b326c5b7516806",
+    "macos": "fd2c866997f0c1d6f876929038e2cd9657358c8b8de328874c3bbf37171756f1",
+    "windows": "942b907590f9d6ac1540462bf46e45d56ac910f5799fd3cab77accdac59a94ec"
+  },
   "compiled_manifest_sha256": "f5e906e4237d10b2e3ee8f38f2dfbfbb56e46a30147bdfde12629548eee0d71e",
   "corresponding_source": {
-    "scope": "bootstrap engine, native wrappers, producer and build recipes; not full runtime/Core source",
-    "sha256": "72be43a42e70f0eda28ee5246855eb631e38d5b9abf81d1c599ac9c11081fedf",
-    "url": "https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-native-bootstrap-source-20261017.tar.gz"
+    "Core_source": "https://github.com/lindwerg/oniondesk/tree/main",
+    "base_source": {
+      "scope": "Unchanged components and 50 Debian source packages",
+      "sha256": "72be43a42e70f0eda28ee5246855eb631e38d5b9abf81d1c599ac9c11081fedf",
+      "url": "https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-native-bootstrap-source-20261017.tar.gz"
+    },
+    "bytes": 1673190,
+    "configured_source_files": 51,
+    "publication_status": "PLANNED_PRIVATE_RELEASE_ASSET",
+    "scope": "Complete configured R4 Mac native/worker sources, tests, build recipe, pins, packaging resources and GPLv3",
+    "sha256": "c4a4f4e0bd6166363b4883e81aedbb5e3081621bf7a529c43c3f331b1d6ae360",
+    "source_package_files": 61,
+    "url": "https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-macos-r4-privacy-source-20261017.tar.gz"
   },
+  "delivery_revision": "native-v5-macos-r4-privacy-fixed",
+  "derivative_parent_commit": "59bf58813c5f19384b56e01ede130666ef845a72",
   "directories": [
     {
       "path": "OnionDesk.app",
@@ -37,12 +55,6 @@
     }
   ],
   "distribution": "macos-arm64",
-  "frozen_source_sha256": {
-    "engine": "c75806bf6818ccea1e3022c3d8db018631566478bf3c8d20f25cb488f0a4eba1",
-    "linux": "dc72c8f67c66da472aad8ed6057e382bc54553c481f707a267b326c5b7516806",
-    "macos": "fd2c866997f0c1d6f876929038e2cd9657358c8b8de328874c3bbf37171756f1",
-    "windows": "942b907590f9d6ac1540462bf46e45d56ac910f5799fd3cab77accdac59a94ec"
-  },
   "lfs_policy": "All transport blobs and regular payload files >= 100 MiB; ordinary Git blobs remain < 100 MiB.",
   "payload": [
     {
@@ -73,21 +85,21 @@
       "type": "file"
     },
     {
-      "bytes": 319344,
+      "bytes": 407440,
       "lfs": false,
       "mode": "100755",
       "path": "OnionDesk.app/Contents/MacOS/OnionDeskLauncher",
       "permissions": "0o755",
-      "sha256": "8938b26af1027233ca3e1ecf55a5fb7c51427c779e5aa112a2c93995d537367e",
+      "sha256": "1df92bae5a43c418808e2583ad0938e7bf60b7f6a4aac6f24fe5abb42a1e2993",
       "type": "file"
     },
     {
-      "bytes": 3930050,
+      "bytes": 3930114,
       "lfs": false,
       "mode": "100755",
       "path": "OnionDesk.app/Contents/MacOS/oniondesk-worker",
       "permissions": "0o755",
-      "sha256": "6ff94325ac49ef66e4c7e61ad3a1c93e5094c7720301f0e2121333e8508c2229",
+      "sha256": "e2ab6ae616a394f253a26ddb6ec5f50eb3728294c5820e8e072f92d9db202300",
       "type": "file"
     },
     {
@@ -5118,7 +5130,7 @@
       "mode": "100644",
       "path": "OnionDesk.app/Contents/_CodeSignature/CodeResources",
       "permissions": "0o644",
-      "sha256": "9d6f1ba3331e68a5fea6a41f88d238c1a165298d331336b5fc72ca990fc4853d",
+      "sha256": "3c7b34e496d46c45cb84169a13e7cd2b312f9dd7b59e698dbc310f201bda600f",
       "type": "file"
     },
     {
@@ -5131,11 +5143,28 @@
       "type": "file"
     }
   ],
+  "r4_configured_source_aggregate_sha256": "f33699f5de1eb863de765c09157c18491acc31380fe794f6cf02a186dd201417",
+  "r4_native_changes": {
+    "build_privacy": "Exact configured sources copied to neutral real build root, isolated build caches, compiler prefix maps; all new native blobs pass raw private-path/account scan",
+    "embedded_manifest_and_engine_Restore": "UNCHANGED",
+    "private_worker": "Independent exclusive copy, pinned SHA before chmod0555, writer FD closed before exec, unchanged WorkerExecutableGuard; no source chmod",
+    "source_argument": "Exactly --source-root and one canonical absolute untrusted pool data path",
+    "source_pool": "UNCHANGED 556 OIDs"
+  },
   "schema": 1,
   "status": "LOCAL_ONLY_NOT_UPLOADED",
   "transport_pool": {
     "logical_bytes": 3446331406,
     "objects": 556,
     "prefix": "OnionDesk.app/Contents/Resources/transport/blobs/"
+  },
+  "verification": {
+    "Gatekeeper_and_notarization": "NOT_CLAIMED",
+    "accepted_R3_default_archive_permission_defect": "Preserved in existing R3 proof; no R3 artifact changes",
+    "canonical_directory_permissions_scope": "Trusted source candidate; not asserted for default expanded remote ZIP/TAR extraction",
+    "local_native_candidate_strict_codesign": "PASS",
+    "local_root_cold_GUI_mode_fixture": "ROOT_REPORTED_PASS: source dirs0775/data0664, native preparation, Core first screen and Next action, own Core Quit",
+    "local_root_full_restore_integrity": "FINAL_ROOT_PROOF_READ_PENDING; not claimed by this Git preparation",
+    "remote_R4_full_archive_readback": "NOT_PERFORMED"
   }
 }
