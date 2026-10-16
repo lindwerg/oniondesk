@@ -2,8 +2,8 @@
   "schema": 2,
   "status": "LOCAL DRAFT; frozen UI synchronized; independent review, root approval and fresh private verification required before push",
   "policy": "Explicit reviewed source classes; no workspace, user data, raw proofs, downloaded executables or disk images",
-  "tree_sha256_excluding_this_manifest": "10c37e07715f6121f207398010e436e2abd0137db373f30b1a477e6ae6cae176",
-  "allowlisted_source_tree_sha256": "30a3988f6a8432fe4535975fad9084a298c5648638c75f8b1a8f34e8470380a7",
+  "tree_sha256_excluding_this_manifest": "20ad5bb8ed33222f7349adcbc4616a72ac6f52013c7981d59a13b408baf74ab4",
+  "allowlisted_source_tree_sha256": "23c41f143bcbf31f7db42b1c2e2ca86643ad2c88435ecf2b00b139392c785fab",
   "files": [
     {
       "path": ".gitignore",
@@ -894,9 +894,9 @@
     },
     {
       "path": "client/ui/index.html",
-      "bytes": 188434,
-      "sha256": "2d5b5e2845db66c477b167d1623142d34f3f3b813f224408c38b4b666bcb01ba",
-      "source_snapshot_sha256": "2d5b5e2845db66c477b167d1623142d34f3f3b813f224408c38b4b666bcb01ba",
+      "bytes": 188608,
+      "sha256": "02dc10349ffb4e57cb13de9e8f1ae772c0399875c7fcb2bebc64ddd426c563dd",
+      "source_snapshot_sha256": "02dc10349ffb4e57cb13de9e8f1ae772c0399875c7fcb2bebc64ddd426c563dd",
       "modified_from_source": false
     },
     {
@@ -985,7 +985,7 @@
     {
       "path": "docs/FROZEN-SOURCE.json",
       "bytes": 4798,
-      "sha256": "caa4c862b8d38467b638ce591f9c21afd469fca1616a1bad0daac8519a6eb675"
+      "sha256": "2f54f391d905b8d9526b149a59c08d10993d42e76f5e3e7e226ab5d9939d1e1f"
     },
     {
       "path": "docs/GUIDE-IMAGE-MANIFEST.json",
@@ -2435,8 +2435,8 @@
     },
     {
       "path": "client/ui/index.html",
-      "bytes": 188434,
-      "sha256": "2d5b5e2845db66c477b167d1623142d34f3f3b813f224408c38b4b666bcb01ba"
+      "bytes": 188608,
+      "sha256": "02dc10349ffb4e57cb13de9e8f1ae772c0399875c7fcb2bebc64ddd426c563dd"
     },
     {
       "path": "client/ui/style.css",
