@@ -1,16 +1,21 @@
-# OnionDesk native V5 — сведения для разработчика
+# OnionDesk Linux R4 — сведения о поставке
 
-Платформа: `linux-arm64`. Локальная подготовка: `LOCAL_ONLY_NOT_UPLOADED`.
-В корне находятся приложение и единственное руководство. Скрытые ресурсы нужны для автономного восстановления; перемещайте комплект целиком.
+Платформа: `linux-arm64`. Статус новой derivative-ветки: `LOCAL_ONLY_NOT_UPLOADED`.
+В корне находятся native ELF и единственное руководство. Скрытая `.oniondesk/` содержит прежние498 Core blobs, manifest, notices и metadata; перемещайте комплект целиком.
 
-## Лицензия и соответствующие исходники
+Static stage0 содержит70 проверяемых mini inputs, восстанавливает GTK CUI/worker/64 libraries/fonts в отдельный owner-only `OnionDesk-Native-UI-R4`, затем запускает private CUI. Внешние executable worker/bootstrap libraries в этой поставке не нужны. Core contract и cache `OnionDesk-Offline` сохранены. Приложение не скачивает runtime и не использует shell launcher.
 
-Оболочки OnionDesk и bootstrap engine распространяются на условиях GNU GPL v3. Текст находится в `licenses/OnionDesk-GPLv3.txt`. Компоненты runtime/Core сохраняют собственные лицензии и notices в восстановленном payload; в Linux лицензии частных библиотек также лежат в `bootstrap/licenses/`, а рецепт — в `bootstrap/BUILD-AND-LICENSES.md`.
+## Source и notices
 
-Соответствующие исходники bootstrap: [https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-native-bootstrap-source-20261017.tar.gz](https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-native-bootstrap-source-20261017.tar.gz)
+Полный R4 source addendum: https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-linux-r4-source-20261017.tar.gz
+SHA256: `ba98510e06ae5a58aa9dc4bf46197cbcb854895c7fa74a1b5ebc53e8c83611e6`; 59825135 bytes; local prepared ordinary asset, ещё не загружен этой задачей. Включены296 frozen inputs, обе configured mini production copies со всеми70 binary inputs, Go/C/producer source, tests, воспроизводимые recipes, GPLv3 и third-party notices.
 
-SHA-256: `72be43a42e70f0eda28ee5246855eb631e38d5b9abf81d1c599ac9c11081fedf`. Это обычный asset приватного Release. Для доступа нужны права к репозиторию. Архив охватывает engine, оболочки, producer, настроенные manifests и build recipes; исходники всего runtime/Core и третьих сторон в этот bootstrap-архив не входят. Ссылка — сведения о распространении исходников, приложение её не загружает.
+Неизменный base source с50 Debian packages: https://github.com/lindwerg/oniondesk/releases/download/preview-2026.10.16-v5/oniondesk-native-bootstrap-source-20261017.tar.gz
+SHA256: `72be43a42e70f0eda28ee5246855eb631e38d5b9abf81d1c599ac9c11081fedf`.
+Собственный код GPLv3: `licenses/OnionDesk-GPLv3.txt`; Debian notices: `bootstrap/licenses/`; Go notices: `licenses/go1.26.2/`. Core сохраняет собственные лицензии/notices; его source-reference — https://github.com/lindwerg/oniondesk/tree/main. Ссылки служат для распространения исходников и автоматически приложением не открываются.
 
-## Локальная Git-проверка
+## Границы проверки
 
-Транспортные blobs и руководство представлены каноническими Git LFS pointers. Обычный `git archive` в этой проверке содержит pointers. Удалённые refs, expanded ZIP/TAR и загрузка пользователем здесь не проверялись. Windows GUI/UAC и Linux Tor ARM64 этой сборкой не подтверждаются.
+Новый Git tree локально проверяется как pointer-only derivative от `ecba922c7447870c86dab8c00a2d88cf329525dd`: все499 LFS pointers byte/OID/mode-identical. Новый remote ZIP/TAR не скачивался, ref/asset не публиковались. Root native cold/warm/window/Cancel/Quit QA этой embedded сборки пока pending; PASS предыдущих версий к ней не переносится.
+
+Git mode metadata не выдаётся за измеренные права после распаковки: GitHub archive/extractor может дать dirs0775/data0664. R4 рассчитан на data-only внешний pool и strict private cache; фактическая проверка извлечения/GUI остаётся root gate. Неизбежная ранняя ошибка показывает trusted system zenity/kdialog при наличии, иначе фиксированный stderr; универсальный OS-dialog не обещается.
