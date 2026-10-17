@@ -55,6 +55,17 @@ without executing it. Bounded private journal/QEMU log tails are reduced to
 these same tokens and never copied to artifacts. Successful SYSMAINT staging
 messages do not imply a first-boot failure.
 
+The permission diagnostic records uid/gid/mode only for a fixed public list of
+libvirt image ancestry, the two known disks and runtime/device/binary paths.
+It checks effective search/read access using the stock `libvirt-qemu` account,
+without changing permissions. Denial lines are reduced to fixed resource and
+operation tokens; unknown path suffixes and all messages stay private. After
+the original failure snapshot, one separately labeled `virsh start` retry of
+the unchanged Gateway is permitted only when both owned domains are defined
+and shut off, no QEMU PID exists, the pre-start audit passes and the VM unit
+has failed. This retry can mutate this disposable guest's first-boot state;
+it never changes the failed installer result or satisfies a readiness gate.
+
 Local checks (no Docker/VM start):
 
 ```sh

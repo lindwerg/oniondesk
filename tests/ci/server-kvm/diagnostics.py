@@ -1,4 +1,4 @@
-"""Read-only failure evidence. Every exported string is a static token.
+"""Owned-fixture failure evidence. Every exported string is a static token.
 
 Raw installer output, journal messages and QEMU logs are private inputs only.
 Source error tokens point to literal error sites in the hash-verified payload;
@@ -8,7 +8,9 @@ import ast
 import json
 import os
 from pathlib import Path
+import pwd
 import re
+import stat
 import subprocess
 
 SOURCE = Path("/src")
@@ -60,6 +62,76 @@ AUDIT_IDS = {
         (18080, "nginx_listener"), (18081, "auth_listener"))},
     "udp.6688": "gateway_internal_udp", "udp.5577": "workstation_internal_udp",
 }
+ACCESS_PATHS = {
+    "var_lib": ("/var/lib", True),
+    "libvirt_state": ("/var/lib/libvirt", True),
+    "images_parent": ("/var/lib/libvirt/images", True),
+    "images_leaf": ("/var/lib/libvirt/images/oniondesk", True),
+    "gateway_disk": ("/var/lib/libvirt/images/oniondesk/gateway.qcow2", False),
+    "workstation_disk": ("/var/lib/libvirt/images/oniondesk/workstation.qcow2", False),
+    "libvirt_run": ("/run/libvirt", True),
+    "qemu_run": ("/run/libvirt/qemu", True),
+    "passt_run": ("/run/libvirt/qemu/passt", True),
+    "kvm_device": ("/dev/kvm", False),
+    "passt_binary": ("/usr/bin/passt", False),
+}
+DENIAL_RESOURCES = {token: path.encode() for token, (path, _) in ACCESS_PATHS.items()}
+DENIAL_RESOURCES.update({"cgroup": b"/sys/fs/cgroup", "kernel_sysctl": b"/proc/sys",
+                         "apparmor_policy": b"/sys/kernel/security/apparmor"})
+DENIAL_OPERATIONS = ((b"Cannot access storage file", "storage_access"),
+                     (b'operation="open"', "open"), (b'operation="exec"', "execute"),
+                     (b'operation="mkdir"', "create"),
+                     (b"cannot open", "open"), (b"Cannot open", "open"),
+                     (b"unable to open", "open"), (b"Unable to open", "open"),
+                     (b"failed to open", "open"), (b"Failed to open", "open"),
+                     (b"Cannot create", "create"), (b"cannot create", "create"),
+                     (b"Unable to create", "create"), (b"unable to create", "create"),
+                     (b"failed to create", "create"), (b"Failed to create", "create"),
+                     (b"failed to execute", "execute"), (b"Failed to execute", "execute"))
+
+
+def denial_summary(data):
+    """Same-line associations only; never emit a path, suffix, UID or message."""
+    resources, operations = set(), set()
+    for line in data[-MAX_PRIVATE_BYTES:].splitlines():
+        if not any(marker in line for marker in (b"Permission denied", b"Operation not permitted", b'apparmor="DENIED"')):
+            continue
+        for token, prefix in DENIAL_RESOURCES.items():
+            if re.search(re.escape(prefix) + rb"(?=$|[/\s\"':,)])", line):
+                resources.add(token)
+        operations.update(token for needle, token in DENIAL_OPERATIONS if needle in line)
+        if b'apparmor="DENIED"' in line:
+            resources.add("apparmor")
+        if b"SECCOMP" in line or b"seccomp" in line:
+            resources.add("seccomp")
+    return {"resource_tokens": sorted(resources), "operation_tokens": sorted(operations)}
+
+
+def qemu_access_snapshot():
+    try:
+        account = pwd.getpwnam("libvirt-qemu")
+    except KeyError:
+        return {"available": False}
+    result = {"available": True, "paths": {}}
+    for token, (path, directory) in ACCESS_PATHS.items():
+        facts = {"exists": False}
+        try:
+            metadata = Path(path).lstat()
+            facts = {"exists": True, "directory": stat.S_ISDIR(metadata.st_mode),
+                     "regular_file": stat.S_ISREG(metadata.st_mode),
+                     "symlink": stat.S_ISLNK(metadata.st_mode),
+                     "uid": metadata.st_uid, "gid": metadata.st_gid,
+                     "mode": stat.S_IMODE(metadata.st_mode),
+                     "owner_qemu": metadata.st_uid == account.pw_uid,
+                     "group_qemu": metadata.st_gid == account.pw_gid}
+            flag = "-x" if directory else "-r"
+            response = run(["runuser", "--user", "libvirt-qemu", "--", "test", flag, path])
+            facts["access_probe_completed"] = response.returncode in {0, 1}
+            facts["qemu_search_access" if directory else "qemu_read_access"] = response.returncode == 0
+        except (OSError, subprocess.SubprocessError):
+            facts["access_probe_completed"] = False
+        result["paths"][token] = facts
+    return result
 
 
 def static_error_sites(source=SOURCE):
@@ -122,8 +194,30 @@ def audit_summary(response, sites=()):
             "exit_success": response.returncode == 0}
 
 
+def gateway_start_retry(snapshot_result, sites=()):
+    """One authorized retry in the failed, owned fixture; never makes CI pass."""
+    domains = snapshot_result.get("domains", {})
+    pre_start = snapshot_result.get("audits", {}).get("pre_start", {})
+    vms = snapshot_result.get("units", {}).get("vms", {})
+    if (not all(all(domains.get(role, {}).get(key) is True
+                    for key in ("probe_completed", "defined", "shut_off"))
+                and all(domains.get(role, {}).get(key) is False
+                        for key in ("running", "paused", "qemu_pid_file_present"))
+                for role in ROLES)
+            or not all(pre_start.get(key) is True for key in ("available", "ok", "exit_success"))
+            or not all(vms.get(key) is True for key in ("probe_completed", "failed"))):
+        return {"attempted": False}
+    try:
+        response = run(["virsh", "--connect", "qemu:///system", "start", "oniondesk-gateway"], timeout=60)
+        private = (response.stdout + response.stderr)[-MAX_PRIVATE_BYTES:]
+        return {"attempted": True, "exit_success": response.returncode == 0,
+                "known_error_tokens": error_tokens(private, sites), "denial": denial_summary(private)}
+    except (OSError, subprocess.SubprocessError):
+        return {"attempted": True, "probe_completed": False}
+
+
 def snapshot(sites=()):
-    """Bounded, read-only probes; failure here cannot replace install failure."""
+    """Capture failure, then one gated retry; never replace installer failure."""
     result = {"domains": {}, "units": {}, "audits": {}}
     for role in ROLES:
         domain = "oniondesk-" + role
@@ -146,8 +240,9 @@ def snapshot(sites=()):
         except (OSError, ValueError, StopIteration, subprocess.SubprocessError):
             facts["process_probe_available"] = False
         try:
-            facts["known_qemu_error_tokens"] = error_tokens(
-                private_tail(Path("/var/log/libvirt/qemu/" + domain + ".log")), sites)
+            private = private_tail(Path("/var/log/libvirt/qemu/" + domain + ".log"))
+            facts["known_qemu_error_tokens"] = error_tokens(private, sites)
+            facts["denial"] = denial_summary(private)
         except OSError:
             facts["qemu_log_available"] = False
         result["domains"][role] = facts
@@ -167,6 +262,7 @@ def snapshot(sites=()):
                 facts["exit_status"] = int(code)
             journal = run(["journalctl", "--unit=" + unit, "--no-pager", "--output=cat", "--lines=80"])
             facts["known_journal_error_tokens"] = error_tokens(journal.stdout[-MAX_PRIVATE_BYTES:], sites)
+            facts["denial"] = denial_summary(journal.stdout)
         except (OSError, ValueError, subprocess.SubprocessError):
             facts["journal_probe_available"] = False
         result["units"][token] = facts
@@ -185,4 +281,13 @@ def snapshot(sites=()):
         "auth_config_created": Path("/etc/oniondesk/auth.json").is_file(),
         "image_version_record_present": Path("/var/lib/oniondesk/image-version").is_file(),
     }
+    result["qemu_file_access"] = qemu_access_snapshot()
+    try:
+        daemon = run(["journalctl", "--unit=libvirtd.service", "--no-pager", "--output=cat", "--lines=80"])
+        result["libvirt_daemon_denial"] = denial_summary(daemon.stdout)
+    except (OSError, subprocess.SubprocessError):
+        result["libvirt_daemon_denial"] = {"available": False}
+    # Snapshot is the original failed state. This separate, explicitly labeled
+    # retry uses the same production XML and cannot alter installer_exit_code.
+    result["unchanged_gateway_start_retry"] = gateway_start_retry(result, sites)
     return result

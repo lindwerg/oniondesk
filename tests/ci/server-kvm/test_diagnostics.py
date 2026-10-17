@@ -1,8 +1,10 @@
 """Safe failure localization and sandbox boundaries; no Docker/VM/network I/O."""
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -10,7 +12,129 @@ import diagnostics
 from test_harness import guest, host
 
 
+def retry_ready_fixture():
+    return {"domains": {role: {"probe_completed": True, "defined": True, "shut_off": True,
+                               "running": False, "paused": False, "qemu_pid_file_present": False}
+                        for role in diagnostics.ROLES},
+            "audits": {"pre_start": {"available": True, "ok": True, "exit_success": True}},
+            "units": {"vms": {"probe_completed": True, "failed": True}}}
+
+
 class DiagnosticTests(unittest.TestCase):
+    def test_denial_maps_fixed_storage_ancestry_without_private_suffixes(self):
+        private = b"error: Cannot access storage file '/var/lib/libvirt/images/oniondesk/gateway.qcow2' (as uid:64055, gid:64055): Permission denied secret.onion"
+        report = diagnostics.denial_summary(private)
+        self.assertIn("gateway_disk", report["resource_tokens"])
+        self.assertIn("images_parent", report["resource_tokens"])
+        self.assertEqual(["storage_access"], report["operation_tokens"])
+        for secret in ("secret.onion", "64055", "/var/"):
+            self.assertNotIn(secret, json.dumps(report))
+
+    def test_denial_does_not_associate_other_line_or_similar_path_prefix(self):
+        private = b"/var/lib/libvirt/images/oniondesk/gateway.qcow2\nPermission denied\nCannot access storage file '/var/lib/libvirt-private/secret': Permission denied"
+        report = diagnostics.denial_summary(private)
+        self.assertEqual(["var_lib"], report["resource_tokens"])
+        self.assertEqual(["storage_access"], report["operation_tokens"])
+
+    def test_denial_reports_mac_and_syscall_categories_as_static_tokens(self):
+        report = diagnostics.denial_summary(b'apparmor="DENIED" operation="open" name="/sys/fs/cgroup/private-secret"\nUnable to create /run/libvirt/qemu/passt/private-socket: Permission denied')
+        self.assertIn("apparmor", report["resource_tokens"])
+        self.assertIn("cgroup", report["resource_tokens"])
+        self.assertIn("passt_run", report["resource_tokens"])
+        self.assertEqual(["create", "open"], report["operation_tokens"])
+        self.assertNotIn("private", json.dumps(report))
+
+    def test_qemu_access_probes_exact_default_identity_and_search_read_modes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory)
+            parent.chmod(0o700)
+            disk = parent / "fixture.qcow2"
+            disk.write_bytes(b"")
+            account = SimpleNamespace(pw_uid=os.getuid() + 1, pw_gid=os.getgid() + 1)
+            denied = subprocess.CompletedProcess([], 1, stdout=b"", stderr=b"private")
+            with patch.object(diagnostics, "ACCESS_PATHS", {"parent": (str(parent), True), "disk": (str(disk), False)}), \
+                    patch.object(diagnostics.pwd, "getpwnam", return_value=account), \
+                    patch.object(diagnostics, "run", return_value=denied) as execute:
+                result = diagnostics.qemu_access_snapshot()
+            self.assertEqual(0o700, result["paths"]["parent"]["mode"])
+            self.assertFalse(result["paths"]["parent"]["owner_qemu"])
+            self.assertFalse(result["paths"]["parent"]["qemu_search_access"])
+            self.assertFalse(result["paths"]["disk"]["qemu_read_access"])
+            self.assertTrue(result["paths"]["parent"]["access_probe_completed"])
+            self.assertEqual(["runuser", "--user", "libvirt-qemu", "--", "test", "-x", str(parent)], execute.call_args_list[0].args[0])
+            self.assertEqual("-r", execute.call_args_list[1].args[0][-2])
+            self.assertNotIn("private", json.dumps(result))
+
+    def test_qemu_access_tool_failure_is_not_reported_as_completed_denial(self):
+        account = SimpleNamespace(pw_uid=os.getuid(), pw_gid=os.getgid())
+        with tempfile.TemporaryDirectory() as directory, \
+                patch.object(diagnostics, "ACCESS_PATHS", {"parent": (directory, True)}), \
+                patch.object(diagnostics.pwd, "getpwnam", return_value=account), \
+                patch.object(diagnostics, "run", return_value=subprocess.CompletedProcess([], 2, stdout=b"", stderr=b"private")):
+            self.assertFalse(diagnostics.qemu_access_snapshot()["paths"]["parent"]["access_probe_completed"])
+
+    def test_qemu_access_account_missing_is_explicitly_unavailable(self):
+        with patch.object(diagnostics.pwd, "getpwnam", side_effect=KeyError("private")):
+            self.assertEqual({"available": False}, diagnostics.qemu_access_snapshot())
+
+    def test_single_retry_requires_both_defined_stopped_domains_and_passed_audit(self):
+        fixture = retry_ready_fixture()
+        denied = subprocess.CompletedProcess([], 1, stdout=b"", stderr=b"Cannot access storage file '/var/lib/libvirt/images/oniondesk/gateway.qcow2': Permission denied secret")
+        with patch.object(diagnostics, "run", return_value=denied) as execute:
+            result = diagnostics.gateway_start_retry(fixture)
+        self.assertTrue(result["attempted"])
+        self.assertFalse(result["exit_success"])
+        self.assertIn("gateway_disk", result["denial"]["resource_tokens"])
+        self.assertNotIn("secret", json.dumps(result))
+        execute.assert_called_once_with(["virsh", "--connect", "qemu:///system", "start", "oniondesk-gateway"], timeout=60)
+        fixture["domains"]["gateway"]["shut_off"] = False
+        with patch.object(diagnostics, "run") as execute:
+            self.assertEqual({"attempted": False}, diagnostics.gateway_start_retry(fixture))
+            execute.assert_not_called()
+
+    def test_retry_never_starts_after_failed_pre_start_audit(self):
+        fixture = retry_ready_fixture()
+        fixture["audits"]["pre_start"]["ok"] = False
+        with patch.object(diagnostics, "run") as execute:
+            self.assertEqual({"attempted": False}, diagnostics.gateway_start_retry(fixture))
+            execute.assert_not_called()
+
+    def test_retry_never_starts_with_unknown_or_non_boolean_pid_state(self):
+        for role in diagnostics.ROLES:
+            for value in (None, 0, "", "false", "missing"):
+                fixture = retry_ready_fixture()
+                if value == "missing":
+                    fixture["domains"][role].pop("qemu_pid_file_present")
+                else:
+                    fixture["domains"][role]["qemu_pid_file_present"] = value
+                with self.subTest(role=role, value=value), patch.object(diagnostics, "run") as execute:
+                    self.assertEqual({"attempted": False}, diagnostics.gateway_start_retry(fixture))
+                    execute.assert_not_called()
+
+    def test_retry_never_starts_with_unavailable_or_unsuccessful_audit(self):
+        for key in ("available", "ok", "exit_success"):
+            for value in (False, None, 1, "missing"):
+                fixture = retry_ready_fixture()
+                if value == "missing":
+                    fixture["audits"]["pre_start"].pop(key)
+                else:
+                    fixture["audits"]["pre_start"][key] = value
+                with self.subTest(key=key, value=value), patch.object(diagnostics, "run") as execute:
+                    self.assertEqual({"attempted": False}, diagnostics.gateway_start_retry(fixture))
+                    execute.assert_not_called()
+
+    def test_retry_never_starts_with_incomplete_probes_or_unconfirmed_stopped_state(self):
+        targets = [("domains", role, key, value) for role in diagnostics.ROLES
+                   for key, value in (("probe_completed", False), ("defined", False),
+                                      ("shut_off", False), ("running", True), ("paused", True))]
+        targets += [("units", "vms", "probe_completed", False), ("units", "vms", "failed", False)]
+        for section, name, key, value in targets:
+            fixture = retry_ready_fixture()
+            fixture[section][name][key] = value
+            with self.subTest(section=section, name=name, key=key), patch.object(diagnostics, "run") as execute:
+                self.assertEqual({"attempted": False}, diagnostics.gateway_start_retry(fixture))
+                execute.assert_not_called()
+
     def test_successful_sysmaint_staging_is_not_guest_failure(self):
         text = "Подготовлен workstation: официальный setup marker; одноразовый SYSMAINT."
         self.assertEqual("production_install_exit", guest.classify(text.encode()))
