@@ -13,10 +13,10 @@
       "runner_arch": "X64",
       "native_tests": {
         "schema": 1,
-        "asset": "oniondesk-windows-r5-r2-native-fixture-v3-tests-20261017.exe",
-        "bytes": 7910912,
-        "sha256": "0f70768c08f3d737c89b1c10a8af33c9ab07b3a241c4de7698948b588d7d436a",
-        "source_freeze_sha256": "c977750faf0a36bc089edc8a35f281ca1c33b9f5083166fe1824030a4e0f8e0f",
+        "asset": "oniondesk-windows-r5-r2-native-ancestor-v4-tests-20261017.exe",
+        "bytes": 7917056,
+        "sha256": "35616907286e888fbf1807695834ebf751240a5bedd3948603c3e89d6ca37107",
+        "source_freeze_sha256": "16eaea342d3f977b83656922ef1c47af856e3f6b9cee6a6488db3ecbc50d69fe",
         "expected_tests": [
           "TestBadObjectNeverCreatesReadyOrFallsBack",
           "TestCacheFreeSpaceNotExistDoesNotFetch",

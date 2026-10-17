@@ -107,7 +107,7 @@ def fixture():
 class WindowsR2Tests(unittest.TestCase):
     def test_pins_are_immutable_asset_names_and_strict_schema(self):
         pins = R2.checked_test_pins(NATIVE)
-        self.assertEqual(pins["sha256"], "0f70768c08f3d737c89b1c10a8af33c9ab07b3a241c4de7698948b588d7d436a")
+        self.assertEqual(pins["sha256"], "35616907286e888fbf1807695834ebf751240a5bedd3948603c3e89d6ca37107")
         self.assertEqual(len(pins["expected_tests"]), 43)
         cases = [None, {**pins, "schema": True}, {**pins, "asset": "../private.exe"}, {**pins, "bytes": True},
                  {**pins, "sha256": "private/path"}, {**pins, "unknown": "raw"},

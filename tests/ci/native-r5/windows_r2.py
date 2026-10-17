@@ -23,7 +23,7 @@ PIN_KEYS = {"schema", "asset", "bytes", "sha256", "source_freeze_sha256", "expec
 def checked_test_pins(native):
     pins = native.PINS["distributions"]["windows-x64"].get("native_tests")
     if not isinstance(pins, dict) or set(pins) != PIN_KEYS or type(pins["schema"]) is not int or pins["schema"] != 1 or \
-            pins["asset"] != "oniondesk-windows-r5-r2-native-fixture-v3-tests-20261017.exe" or \
+            pins["asset"] != "oniondesk-windows-r5-r2-native-ancestor-v4-tests-20261017.exe" or \
             type(pins["bytes"]) is not int or not 1024 * 1024 <= pins["bytes"] <= 16 * 1024 * 1024 or \
             not isinstance(pins["sha256"], str) or not native.SHA.fullmatch(pins["sha256"]) or \
             not isinstance(pins["source_freeze_sha256"], str) or not native.SHA.fullmatch(pins["source_freeze_sha256"]):
