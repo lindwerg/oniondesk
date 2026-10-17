@@ -55,7 +55,7 @@ class BoundaryTests(unittest.TestCase):
         workflow = (HARNESS.REPO / ".github/workflows/native-r5.yml").read_text(encoding="utf-8")
         self.assertNotIn("\n  push:", workflow)
         self.assertIn("\n  workflow_dispatch:", workflow)
-        self.assertIn("options: [all, linux, windows, windows-debug]", workflow)
+        self.assertIn("options: [all, linux, windows, windows-debug, windows-gui-component]", workflow)
         self.assertNotIn("\nconcurrency:", workflow)
         self.assertIn("group: native-r5-${{ github.ref }}-${{ matrix.distribution }}", workflow)
         self.assertIn("cancel-in-progress: false", workflow)
@@ -68,6 +68,153 @@ class BoundaryTests(unittest.TestCase):
         self.assertIn("inputs.suite == 'linux'", expression)
         self.assertIn("inputs.suite == 'windows'", expression)
         self.assertIn("inputs.suite == 'windows-debug'", expression)
+        self.assertIn("inputs.suite == 'windows-gui-component'", expression)
+        self.assertIn("if: runner.os == 'Windows' && inputs.suite != 'windows-debug' && inputs.suite != 'windows-gui-component'", workflow)
+        self.assertIn("if: runner.os == 'Windows' && inputs.suite == 'windows-gui-component'", workflow)
+        self.assertEqual(workflow.count("run: python -B tests/ci/native-r5/run.py run-windows-gui-component"), 1)
+        self.assertIn("if: inputs.suite != 'windows-debug'\n        run: python -B tests/ci/native-r5/run.py provision", workflow)
+
+    def test_normal_windows_route_requires_engine_before_gui_and_never_swallows_failure(self):
+        for failure in (None, RuntimeError("NativeEngineTargetedFailed")):
+            with self.subTest(engine_failed=failure is not None):
+                instance = HARNESS.Harness.__new__(HARNESS.Harness)
+                instance.distribution = "windows-x64"
+                instance.facts = {"result": "RUNNING"}
+                events = []
+                instance.download = mock.Mock(side_effect=lambda: events.append("download"))
+                instance.save = mock.Mock()
+                instance._run_gui_lifecycle = mock.Mock(side_effect=lambda: events.append("gui"))
+
+                def engine(_native, _harness):
+                    events.append("engine")
+                    if failure:
+                        raise failure
+
+                engine_call = mock.Mock(side_effect=engine)
+                with mock.patch.object(HARNESS, "os", SimpleNamespace(name="nt")), \
+                     mock.patch.dict(sys.modules, {HARNESS.__name__: HARNESS, "windows_r2": SimpleNamespace(run_engine_tests=engine_call)}):
+                    if failure:
+                        with self.assertRaisesRegex(RuntimeError, "^NativeEngineTargetedFailed$"):
+                            instance.run()
+                    else:
+                        instance.run()
+                engine_call.assert_called_once_with(HARNESS, instance)
+                self.assertEqual(events, ["download", "engine"] if failure else ["download", "engine", "gui"])
+                self.assertIs(instance.facts["native_engine_suite_covered"], failure is None)
+                self.assertEqual(instance.facts["result"], "RUNNING" if failure else "PASS")
+
+    def test_windows_gui_component_reuses_full_sandboxed_gui_lifecycle_with_distinct_success(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for component in (False, True):
+                with self.subTest(component=component):
+                    instance = HARNESS.Harness.__new__(HARNESS.Harness)
+                    instance.distribution = "windows-x64"
+                    instance.root = root
+                    instance.environment = {}
+                    instance.facts = {"distribution": "windows-x64", "result": "RUNNING", "phase": "initialize"}
+                    events = []
+                    instance.download = mock.Mock(side_effect=lambda: events.append("frozen_download"))
+                    instance.save = mock.Mock()
+                    instance.phase = lambda phase: instance.facts.update({"phase": phase})
+                    instance.discover = mock.Mock()
+                    instance.wait_native_restore = mock.Mock(side_effect=lambda: events.append("cold_restore_and_install"))
+                    instance.core_flow = mock.Mock(side_effect=lambda _context: events.append("first_action_next_quit"))
+                    instance.spawn = mock.Mock(side_effect=lambda _executable: events.append("uninstaller"))
+                    instance.drive_nsis = mock.Mock(side_effect=lambda **_kwargs: events.append("uninstall_complete"))
+                    context = SimpleNamespace(browser=SimpleNamespace(version="130.0.1"), close=mock.Mock())
+                    chromium = SimpleNamespace(executable_path=str(root / "chromium"),
+                                               launch_persistent_context=mock.Mock(return_value=context))
+                    manager = mock.MagicMock()
+                    manager.__enter__.return_value = SimpleNamespace(chromium=chromium)
+                    api = SimpleNamespace(sync_playwright=mock.Mock(return_value=manager))
+                    engine = mock.Mock(side_effect=lambda *_args: events.append("engine"))
+                    with mock.patch.object(HARNESS, "os", SimpleNamespace(name="nt")), \
+                         mock.patch.object(HARNESS, "windows_claims", return_value=[root / "cache", root / "installation"]), \
+                         mock.patch.dict(sys.modules, {HARNESS.__name__: HARNESS, "playwright.sync_api": api,
+                                                      "windows_r2": SimpleNamespace(run_engine_tests=engine)}):
+                        if component:
+                            instance.run_windows_gui_component()
+                        else:
+                            instance.run()
+                    expected = ["frozen_download", *([] if component else ["engine"]), "cold_restore_and_install",
+                                "first_action_next_quit", "uninstaller", "uninstall_complete"]
+                    self.assertEqual(events, expected)
+                    self.assertEqual(engine.call_count, 0 if component else 1)
+                    chromium.launch_persistent_context.assert_called_once_with(str(root / "browser-profile"), headless=False,
+                        chromium_sandbox=True, viewport={"width": 1200, "height": 820}, env={}, accept_downloads=False)
+                    instance.drive_nsis.assert_called_once_with(uninstall=True)
+                    context.close.assert_called_once_with()
+                    self.assertEqual(instance.facts["result"], "PASS_WINDOWS_GUI_COMPONENT" if component else "PASS")
+                    self.assertIs(instance.facts["native_engine_suite_covered"], not component)
+                    HARNESS.validate_public_json(instance.facts)
+
+    def test_windows_gui_component_rejects_other_platforms_before_download(self):
+        for platform, distribution in (("posix", "windows-x64"), ("nt", "linux-x64"), ("nt", "linux-arm64")):
+            instance = HARNESS.Harness.__new__(HARNESS.Harness)
+            instance.distribution = distribution
+            instance.download = mock.Mock()
+            with self.subTest(platform=platform, distribution=distribution), \
+                 mock.patch.object(HARNESS, "os", SimpleNamespace(name=platform)):
+                with self.assertRaisesRegex(RuntimeError, "^WindowsGUIComponentRunnerRequired$"):
+                    instance.run_windows_gui_component()
+                instance.download.assert_not_called()
+
+    def test_component_cli_uses_same_fixed_windows_harness_and_owned_cleanup(self):
+        instance = SimpleNamespace(run=mock.Mock(), run_windows_gui_component=mock.Mock())
+        with mock.patch.object(HARNESS, "Harness", return_value=instance) as constructor, \
+             mock.patch.object(HARNESS, "cleanup") as cleanup, \
+             mock.patch.object(sys, "argv", ["run.py", "run-windows-gui-component"]):
+            self.assertEqual(HARNESS.main(), 0)
+        constructor.assert_called_once_with("windows-x64")
+        instance.run_windows_gui_component.assert_called_once_with()
+        instance.run.assert_not_called()
+        cleanup.assert_called_once_with()
+
+    def test_component_cli_rejects_distribution_arguments_and_invalid_modes(self):
+        invalid = [["run-windows-gui-component", "windows-x64"], ["run-windows-gui-component", "linux-x64"],
+                   ["run-windows-gui"], ["run", "windows-gui-component"], ["run", "windows-x64", "skip-engine"]]
+        for arguments in invalid:
+            with self.subTest(arguments=arguments), mock.patch.object(HARNESS, "Harness") as constructor, \
+                 mock.patch.object(sys, "argv", ["run.py", *arguments]):
+                with self.assertRaisesRegex(ValueError, "^ExpectedRunDistributionOrCleanup$"):
+                    HARNESS.main()
+                constructor.assert_not_called()
+
+    def test_component_failure_or_cleanup_failure_cannot_leave_a_success_result(self):
+        for stage, code in (("download", "ReleaseAssetPinMismatch"), ("gui", "OrdinaryNSISIncomplete"),
+                            ("cleanup", "OwnedProcessCleanupIncomplete")):
+            with self.subTest(stage=stage):
+                instance = HARNESS.Harness.__new__(HARNESS.Harness)
+                instance.distribution = "windows-x64"
+                instance.facts = {"distribution": "windows-x64", "result": "RUNNING", "phase": "initialize"}
+                instance.download = mock.Mock(side_effect=RuntimeError(code) if stage == "download" else None)
+                instance._run_gui_lifecycle = mock.Mock(side_effect=RuntimeError(code) if stage == "gui" else None)
+                instance.save = mock.Mock()
+                with mock.patch.object(HARNESS, "os", SimpleNamespace(name="nt")), \
+                     mock.patch.object(HARNESS, "Harness", return_value=instance), \
+                     mock.patch.object(HARNESS, "cleanup", side_effect=RuntimeError(code) if stage == "cleanup" else None) as cleanup, \
+                     mock.patch.object(sys, "argv", ["run.py", "run-windows-gui-component"]):
+                    if stage == "cleanup":
+                        with self.assertRaisesRegex(RuntimeError, "^" + code + "$"):
+                            HARNESS.main()
+                    else:
+                        self.assertEqual(HARNESS.main(), 1)
+                cleanup.assert_called_once_with()
+                self.assertEqual(instance.facts["result"], "FAIL_OR_INCOMPLETE")
+                self.assertEqual(instance.facts["error_code"], code)
+                self.assertIs(instance.facts["native_engine_suite_covered"], False)
+                HARNESS.validate_public_json(instance.facts)
+
+    def test_component_success_schema_requires_windows_and_explicit_no_engine_coverage(self):
+        facts = {"result": "PASS_WINDOWS_GUI_COMPONENT", "distribution": "windows-x64", "native_engine_suite_covered": False}
+        HARNESS.validate_public_json(facts)
+        invalid = [{"result": "PASS_WINDOWS_GUI_COMPONENT"}, {**facts, "native_engine_suite_covered": True},
+                   {**facts, "native_engine_suite_covered": 0}, {**facts, "distribution": "linux-x64"},
+                   {**facts, "result": "PASS_WINDOWS_GUI_COMPONENT_AND_ALL_PLATFORMS"}]
+        for value in invalid:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                HARNESS.validate_public_json(value)
 
     def test_controlled_io_uses_utf8_even_with_cp1252_default(self):
         original_open = Path.open

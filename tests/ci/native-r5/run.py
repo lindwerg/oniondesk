@@ -48,7 +48,7 @@ BOOL_FIELDS = {"public_github_hosted_runner", "synthetic_profile", "starter_veri
                "cache_exists",
                "core_listener_closed", "owned_resources_only", "exact_process_identities_only", "owned_processes_stopped",
                "private_cache_and_profile_removed", "native_engine_test_asset_verified", "native_engine_temp_owned",
-               "native_engine_targeted_passed", "native_engine_full_passed"}
+               "native_engine_targeted_passed", "native_engine_full_passed", "native_engine_suite_covered"}
 COUNT_FIELDS = {"restored_files_verified", "online_blobs_verified", "online_parts_verified",
                 "native_engine_targeted_passed_count", "native_engine_targeted_skipped_count",
                 "native_engine_full_passed_count", "native_engine_full_skipped_count"}
@@ -163,6 +163,7 @@ TRUSTED_ERROR_CODES = {
     'UnsafeZipEntry',
     'UnsafeZipName',
     'WindowsDiagnosticRunnerRequired',
+    'WindowsGUIComponentRunnerRequired',
     'ZipBudgetExceeded',
     'ZipTypeMismatch',
 }
@@ -288,6 +289,10 @@ def seal_evidence():
 def validate_public_json(value):
     if not isinstance(value, dict) or len(value) > 50:
         raise ValueError("PublicEvidenceSchema")
+    if value.get("result") == "PASS_WINDOWS_GUI_COMPONENT" and (
+        value.get("distribution") != "windows-x64" or value.get("native_engine_suite_covered") is not False
+    ):
+        raise ValueError("PublicEvidenceSchema")
     for key, item in value.items():
         if key in BOOL_FIELDS:
             valid = type(item) is bool
@@ -304,7 +309,8 @@ def validate_public_json(value):
         elif key == "phase":
             valid = isinstance(item, str) and item in PHASES
         elif key == "result":
-            valid = item in {"RUNNING", "PASS", "PASS_PREPARATION_UI_ARM_GATE", "FAIL_OR_INCOMPLETE", "WINDOWS_CACHE_DIAGNOSTIC_ONLY"}
+            valid = item in {"RUNNING", "PASS", "PASS_PREPARATION_UI_ARM_GATE", "PASS_WINDOWS_GUI_COMPONENT",
+                             "FAIL_OR_INCOMPLETE", "WINDOWS_CACHE_DIAGNOSTIC_ONLY"}
         elif key == "error_class":
             valid = isinstance(item, str) and bool(re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,80}", item))
         elif key in {"error_code", "diagnostic_error_code"}:
@@ -981,11 +987,31 @@ class Harness:
         self.save()
 
     def run(self):
-        from playwright.sync_api import sync_playwright
         self.download()
         if os.name == "nt":
+            self.facts["native_engine_suite_covered"] = False
+            self.save()
             from windows_r2 import run_engine_tests
             run_engine_tests(sys.modules[__name__], self)
+            self.facts["native_engine_suite_covered"] = True
+            self.save()
+        self._run_gui_lifecycle()
+        self.facts.update({"phase": "complete", "result": "PASS_PREPARATION_UI_ARM_GATE" if self.distribution == "linux-arm64" else "PASS"})
+        self.save()
+
+    def run_windows_gui_component(self):
+        """Exercise the same frozen GUI lifecycle without claiming engine coverage."""
+        if os.name != "nt" or self.distribution != "windows-x64":
+            raise RuntimeError("WindowsGUIComponentRunnerRequired")
+        self.facts["native_engine_suite_covered"] = False
+        self.save()
+        self.download()
+        self._run_gui_lifecycle()
+        self.facts.update({"phase": "complete", "result": "PASS_WINDOWS_GUI_COMPONENT"})
+        self.save()
+
+    def _run_gui_lifecycle(self):
+        from playwright.sync_api import sync_playwright
         self.phase("browser_attestation")
         with sync_playwright() as playwright:
             context = None
@@ -1055,8 +1081,6 @@ class Harness:
             self.drive_nsis(uninstall=True)
             if windows_claims()[1].exists():
                 raise RuntimeError("OrdinaryUninstallLeftInstallation")
-        self.facts.update({"phase": "complete", "result": "PASS_PREPARATION_UI_ARM_GATE" if self.distribution == "linux-arm64" else "PASS"})
-        self.save()
 
     def linux_sandbox_diagnostics(self, context):
         from playwright.sync_api import expect
@@ -1264,13 +1288,17 @@ def main():
     if sys.argv[1:] == ["cleanup"]:
         cleanup()
         return 0
-    if len(sys.argv) != 3 or sys.argv[1] != "run" or sys.argv[2] not in PINS["distributions"]:
+    component = sys.argv[1:] == ["run-windows-gui-component"]
+    if not component and (len(sys.argv) != 3 or sys.argv[1] != "run" or sys.argv[2] not in PINS["distributions"]):
         raise ValueError("ExpectedRunDistributionOrCleanup")
     harness = None
     failed = False
     try:
-        harness = Harness(sys.argv[2])
-        harness.run()
+        harness = Harness("windows-x64" if component else sys.argv[2])
+        if component:
+            harness.run_windows_gui_component()
+        else:
+            harness.run()
     except Exception as error:
         failed = True
         record_failure(error, harness)

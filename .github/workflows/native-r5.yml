@@ -8,7 +8,7 @@ on:
         type: choice
         required: true
         default: all
-        options: [all, linux, windows, windows-debug]
+        options: [all, linux, windows, windows-debug, windows-gui-component]
 
 permissions:
   contents: read
@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJSON(inputs.suite == 'linux' && '[{"distribution":"linux-x64","runner":"ubuntu-24.04","python_arch":"x64"},{"distribution":"linux-arm64","runner":"ubuntu-24.04-arm","python_arch":"arm64"}]' || (inputs.suite == 'windows' || inputs.suite == 'windows-debug') && '[{"distribution":"windows-x64","runner":"windows-2022","python_arch":"x64"}]' || '[{"distribution":"windows-x64","runner":"windows-2022","python_arch":"x64"},{"distribution":"linux-x64","runner":"ubuntu-24.04","python_arch":"x64"},{"distribution":"linux-arm64","runner":"ubuntu-24.04-arm","python_arch":"arm64"}]') }}
+        include: ${{ fromJSON(inputs.suite == 'linux' && '[{"distribution":"linux-x64","runner":"ubuntu-24.04","python_arch":"x64"},{"distribution":"linux-arm64","runner":"ubuntu-24.04-arm","python_arch":"arm64"}]' || (inputs.suite == 'windows' || inputs.suite == 'windows-debug' || inputs.suite == 'windows-gui-component') && '[{"distribution":"windows-x64","runner":"windows-2022","python_arch":"x64"}]' || '[{"distribution":"windows-x64","runner":"windows-2022","python_arch":"x64"},{"distribution":"linux-x64","runner":"ubuntu-24.04","python_arch":"x64"},{"distribution":"linux-arm64","runner":"ubuntu-24.04-arm","python_arch":"arm64"}]') }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     concurrency:
@@ -75,8 +75,11 @@ jobs:
         timeout-minutes: 5
         run: python -B tests/ci/native-r5/run.py diagnose-windows
       - name: Windows — нативные тесты, установка, первое действие и выход
-        if: runner.os == 'Windows' && inputs.suite != 'windows-debug'
+        if: runner.os == 'Windows' && inputs.suite != 'windows-debug' && inputs.suite != 'windows-gui-component'
         run: python -B tests/ci/native-r5/run.py run ${{ matrix.distribution }}
+      - name: Windows — компонент GUI, установка, первое действие и выход
+        if: runner.os == 'Windows' && inputs.suite == 'windows-gui-component'
+        run: python -B tests/ci/native-r5/run.py run-windows-gui-component
       - name: Linux — native UI, первое действие и выход
         if: runner.os == 'Linux'
         run: xvfb-run -a -s '-screen 0 1280x900x24' python -B tests/ci/native-r5/run.py run ${{ matrix.distribution }}
