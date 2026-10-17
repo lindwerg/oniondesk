@@ -1,9 +1,9 @@
 {
   "schema": 3,
-  "status": "Owner-approved public GPLv3 release; R5 ordinary HTTPS delivery and Mac cold/warm runtime verified; exact platform and server proof scopes documented",
+  "status": "Owner-approved public GPLv3 release; R5 ordinary HTTPS delivery, Mac cold/warm runtime and native Linux x64/ARM64 preparation verified; Windows and server findings documented",
   "policy": "Explicit reviewed source classes only; no user data, raw logs, downloaded executable payloads or disk images",
   "baseline": "v5-frozen16-ui3-art32-data43",
-  "tree_sha256_excluding_this_manifest": "90cb4da1c22615c957a6d2e5e63914d36f8cf615bbc028e14acf8725facfaf86",
+  "tree_sha256_excluding_this_manifest": "d6cfad83ddb4e8310c20751ab96748d0bbee0f22922ecdcd2df8dff9d31788a7",
   "allowlisted_source_tree_sha256": "1ebf8a462bbdca580db726b71feb9351ad35d3b1107d7c13237d33f75f5eaba6",
   "files": [
     {
@@ -1214,8 +1214,8 @@
     },
     {
       "path": "docs/DOWNLOADS.md",
-      "bytes": 13058,
-      "sha256": "97ff1d24e923216bdf88c9a7963a5db60b73e2670640f1ed0cdd78384efc791f"
+      "bytes": 14917,
+      "sha256": "302cdba7a5aadb0c194811740495cb32170c08eda4b8a93bbdf7b6b26a1bae03"
     },
     {
       "path": "docs/EXPORT-POLICY.md",
@@ -1269,13 +1269,58 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 40690,
-      "sha256": "d2626c5654afee7a843d60319e06096eef254b35aae83b728c3ffedd93bb9841"
+      "bytes": 45027,
+      "sha256": "2de22f789e1b46040fbc2e0b92681c9649dbe32c44029924140237f2ba2bec96"
     },
     {
       "path": "docs/WEBSITES.md",
       "bytes": 8746,
       "sha256": "56bbe291baf004f22fad7cb869e9c896c313228485c757b2879bc2396e60c7db"
+    },
+    {
+      "path": "docs/evidence/r5/linux-arm64/arm-gate.png",
+      "bytes": 114300,
+      "sha256": "298f6b471fee691be3fb63a5f9b1fb0933736a985ea8c8694f107de56f98bedc"
+    },
+    {
+      "path": "docs/evidence/r5/linux-arm64/cleanup.json",
+      "bytes": 156,
+      "sha256": "45e1f9fc05774c996bcfe7918373f49f1421e4a33b54cbdac263898961f74d25"
+    },
+    {
+      "path": "docs/evidence/r5/linux-arm64/core-first-action.png",
+      "bytes": 899280,
+      "sha256": "c4b1b2df7988fab5106c3131203b948ed108636da0a94dac2741c6225f6dbff6"
+    },
+    {
+      "path": "docs/evidence/r5/linux-arm64/native-prepare.png",
+      "bytes": 17403,
+      "sha256": "eefd20fbae9aea185246a46195b48506dc38b7643bd219f8f746cebc68cdb81f"
+    },
+    {
+      "path": "docs/evidence/r5/linux-arm64/status.json",
+      "bytes": 1550,
+      "sha256": "98a39694bf5207338a0f2ae66c2d0adaec2eb1accbe23541ed93142538bd4444"
+    },
+    {
+      "path": "docs/evidence/r5/linux-x64/cleanup.json",
+      "bytes": 156,
+      "sha256": "45e1f9fc05774c996bcfe7918373f49f1421e4a33b54cbdac263898961f74d25"
+    },
+    {
+      "path": "docs/evidence/r5/linux-x64/core-first-action.png",
+      "bytes": 897875,
+      "sha256": "13eb9675d87fb07acffc972ab93178f303b230beac84d4db3d68dc53d53f5d68"
+    },
+    {
+      "path": "docs/evidence/r5/linux-x64/native-prepare.png",
+      "bytes": 17423,
+      "sha256": "1fce84bf9a9a25dd089e9698ebb07a8ec58960740b14e77be435ebd484f158ae"
+    },
+    {
+      "path": "docs/evidence/r5/linux-x64/status.json",
+      "bytes": 1743,
+      "sha256": "000b41a6a42748149e19645cab66db72a0d83346dfaa2fcdabf336ac5691f604"
     },
     {
       "path": "docs/evidence/r5/macos-download.jpg",

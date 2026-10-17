@@ -1,0 +1,6 @@
+{
+  "exact_process_identities_only": true,
+  "owned_processes_stopped": true,
+  "owned_resources_only": true,
+  "private_cache_and_profile_removed": true
+}
