@@ -92,6 +92,31 @@ newer host policy resolving the observed socket denial is a hypothesis until a
 real run proves it. Container export reserves 144 KiB for host CMS/JSON so the
 total artifact remains below 8 MiB.
 
+During the current guest-maintenance investigation, the existing Workstation
+QGA channel may execute only fixed read-only probes: unit properties/journal,
+kernel command line, a bounded apt log tail, installed-package status, default
+route and the fixed HTTPS Tor check. Gateway gets no guest-agent channel. The
+QGA output goes only to a separate pinned `workstation-diagnostic.cms` envelope;
+public status contains bounded booleans, uptime and fixed reason tokens.
+Unavailable or malformed QGA states never prove a guest service failure. A
+terminal failed/non-restarting, missing or condition-failed unit must remain
+confirmed for 30 seconds after at least 120 seconds of genuine SYSMAINT uptime.
+
+The diagnostic run stops only its owned installer after such a confirmed
+terminal state, or at an explicitly labeled five-minute maintenance cutoff
+after host installation. A cutoff remains FAIL/INCOMPLETE and is never described
+as a failed guest service or successful installation. The guests remain live.
+The installer output tail is also added to private encrypted evidence.
+If QGA is unavailable, the existing loopback RFB console opens the vendor's
+terminal with its documented Ctrl+Alt+T shortcut, maximizes it with Super+A,
+and types a literal read-only status/journal/jobs/package command. `sudo -n`
+never prompts or changes credentials. One console screenshot is encrypted as
+`workstation-console.cms`; it is evidence of visible output, not proof that the
+command succeeded. Before any console input, a persistent private marker blocks
+all public Workstation screenshots, including the outer `--snapshot-only` call.
+No new guest agent, service, password, network listener or guest-disk mount is
+created. No live guestfish, forced guest shutdown or readiness bypass is used.
+
 Local checks (no Docker/VM start):
 
 ```sh
@@ -110,6 +135,8 @@ Implementation references:
 - [Debian runuser account and HOME behavior](https://manpages.debian.org/trixie/util-linux/runuser.1.en.html)
 - [Debian Chromium sandbox package](https://packages.debian.org/trixie/chromium-sandbox)
 - [Chromium sandbox evaluation](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/chrome/browser/resources/sandbox_internals/sandbox_internals.ts)
+- [RFB protocol and key events](https://www.rfc-editor.org/rfc/rfc6143.html#section-7.5.4)
+- [Vendor terminal and maximize shortcuts](https://github.com/Kicksecure/desktop-config-dist/blob/master/usr/share/desktop-config-dist/labwc/rc.xml)
 
 The Debian amd64 digest was resolved from Docker Hub's official `library/debian`
 registry manifest for `13-slim`; checkout v4.2.2 was resolved through the official

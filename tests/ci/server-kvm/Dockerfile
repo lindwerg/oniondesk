@@ -18,5 +18,7 @@ COPY container.py /ci/container.py
 COPY diagnostics.py /ci/diagnostics.py
 COPY confidential.py /ci/confidential.py
 COPY diagnostic-recipient.pem /ci/diagnostic-recipient.pem
+COPY guest_diagnostics.py /ci/guest_diagnostics.py
+COPY guest_console.py /ci/guest_console.py
 STOPSIGNAL SIGRTMIN+3
 ENTRYPOINT ["/bin/bash", "/ci/boot.sh"]

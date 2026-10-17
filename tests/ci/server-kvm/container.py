@@ -23,6 +23,8 @@ import xml.etree.ElementTree as ET
 
 import diagnostics
 import confidential
+import guest_diagnostics
+import guest_console
 
 EVIDENCE = Path("/ci-evidence")
 SOURCE = Path("/src")
@@ -194,13 +196,15 @@ def classify(tail):
     return "production_install_exit"
 
 
-def install(mode, status):
+def install(mode, status, private=None):
     args = ["bash", "/src/server/install.sh", "--yes-licenses", "--tor-mode", mode]
     child = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
     deadline = time.monotonic() + INSTALL_TIMEOUT
     tail = bytearray()
     selector = selectors.DefaultSelector()
     selector.register(child.stdout, selectors.EVENT_READ)
+    monitor = guest_diagnostics.Monitor()
+    maintenance_since = None
     try:
         while child.poll() is None:
             if time.monotonic() >= deadline:
@@ -210,6 +214,29 @@ def install(mode, status):
                 tail.extend(chunk)
                 del tail[:-MAX_TAIL]
             status["observed"] = installation_markers()
+            if (status["observed"]["host_installed_marker"] is True
+                    and status["observed"]["first_boot_complete_marker"] is False):
+                now = time.monotonic()
+                if maintenance_since is None:
+                    maintenance_since = now
+                if now >= monitor.next_probe:
+                    monitor.next_probe = now + 20
+                    try:
+                        report = guest_diagnostics.state()
+                        status["guest_monitor"] = guest_diagnostics.public_state(report)
+                    except (OSError, ValueError, KeyError, TimeoutError, subprocess.SubprocessError):
+                        report = {}
+                        status["guest_monitor"] = {"qga_available": False}
+                    reason = monitor.observe(now, report)
+                    if reason is not None:
+                        status["diagnostic_abort_reason"] = reason
+                        status["installer_aborted_for_diagnostics"] = True
+                        raise RuntimeError("DiagnosticGuestUnitFailure")
+                if now - maintenance_since >= 300:
+                    # A diagnostic cutoff is INCOMPLETE, never a guest-failure claim.
+                    status["diagnostic_abort_reason"] = "maintenance_diagnostic_cutoff"
+                    status["installer_aborted_for_diagnostics"] = True
+                    raise RuntimeError("MaintenanceDiagnosticCutoff")
             save(status)
         tail.extend(child.stdout.read(MAX_TAIL))
         del tail[:-MAX_TAIL]
@@ -218,6 +245,8 @@ def install(mode, status):
             status["failure_stage"] = classify(tail)
             raise RuntimeError("ProductionInstallFailed")
     finally:
+        if private is not None:
+            private.add("installer_tail", bytes(tail)[-16 * 1024:])
         # Existing production ERR trap is observed, never replaced/injected.
         # Store static error-site tokens and validated line numbers only.
         try:
@@ -314,6 +343,8 @@ def live_readiness():
 
 
 def screenshot(role):
+    if role == "workstation" and guest_console.SUPPRESSION_MARKER.exists():
+        raise RuntimeError("PrivateConsolePublicCaptureSuppressed")
     from PIL import Image
     raw = Path("/run/oniondesk-ci-" + role + ".ppm")
     virsh("screenshot", DOMAINS[role], str(raw), timeout=30)
@@ -449,7 +480,7 @@ def main(mode):
             status["production_like_kvm_probes"][configuration] = probe_libvirt(configuration, private)
         status["phase"] = "unmodified_production_install"
         save(status)
-        install(mode, status)
+        install(mode, status, private)
         status["observed"] = installation_markers()
         if not all(status["observed"].values()):
             raise RuntimeError("InstallMarkersIncomplete")
@@ -469,6 +500,19 @@ def main(mode):
         status["error_class"] = type(error).__name__
         if status["phase"] == "unmodified_production_install":
             status["observed"] = installation_markers()
+            if status["observed"]["host_installed_marker"] is True:
+                guest_private = confidential.PrivateDiagnostic()
+                try:
+                    status["workstation_diagnostics"] = guest_diagnostics.collect(guest_private)
+                    status["encrypted_guest_diagnostic_saved"] = guest_private.save(EVIDENCE / "workstation-diagnostic.cms")
+                except Exception:
+                    status["encrypted_guest_diagnostic_saved"] = False
+                if not status.get("workstation_diagnostics", {}).get("qga_available"):
+                    status["workstation_public_screen_suppressed"] = True
+                    try:
+                        status["encrypted_guest_console_saved"] = guest_console.capture(EVIDENCE / "workstation-console.cms")
+                    except Exception:
+                        status["encrypted_guest_console_saved"] = False
             try:
                 status["failure_diagnostics"] = diagnostics.snapshot(diagnostics.static_error_sites())
             except Exception:

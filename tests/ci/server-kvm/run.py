@@ -115,14 +115,15 @@ def export_evidence(container, temporary):
     invoke(["docker", "cp", container + ":/ci-evidence/.", str(destination)], timeout=60)
     files = sorted(destination.iterdir())
     names = {"status.json", "source.json", "gateway.png", "workstation.png",
-             "browser-gateway.png", "browser-workstation.png", "server-diagnostic.cms"}
+             "browser-gateway.png", "browser-workstation.png", "server-diagnostic.cms",
+             "workstation-diagnostic.cms", "workstation-console.cms"}
     if any(path.name not in names or path.is_symlink() or not path.is_file() for path in files):
         raise ValueError("UnexpectedEvidenceFile")
     # Reserve the optional host CMS (128 KiB) and bounded host/cleanup JSON.
     if sum(path.stat().st_size for path in files) > MAX_ARTIFACT_BYTES - 144 * 1024:
         raise ValueError("EvidenceSizeLimit")
     for path in files:
-        if path.name == "server-diagnostic.cms":
+        if path.suffix == ".cms":
             confidential.validate_encrypted_diagnostic(path.read_bytes())
     # Validate the complete set before publishing even the first file.
     for path in files:
