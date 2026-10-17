@@ -1,0 +1,4 @@
+playwright==1.55.0
+psutil==7.0.0
+Pillow==11.3.0
+pywinauto==0.6.9; sys_platform == "win32"

@@ -1,0 +1,51 @@
+# Cold native R5 lifecycle
+
+Only `lindwerg/oniondesk`, public GitHub-hosted runners, and the three fixed
+Windows/Linux targets are accepted. Nothing is dispatched by these scripts.
+The workflow has a separate branch trigger from the server installation test.
+
+The real release ZIP is hash checked and extracted with a portable path/type
+guard. Its top executable is independently pinned. Required empty transport
+parents are created; the source blob pool is deliberately absent. R5 must
+download its fixed public HTTPS runtime parts itself. No runtime override,
+certificate exception, wallet, account, purchase or real host profile is used.
+
+The harness observes the actual native preparation window. It independently
+rehashes all 47/498 downloaded blobs and all 45/627 restored Core files, checks
+the fixed manifest/index and completion receipts, then exercises the real Core.
+Windows uses the ordinary Russian NSIS wizard, its installed Program Files Core,
+and the ordinary uninstaller. No `/S`, `/D`, UAC handling or privilege bypass is
+used for installation. A secure-desktop gate makes this test incomplete.
+
+The frozen Windows/Linux Core excludes optional pywebview, so the documented
+system-browser fallback is selected with `BROWSER`. A private adapter hands its
+loopback nonce URL to a headed Chromium instance with `chromium_sandbox=True`.
+Linux provisions Chromium's ordinary root-owned 4755 sandbox helper. AppArmor,
+sysctls, TLS and OS security settings are never weakened. UI selectors perform
+the first device action, verify the platform, and click the application's Quit.
+The owned listener must then stop. ARM64 additionally verifies the disabled
+unsupported official Tor Browser action; no Tor Browser success is claimed.
+
+Public evidence is an allowlisted JSON status/cleanup pair plus cropped native
+windows and browser content. No browser chrome, URL, nonce, process arguments,
+raw output, environment dump, trace or full desktop is published. Total bytes
+are capped at 8 MiB and artifact retention is one day. Every process cleanup
+uses a captured PID plus creation time; directories have fresh ownership state.
+Existing Windows caches, installations, registry keys and shortcuts fail closed.
+
+Source contract pins are byte copies of the reviewed Windows/Linux R5 input
+manifests and compiled runtime index. Asset pins in `pins.json` bind the release
+ZIP and top executable. The contracts are never imported or executed.
+
+Local validation:
+
+```sh
+python3.12 -B -m unittest discover -s tests/ci/native-r5 -p 'test_*.py' -v
+git diff --check
+```
+
+Primary runner reference (standard/free public labels, including native ARM64):
+https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+Official action SHAs were verified from upstream v4.2.2 checkout, v5.6.0
+setup-python and v4.6.2 upload-artifact tags. The local macOS checks do not prove
+Windows/Linux runtime success; that requires the actual reviewed CI run.

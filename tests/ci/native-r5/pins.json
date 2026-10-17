@@ -1,0 +1,36 @@
+{
+  "release": "runtime-data-2026.10.17-v6",
+  "index_sha256": "6f3e047791e4d60660a479b9019f0d041fae36cc150f0a345e642687531f26a3",
+  "distributions": {
+    "windows-x64": {
+      "asset": "OnionDesk-Windows-x64.zip",
+      "zip_sha256": "4c8c9f4dfc71d8be885066374a209201f74b7ad26d7695b5832e08a8454c61b6",
+      "entry": "OnionDesk-Windows.exe",
+      "entry_bytes": 9815552,
+      "entry_sha256": "075db6794c362b24692f8f04a7850cead6b1e63619b47baf61456c95096583a0",
+      "manifest_sha256": "09ae996ff86f97c1e38fdfb6b9e38cc7618e365ae4279d8fd806c4f7bee963d0",
+      "runner_os": "Windows",
+      "runner_arch": "X64"
+    },
+    "linux-x64": {
+      "asset": "OnionDesk-Linux-x64.zip",
+      "zip_sha256": "ea3b30ae8c5974725a0d046ab15ec197f93bba0cd2d0c189436432cc40acd37a",
+      "entry": "OnionDesk-Linux-x64",
+      "entry_bytes": 44966050,
+      "entry_sha256": "36ee40bb514c1cfb074c9a08b44f7e3c772e2bc3ee35428862dee7e9fbb44e23",
+      "manifest_sha256": "cf6e38ed3ecb59795b1f42f0de56bb58e9552e951bb1e3a22c55758b3f4024c8",
+      "runner_os": "Linux",
+      "runner_arch": "X64"
+    },
+    "linux-arm64": {
+      "asset": "OnionDesk-Linux-ARM64.zip",
+      "zip_sha256": "e130f19f7219868e9fbc0ba88052da194fb8cf9c6e8d72667cac74e777077065",
+      "entry": "OnionDesk-Linux-ARM64",
+      "entry_bytes": 48890018,
+      "entry_sha256": "56fb0a0bfa5be8f1d5509a093ee8532af2689d2441095acdbf3d537897fb797c",
+      "manifest_sha256": "9d6045d6b3416e2a45e2ca4bbbe732152e0af403c429219e4e0e5c25327afd9d",
+      "runner_os": "Linux",
+      "runner_arch": "ARM64"
+    }
+  }
+}
