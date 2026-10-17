@@ -1,0 +1,90 @@
+name: Runtime test environment
+
+on:
+  push:
+    branches: [qa/runtime-preflight-20261017]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-preflight-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  linux:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check Linux and KVM availability
+        shell: python
+        run: |
+          import fcntl, json, os, pathlib, platform, shutil
+          result = {"scope": "test environment only; application not launched", "system": platform.system(), "machine": platform.machine(), "free_bytes": shutil.disk_usage(".").free, "KVM_device": pathlib.Path("/dev/kvm").is_char_device()}
+          if result["KVM_device"]:
+              try:
+                  fd = os.open("/dev/kvm", os.O_RDWR | os.O_CLOEXEC)
+                  try:
+                      result["KVM_API_version"] = fcntl.ioctl(fd, 0xAE00, 0)
+                  finally:
+                      os.close(fd)
+              except OSError as exc:
+                  result["KVM_error_errno"] = exc.errno
+          pathlib.Path("evidence").mkdir()
+          pathlib.Path("evidence/linux.json").write_text(json.dumps(result, indent=2))
+          print(json.dumps(result))
+      - name: Save small environment evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: linux-environment
+          path: evidence
+          retention-days: 1
+          if-no-files-found: error
+  windows:
+    if: github.event.repository.private == false
+    runs-on: windows-2022
+    timeout-minutes: 5
+    steps:
+      - name: Check Windows desktop availability
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Add-Type -AssemblyName System.Windows.Forms
+          Add-Type -AssemblyName System.Drawing
+          New-Item -ItemType Directory -Path evidence | Out-Null
+          $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          $result = [ordered]@{
+            scope = 'test environment only; application not launched'
+            system = 'Windows'
+            os64 = [Environment]::Is64BitOperatingSystem
+            process64 = [Environment]::Is64BitProcess
+            interactive = [Environment]::UserInteractive
+            width = $bounds.Width
+            height = $bounds.Height
+            webview2 = [bool](Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}' -ErrorAction SilentlyContinue)
+          }
+          try {
+            $bitmap = [System.Drawing.Bitmap]::new($bounds.Width, $bounds.Height)
+            try {
+              $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+              try {
+                $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+                $bitmap.Save((Join-Path $PWD 'evidence/windows-desktop.png'), [System.Drawing.Imaging.ImageFormat]::Png)
+                $result.desktop_captured = $true
+              } finally { $graphics.Dispose() }
+            } finally { $bitmap.Dispose() }
+          } catch {
+            $result.desktop_captured = $false
+            $result.capture_error_type = $_.Exception.GetType().Name
+          }
+          $result | ConvertTo-Json | Set-Content evidence/windows.json
+          $result | ConvertTo-Json
+      - name: Save small environment evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: windows-environment
+          path: evidence
+          retention-days: 1
+          if-no-files-found: error
