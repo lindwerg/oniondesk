@@ -27,8 +27,11 @@ jobs:
     env:
       CI_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false }}
       CI_TOR_MODE: ${{ inputs.tor_mode || 'direct' }}
-      CI_STATE_FILE: ${{ runner.temp }}/oniondesk-server-kvm-${{ github.run_id }}-${{ github.run_attempt }}.json
     steps:
+      - name: Initialize this job's state path
+        shell: bash
+        run: |
+          printf 'CI_STATE_FILE=%s/oniondesk-server-kvm-%s-%s.json\n' "$RUNNER_TEMP" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
       - name: Check out the exact tested source
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
