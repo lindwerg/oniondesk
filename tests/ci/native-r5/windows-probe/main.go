@@ -40,6 +40,24 @@ type snapshot struct {
 	DescriptorError string `json:"descriptor_error,omitempty"`
 }
 
+type ancestorSnapshot struct {
+	Path     string   `json:"path"`
+	Security snapshot `json:"security"`
+}
+
+func cacheAncestors(advapi *syscall.DLL, cache, user, tokenOwner string) []ancestorSnapshot {
+	result := make([]ancestorSnapshot, 0, 16)
+	for directory := filepath.Dir(cache); len(result) < 16; {
+		result = append(result, ancestorSnapshot{Path: directory, Security: describe(advapi, directory, user, tokenOwner)})
+		parent := filepath.Dir(directory)
+		if parent == directory {
+			break
+		}
+		directory = parent
+	}
+	return result
+}
+
 func systemDLL(name string) (*syscall.DLL, error) {
 	buffer := make([]uint16, 32768)
 	n, _, callErr := kernel.NewProc("GetSystemDirectoryW").Call(uintptr(unsafe.Pointer(&buffer[0])), uintptr(len(buffer)))
@@ -205,6 +223,7 @@ func run() (map[string]any, error) {
 		return nil, err
 	}
 	result := map[string]any{"go_version": runtime.Version(), "manifest": manifestPin, "cache": cache,
+		"user_sid": user, "ancestors": cacheAncestors(advapi, cache, user, tokenOwner),
 		"token_owner_equals_user": tokenOwner == user, "token_owner_is_admin": tokenOwner == administrators, "token_elevated": elevated,
 		"root_before": describe(advapi, cache, user, tokenOwner), "child_before": describe(advapi, filepath.Join(cache, manifestPin), user, tokenOwner)}
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)

@@ -246,10 +246,13 @@ class BoundaryTests(unittest.TestCase):
                   "token_owner_equals_user": False, "token_owner_is_admin": True, "token_elevated": True,
                   "go_version": "go1.26.2", "unsafe_error": True, "download_progress_seen": False,
                   "deadline_reached": False, "restore_lock_exists": False,
-                  "restore_error": "unsafe cache: cache handle owner/DACL differs", "cache": "private-path"}
+                  "restore_error": "unsafe cache: cache handle owner/DACL differs", "cache": "private-path",
+                  "user_sid": "private-user-sid", "ancestors": [{"path": "private-ancestor-path", "security": snapshot}]}
         facts = WINDOWS_DEBUG.public_probe_facts(result)
         HARNESS.validate_public_json(facts)
         self.assertNotIn("private", json.dumps(facts))
+        self.assertNotIn("user_sid", facts)
+        self.assertNotIn("ancestors", facts)
         self.assertTrue(facts["manifest_child_owner_is_admin"])
         self.assertTrue(facts["cache_owner_is_user"])
         self.assertEqual(facts["probe_error_kind"], "owned_handle_owner_dacl")
