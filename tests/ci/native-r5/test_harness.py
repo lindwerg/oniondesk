@@ -5,7 +5,10 @@ import json
 import os
 from pathlib import Path
 import stat
+import subprocess
+import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest import mock
 import zipfile
@@ -16,6 +19,134 @@ SPEC.loader.exec_module(HARNESS)
 
 
 class BoundaryTests(unittest.TestCase):
+    def test_contract_bytes_survive_git_autocrlf_checkout(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            relative = Path("tests/ci/native-r5/contracts/windows-x64.json")
+            target = root / relative
+            target.parent.mkdir(parents=True)
+            original = (HARNESS.HERE / "contracts/windows-x64.json").read_bytes()
+            target.write_bytes(original)
+            (root / ".gitattributes").write_bytes((HARNESS.REPO / ".gitattributes").read_bytes())
+            for arguments in (["init", "--quiet"], ["-c", "core.autocrlf=true", "add", "."]):
+                subprocess.run(["git", *arguments], cwd=root, check=True, capture_output=True)
+            target.unlink()
+            subprocess.run(["git", "-c", "core.autocrlf=true", "checkout-index", "--all", "--force"],
+                           cwd=root, check=True, capture_output=True)
+            self.assertEqual(target.read_bytes(), original)
+            self.assertEqual(hashlib.sha256(target.read_bytes()).hexdigest(),
+                             HARNESS.PINS["distributions"]["windows-x64"]["manifest_sha256"])
+
+    def test_empty_cleanup_does_not_import_optional_dependencies(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            evidence = root / "evidence"
+            env = {"RUNNER_TEMP": temporary, "CI_STATE_FILE": str(root / "oniondesk-native-1-1-windows-x64.json"),
+                   "PLAYWRIGHT_BROWSERS_PATH": str(root / "oniondesk-native-browsers-1-1")}
+            original_import = __import__
+            def guarded_import(name, *args, **kwargs):
+                if name in {"psutil", "PIL", "playwright", "pywinauto"}:
+                    raise ModuleNotFoundError(name)
+                return original_import(name, *args, **kwargs)
+            with mock.patch.dict(os.environ, env), mock.patch.object(HARNESS, "EVIDENCE", evidence), \
+                 mock.patch("builtins.__import__", side_effect=guarded_import):
+                HARNESS.cleanup()
+
+    def test_browser_launch_classifier_publishes_only_fixed_facts(self):
+        cases = {
+            "Missing X server or $DISPLAY": "display_unavailable",
+            "The SUID sandbox helper binary was found, but is not configured correctly": "sandbox_helper_misconfigured",
+            "No usable sandbox!": "sandbox_unavailable",
+            "Failed to move to new namespace: Operation not permitted": "user_namespace_rejected",
+            "error while loading shared libraries: private.so": "shared_library_missing",
+            "Executable doesn't exist at /private/tool": "executable_missing",
+            "unknown /private/path http://127.0.0.1/#nonce --secret-command": "unclassified_browser_launch_failure",
+        }
+        for literal, expected in cases.items():
+            with self.subTest(reason=expected):
+                facts = HARNESS.browser_failure_facts(RuntimeError(literal + "\nprocess did exit: signal=SIGTRAP"))
+                self.assertEqual(facts, {"browser_failure_reason": expected, "browser_failure_signal": "SIGTRAP"})
+                HARNESS.validate_public_json(facts)
+
+    def test_sandbox_requires_positive_layer_one_namespaces_and_seccomp(self):
+        rows = {"Layer 1 Sandbox": "Namespace", "PID namespaces": "Yes",
+                "Network namespaces": "Yes", "Seccomp-BPF sandbox": "Yes"}
+        self.assertEqual(HARNESS.positive_linux_sandbox_layer(rows), "Namespace")
+        self.assertEqual(HARNESS.positive_linux_sandbox_layer({**rows, "Layer 1 Sandbox": "SUID"}), "SUID")
+        for key in rows:
+            with self.subTest(missing=key), self.assertRaises(RuntimeError):
+                HARNESS.positive_linux_sandbox_layer({**rows, key: "No"})
+
+    def test_sandbox_cleanup_rejects_unowned_system_path_before_sudo(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            tooling = root / "oniondesk-native-browsers-1-1"
+            tooling.mkdir()
+            (tooling / "sandbox-owner.json").write_text(json.dumps({"target": "/private/unowned", "sha256": "a" * 64}))
+            env = {"RUNNER_TEMP": temporary, "PLAYWRIGHT_BROWSERS_PATH": str(tooling),
+                   "GITHUB_RUN_ID": "1", "GITHUB_RUN_ATTEMPT": "1"}
+            with mock.patch.dict(os.environ, env), mock.patch.object(HARNESS.subprocess, "run") as command:
+                with self.assertRaises(ValueError):
+                    HARNESS.cleanup_browser_tooling()
+                command.assert_not_called()
+
+    def test_failed_helper_removal_preserves_ownership_and_cleanup_can_retry(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            parent = Path(temporary)
+            owner = "a" * 32
+            root = parent / ("oniondesk-native-" + owner + "-test")
+            root.mkdir()
+            (root / ".owner").write_text(owner)
+            state = parent / "oniondesk-native-1-1-linux-x64.json"
+            state.write_text(json.dumps({"root": str(root), "owner": owner, "processes": [], "windows_claimed": False}))
+            tooling = parent / "oniondesk-native-browsers-1-1"
+            tooling.mkdir()
+            helper = parent / "owned-sandbox-helper"
+            helper.write_bytes(b"owned helper")
+            expected = hashlib.sha256(helper.read_bytes()).hexdigest()
+            record = tooling / "sandbox-owner.json"
+            record.write_text(json.dumps({"target": str(helper), "sha256": expected}))
+            evidence = parent / "evidence"
+            env = {"RUNNER_TEMP": temporary, "CI_STATE_FILE": str(state), "PLAYWRIGHT_BROWSERS_PATH": str(tooling)}
+            processes = SimpleNamespace(wait_procs=mock.Mock(return_value=([], [])), NoSuchProcess=ProcessLookupError)
+            attempts = []
+
+            def remove_helper(arguments, **_kwargs):
+                self.assertEqual(arguments, ["sudo", "--non-interactive", "rm", "--", str(helper)])
+                attempts.append(arguments)
+                if len(attempts) == 1:
+                    raise subprocess.CalledProcessError(1, "sudo")
+                helper.unlink()
+                return subprocess.CompletedProcess(arguments, 0)
+
+            with mock.patch.dict(os.environ, env), mock.patch.dict(sys.modules, {"psutil": processes}), \
+                 mock.patch.object(HARNESS, "EVIDENCE", evidence), \
+                 mock.patch.object(HARNESS, "sandbox_helper_path", return_value=helper), \
+                 mock.patch.object(HARNESS, "validate_sandbox_helper") as validate, \
+                 mock.patch.object(HARNESS.subprocess, "run", side_effect=remove_helper):
+                with self.assertRaises(subprocess.CalledProcessError):
+                    HARNESS.cleanup()
+                self.assertTrue(state.is_file())
+                self.assertTrue((root / ".owner").is_file())
+                self.assertTrue(record.is_file())
+                self.assertTrue(helper.is_file())
+                self.assertFalse((evidence / "cleanup.json").exists())
+                HARNESS.cleanup()
+                self.assertFalse(root.exists())
+                self.assertFalse(state.exists())
+                self.assertFalse(tooling.exists())
+                self.assertFalse(helper.exists())
+                self.assertTrue(json.loads((evidence / "cleanup.json").read_text())["private_cache_and_profile_removed"])
+                self.assertEqual(validate.call_args_list, [mock.call(helper, expected), mock.call(helper, expected)])
+                self.assertEqual(len(attempts), 2)
+
+    def test_provision_rejects_non_public_runner_before_commands(self):
+        with mock.patch.dict(os.environ, {"CI_DISTRIBUTION": "linux-x64", "CI_PUBLIC_REPOSITORY": "false"}), \
+             mock.patch.object(HARNESS.subprocess, "run") as command:
+            with self.assertRaises(RuntimeError):
+                HARNESS.provision()
+            command.assert_not_called()
+
     def test_all_frozen_contract_pins_and_counts(self):
         expected = {"windows-x64": (45, 47), "linux-x64": (627, 498), "linux-arm64": (627, 498)}
         for distribution, counts in expected.items():

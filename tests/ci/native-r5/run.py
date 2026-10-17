@@ -36,12 +36,16 @@ BOOL_FIELDS = {"public_github_hosted_runner", "synthetic_profile", "starter_veri
                "ordinary_uninstaller_completed", "core_browser_fallback_seen", "headed_ui", "first_device_action_completed",
                "browser_sandbox_enabled", "unsupported_arm_tor_browser_gate_respected", "ui_quit_completed",
                "sandbox_renderer_flags_checked", "linux_renderer_seccomp_enabled",
+               "tooling_mount_nosuid", "sandbox_helper_mount_nosuid", "linux_sandbox_diagnostics_positive",
                "core_listener_closed", "owned_resources_only", "exact_process_identities_only", "owned_processes_stopped",
                "private_cache_and_profile_removed"}
 COUNT_FIELDS = {"restored_files_verified", "online_blobs_verified", "online_parts_verified"}
+BROWSER_FAILURE_REASONS = {"display_unavailable", "sandbox_helper_misconfigured", "sandbox_unavailable",
+                           "user_namespace_rejected", "shared_library_missing", "executable_missing",
+                           "permission_denied", "sandbox_diagnostics_failed", "unclassified_browser_launch_failure"}
 PHASES = {"initialize", "download_release_asset", "headed_sandboxed_browser", "native_cold_download_and_restore",
           "independent_restore_verification", "ordinary_nsis_install", "ordinary_nsis_uninstall", "core_first_action",
-          "core_ui_quit", "complete"}
+          "core_ui_quit", "complete", "browser_sandbox_diagnostics"}
 PINS = json.loads((HERE / "pins.json").read_text())
 SHA = re.compile(r"[0-9a-f]{64}")
 
@@ -180,10 +184,48 @@ def validate_public_json(value):
             valid = item in {"RUNNING", "PASS", "PASS_PREPARATION_UI_ARM_GATE", "FAIL_OR_INCOMPLETE"}
         elif key == "error_class":
             valid = isinstance(item, str) and bool(re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,80}", item))
+        elif key == "browser_failure_reason":
+            valid = isinstance(item, str) and item in BROWSER_FAILURE_REASONS
+        elif key == "browser_failure_signal":
+            valid = isinstance(item, str) and item in {"SIGABRT", "SIGTRAP", "SIGSEGV", "SIGILL", "SIGBUS", "SIGKILL", "SIGTERM"}
+        elif key == "linux_sandbox_layer1":
+            valid = isinstance(item, str) and item in {"SUID", "Namespace"}
+        elif key == "browser_engine":
+            valid = isinstance(item, str) and item in {"system_google_chrome", "pinned_chromium"}
+        elif key == "browser_version":
+            valid = isinstance(item, str) and bool(re.fullmatch(r"[0-9]{1,3}(?:\.[0-9]{1,8}){2,3}", item))
         else:
             valid = False
         if not valid:
             raise ValueError("PublicEvidenceField")
+
+
+def browser_failure_facts(error):
+    """Match fixed upstream signatures in memory; never publish exception text."""
+    message = str(error).casefold()
+    signatures = [
+        ("display_unavailable", ("missing x server or $display", "cannot open display", "unable to open x display")),
+        ("sandbox_helper_misconfigured", ("suid sandbox helper binary was found, but is not configured correctly", "setuid sandbox provides api version")),
+        ("sandbox_unavailable", ("no usable sandbox", "running as root without --no-sandbox")),
+        ("user_namespace_rejected", ("failed to move to new namespace", "failed to unshare", "user namespace is not permitted")),
+        ("shared_library_missing", ("error while loading shared libraries", "host system is missing dependencies")),
+        ("executable_missing", ("executable doesn't exist", "executable does not exist", "failed to launch chromium because executable")),
+        ("permission_denied", ("permission denied",)),
+    ]
+    result = {"browser_failure_reason": next((name for name, literals in signatures if any(value in message for value in literals)),
+                                             "unclassified_browser_launch_failure")}
+    match = re.search(r"signal=(sigabrt|sigtrap|sigsegv|sigill|sigbus|sigkill|sigterm)\b", message)
+    if match:
+        result["browser_failure_signal"] = match[1].upper()
+    return result
+
+
+def positive_linux_sandbox_layer(rows):
+    if rows.get("Layer 1 Sandbox") not in {"SUID", "Namespace"} or any(
+        rows.get(key) != "Yes" for key in ("PID namespaces", "Network namespaces", "Seccomp-BPF sandbox")
+    ):
+        raise RuntimeError("PositiveSandboxDiagnosticsRequired")
+    return rows["Layer 1 Sandbox"]
 
 
 def private_state_path():
@@ -283,9 +325,12 @@ class Harness:
             "BROWSER": '"' + sys.executable + '" "' + str(HERE / "browser_dispatch.py") + '" %s'})
         if os.name != "nt":
             sandbox = Path(os.environ["CI_CHROME_SANDBOX"])
-            info = sandbox.stat()
-            if sandbox.is_symlink() or info.st_uid != 0 or stat.S_IMODE(info.st_mode) != 0o4755:
-                raise RuntimeError("ChromiumSandboxHelperRequired")
+            validate_sandbox_helper(sandbox, os.environ["CI_CHROME_SANDBOX_SHA256"])
+            self.facts["tooling_mount_nosuid"] = bool(os.statvfs(browser_tooling_path()).f_flag & os.ST_NOSUID)
+            self.facts["sandbox_helper_mount_nosuid"] = bool(os.statvfs(sandbox.parent).f_flag & os.ST_NOSUID)
+            self.save()
+            if self.facts["sandbox_helper_mount_nosuid"]:
+                raise RuntimeError("SandboxHelperMountRejectsSetuid")
             self.environment["CHROME_DEVEL_SANDBOX"] = str(sandbox)
         self.cache = windows_claims()[0] if os.name == "nt" else self.root / "cache/OnionDesk-Offline"
         self.package = self.root / "package"
@@ -588,16 +633,41 @@ class Harness:
         self.download()
         self.phase("headed_sandboxed_browser")
         with sync_playwright() as playwright:
-            context = playwright.chromium.launch_persistent_context(str(self.root / "browser-profile"),
-                headless=False, chromium_sandbox=True, viewport={"width": 1200, "height": 820},
-                env=self.environment, accept_downloads=False)
+            context = None
             try:
+                options = {}
+                self.facts["browser_engine"] = "pinned_chromium"
+                if self.distribution == "linux-x64":
+                    executable = Path("/opt/google/chrome/chrome")
+                    info = executable.stat()
+                    if executable.is_symlink() or not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+                        raise RuntimeError("TrustedSystemChromeRequired")
+                    options["executable_path"] = str(executable)
+                    self.facts["browser_engine"] = "system_google_chrome"
+                self.save()
+                context = playwright.chromium.launch_persistent_context(str(self.root / "browser-profile"),
+                    headless=False, chromium_sandbox=True, viewport={"width": 1200, "height": 820},
+                    env=self.environment, accept_downloads=False, **options)
+                if context.browser is not None:
+                    self.facts["browser_version"] = context.browser.version
+                self.save()
+                if os.name != "nt":
+                    self.phase("browser_sandbox_diagnostics")
+                    self.linux_sandbox_diagnostics(context)
                 self.discover()
                 self.wait_native_restore()
                 self.core_flow(context)
+            except Exception as error:
+                if self.facts["phase"] in {"headed_sandboxed_browser", "browser_sandbox_diagnostics"}:
+                    self.facts.update(browser_failure_facts(error))
+                    if self.facts["phase"] == "browser_sandbox_diagnostics":
+                        self.facts["browser_failure_reason"] = "sandbox_diagnostics_failed"
+                    self.save()
+                raise
             finally:
                 self.discover()
-                context.close()
+                if context:
+                    context.close()
         if os.name == "nt":
             self.spawn(windows_claims()[1] / "Uninstall.exe")
             self.drive_nsis(uninstall=True)
@@ -605,6 +675,21 @@ class Harness:
                 raise RuntimeError("OrdinaryUninstallLeftInstallation")
         self.facts.update({"phase": "complete", "result": "PASS_PREPARATION_UI_ARM_GATE" if self.distribution == "linux-arm64" else "PASS"})
         self.save()
+
+    def linux_sandbox_diagnostics(self, context):
+        from playwright.sync_api import expect
+        page = context.new_page()
+        try:
+            page.goto("chrome://sandbox", wait_until="domcontentloaded", timeout=30000)
+            expect(page.locator("#evaluation")).to_have_text("You are adequately sandboxed.", timeout=30000)
+            rows = page.locator("#sandbox-status tr").evaluate_all(
+                "rows => Object.fromEntries(rows.map(row => [row.cells[0].textContent, row.cells[1].textContent]))")
+            layer = positive_linux_sandbox_layer(rows)
+            self.facts.update({"linux_sandbox_diagnostics_positive": True,
+                               "linux_sandbox_layer1": layer, "browser_sandbox_enabled": True})
+            self.save()
+        finally:
+            page.close()
 
 
 def windows_shortcuts():
@@ -622,8 +707,51 @@ def browser_tooling_path():
     return target
 
 
+def sandbox_helper_path():
+    suffix = os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]
+    if not re.fullmatch(r"[0-9]+-[0-9]+", suffix):
+        raise ValueError("UnsafeSandboxHelperIdentity")
+    return Path("/usr/local/sbin") / ("oniondesk-native-" + suffix + "-sandbox")
+
+
+def validate_sandbox_helper(path, expected):
+    if path != sandbox_helper_path() or not SHA.fullmatch(expected):
+        raise ValueError("UnsafeSandboxHelperPin")
+    parent, info = path.parent.stat(), path.stat()
+    if path.is_symlink() or path.parent.is_symlink() or not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or \
+            stat.S_IMODE(info.st_mode) != 0o4755 or parent.st_uid != 0 or parent.st_mode & 0o022 or digest(path) != expected:
+        raise RuntimeError("ChromiumSandboxHelperRequired")
+
+
+def cleanup_browser_tooling():
+    tooling = browser_tooling_path()
+    owner = tooling / "sandbox-owner.json"
+    if owner.exists():
+        if owner.is_symlink() or not owner.is_file() or owner.stat().st_size > 1024:
+            raise ValueError("UnsafeSandboxOwnershipRecord")
+        record = json.loads(owner.read_text())
+        if set(record) != {"sha256", "target"} or record["target"] != str(sandbox_helper_path()):
+            raise ValueError("SandboxOwnershipMismatch")
+        target = sandbox_helper_path()
+        if target.exists() or target.is_symlink():
+            validate_sandbox_helper(target, record["sha256"])
+            subprocess.run(["sudo", "--non-interactive", "rm", "--", str(target)], check=True, capture_output=True, timeout=20)
+        if target.exists() or target.is_symlink():
+            raise RuntimeError("SandboxHelperCleanupIncomplete")
+    if tooling.exists():
+        shutil.rmtree(tooling)
+
+
 def provision():
     """Normal sandbox provisioning; never alter AppArmor, sysctls or TLS."""
+    distribution = os.environ.get("CI_DISTRIBUTION")
+    if distribution not in PINS["distributions"]:
+        raise RuntimeError("FreshPublicRunnerRequired")
+    pin = PINS["distributions"][distribution]
+    required = {"CI_PUBLIC_REPOSITORY": "true", "RUNNER_ENVIRONMENT": "github-hosted",
+                "RUNNER_OS": pin["runner_os"], "RUNNER_ARCH": pin["runner_arch"], "GITHUB_REPOSITORY": "lindwerg/oniondesk"}
+    if any(os.environ.get(key) != value for key, value in required.items()):
+        raise RuntimeError("FreshPublicRunnerRequired")
     browser_tooling_path()
     commands = []
     if os.name != "nt":
@@ -634,25 +762,32 @@ def provision():
     if os.name != "nt":
         from playwright.sync_api import sync_playwright
         with sync_playwright() as playwright:
-            sandbox = Path(playwright.chromium.executable_path).with_name("chrome_sandbox")
-        if not sandbox.is_relative_to(browser_tooling_path()) or not sandbox.is_file() or sandbox.is_symlink():
+            source = Path(playwright.chromium.executable_path).with_name("chrome_sandbox")
+        if not source.is_relative_to(browser_tooling_path()) or not source.is_file() or source.is_symlink():
             raise ValueError("SandboxHelperMissing")
-        subprocess.run(["sudo", "chown", "root:root", str(sandbox)], check=True, capture_output=True, timeout=20)
-        subprocess.run(["sudo", "chmod", "4755", str(sandbox)], check=True, capture_output=True, timeout=20)
+        sandbox = sandbox_helper_path()
+        if sandbox.exists() or sandbox.is_symlink():
+            raise RuntimeError("SandboxHelperAlreadyExists")
+        expected = digest(source)
+        # Record ownership before the normal root-owned helper installation, so
+        # cleanup can recover from interruption before GITHUB_ENV is written.
+        write_json(browser_tooling_path() / "sandbox-owner.json", {"target": str(sandbox), "sha256": expected})
+        subprocess.run(["sudo", "--non-interactive", "install", "-o", "root", "-g", "root", "-m", "4755", "--", str(source), str(sandbox)],
+                       check=True, capture_output=True, timeout=20)
+        validate_sandbox_helper(sandbox, expected)
         with Path(os.environ["GITHUB_ENV"]).open("a") as output:
             output.write("CI_CHROME_SANDBOX=" + str(sandbox) + "\n")
+            output.write("CI_CHROME_SANDBOX_SHA256=" + expected + "\n")
     print("Native R5: browser tooling provisioned with browser sandbox enabled", flush=True)
 
 
 def cleanup():
-    import psutil
     path = private_state_path()
     if not path.exists():
-        tooling = browser_tooling_path()
-        if tooling.exists():
-            shutil.rmtree(tooling)
+        cleanup_browser_tooling()
         seal_evidence()
         return
+    import psutil
     state = json.loads(path.read_text())
     owner = state["owner"]
     root = Path(state["root"])
@@ -692,10 +827,8 @@ def cleanup():
                 shutil.rmtree(item)
             else:
                 item.unlink(missing_ok=True)
+    cleanup_browser_tooling()
     shutil.rmtree(root)
-    tooling = browser_tooling_path()
-    if tooling.exists():
-        shutil.rmtree(tooling)
     path.unlink()
     write_json(EVIDENCE / "cleanup.json", {"owned_resources_only": True, "exact_process_identities_only": True,
                                           "owned_processes_stopped": True, "private_cache_and_profile_removed": True})

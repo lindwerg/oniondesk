@@ -4,6 +4,7 @@ on:
   push:
     branches: [qa/native-r5-20261017]
     paths:
+      - .gitattributes
       - .github/workflows/native-r5.yml
       - tests/ci/native-r5/**
   workflow_dispatch:

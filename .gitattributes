@@ -1,0 +1,3 @@
+# Runtime contracts are authenticated as raw bytes on every runner.
+/tests/ci/native-r5/contracts/*.json -text
+/tests/ci/native-r5/pins.json -text

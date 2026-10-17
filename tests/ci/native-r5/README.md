@@ -20,7 +20,13 @@ used for installation. A secure-desktop gate makes this test incomplete.
 The frozen Windows/Linux Core excludes optional pywebview, so the documented
 system-browser fallback is selected with `BROWSER`. A private adapter hands its
 loopback nonce URL to a headed Chromium instance with `chromium_sandbox=True`.
-Linux provisions Chromium's ordinary root-owned 4755 sandbox helper. AppArmor,
+Linux provisions Chromium's ordinary root-owned 4755 sandbox helper in a unique
+`/usr/local/sbin` file, verifies its SHA and mount flags, and removes that exact
+owned helper during cleanup. x64 uses the installed system Google Chrome with
+Ubuntu's existing profile; ARM64 uses the pinned Playwright Chromium. The normal
+`playwright install --with-deps chromium` provisions required system libraries.
+Both Linux targets must report a positive `chrome://sandbox` evaluation and
+layer-one/PID/network/seccomp status before the product starts. AppArmor,
 sysctls, TLS and OS security settings are never weakened. UI selectors perform
 the first device action, verify the platform, and click the application's Quit.
 The owned listener must then stop. ARM64 additionally verifies the disabled
@@ -46,6 +52,10 @@ git diff --check
 
 Primary runner reference (standard/free public labels, including native ARM64):
 https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+Chromium's documented setuid-helper option, without disabling Ubuntu security:
+https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
+Failed browser launches publish only a fixed literal classification and signal;
+the raw exception, browser command line and paths remain private.
 Official action SHAs were verified from upstream v4.2.2 checkout, v5.6.0
 setup-python and v4.6.2 upload-artifact tags. The local macOS checks do not prove
 Windows/Linux runtime success; that requires the actual reviewed CI run.
