@@ -6,7 +6,7 @@ import struct
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 
 import confidential
 import guest_console
@@ -108,17 +108,84 @@ class GuestDiagnosticTests(unittest.TestCase):
     def test_rfb_key_event_and_chord_use_documented_network_format(self):
         self.assertEqual(b"\x04\x01\0\0\0\0\0t", guest_console.key_event(ord("t"), True))
         connection = Mock()
-        guest_console.chord(connection, (1, 2))
-        events = connection.sendall.call_args.args[0]
+        with patch.object(guest_console.time, "sleep"):
+            guest_console.chord(connection, (1, 2))
         self.assertEqual([(4, 1, 0, 1), (4, 1, 0, 2), (4, 0, 0, 2), (4, 0, 0, 1)],
-                         [struct.unpack("!BBHI", events[index:index + 8]) for index in range(0, len(events), 8)])
+                         [struct.unpack("!BBHI", sent.args[0]) for sent in connection.sendall.call_args_list])
+
+    def test_rfb_pauses_between_every_press_and_release_including_return(self):
+        timeline = Mock()
+        connection = Mock()
+        timeline.attach_mock(connection.sendall, "send")
+        with patch.object(guest_console.time, "sleep") as pause:
+            timeline.attach_mock(pause, "pause")
+            guest_console.chord(connection, (0xFFE1, ord("A")))
+            guest_console.chord(connection, (0xFF0D,))
+        expected = []
+        for key, down in ((0xFFE1, True), (ord("A"), True), (ord("A"), False),
+                          (0xFFE1, False), (0xFF0D, True), (0xFF0D, False)):
+            expected.extend((call.send(guest_console.key_event(key, down)), call.pause(0.02)))
+        self.assertEqual(expected, timeline.mock_calls)
 
     def test_rfb_typing_preserves_property_capitals_and_shell_ampersands(self):
-        with patch.object(guest_console, "READ_ONLY_COMMAND", "A&"):
-            events = guest_console.typing_events()
-        keys = [struct.unpack("!BBHI", events[index:index + 8]) for index in range(0, len(events), 8)]
-        self.assertEqual([(4, 1, 0, 0xFFE1), (4, 1, 0, ord("a")), (4, 0, 0, ord("a")), (4, 0, 0, 0xFFE1),
-                          (4, 1, 0, 0xFFE1), (4, 1, 0, ord("7")), (4, 0, 0, ord("7")), (4, 0, 0, 0xFFE1)], keys)
+        connection = Mock()
+        with patch.object(guest_console, "READ_ONLY_COMMAND", "A&"), patch.object(guest_console.time, "sleep"):
+            guest_console.type_read_only_command(connection)
+        keys = [struct.unpack("!BBHI", sent.args[0]) for sent in connection.sendall.call_args_list]
+        self.assertEqual([(4, 1, 0, 0xFFE1), (4, 1, 0, ord("A")), (4, 0, 0, ord("A")), (4, 0, 0, 0xFFE1),
+                          (4, 1, 0, 0xFFE1), (4, 1, 0, ord("&")), (4, 0, 0, ord("&")), (4, 0, 0, 0xFFE1)], keys)
+
+    def test_console_command_is_exact_fixed_read_only_literal(self):
+        self.assertEqual(
+            "clear; systemctl show oniondesk-first-boot.service "
+            "-p LoadState,ActiveState,SubState,Result,Restart,ConditionResult,ExecMainStatus; "
+            "sudo -n journalctl -u oniondesk-first-boot.service -n 16 --no-pager -o cat; "
+            "systemctl --no-pager list-jobs; cat /proc/cmdline; "
+            "dpkg-query -W telegram-desktop qemu-guest-agent; "
+            "test -f /var/lib/oniondesk/setup.complete && echo SETUP_COMPLETE_PRESENT",
+            guest_console.READ_ONLY_COMMAND,
+        )
+
+    def test_console_delivers_full_literal_then_return_before_private_screenshot(self):
+        connection = Mock()
+        connection.__enter__ = Mock(return_value=connection)
+        connection.__exit__ = Mock(return_value=False)
+        connection.recv.side_effect = [b"RFB 003.008\n", b"\x01", b"\x01", b"\0" * 4, b"\0" * 24]
+        with tempfile.TemporaryDirectory() as directory:
+            marker = Path(directory) / "private-console"
+            raw = Path(directory) / "private-console.ppm"
+            target = Path(directory) / "console.cms"
+
+            def send(data):
+                self.assertTrue(marker.exists())
+
+            connection.sendall.side_effect = send
+            with patch.object(guest_console, "SUPPRESSION_MARKER", marker), \
+                    patch.object(guest_console, "Path", return_value=raw), \
+                    patch.object(guest_console.socket, "create_connection", return_value=connection), \
+                    patch.object(guest_console.time, "sleep"), \
+                    patch.object(guest_console.subprocess, "run", side_effect=RuntimeError("SyntheticScreenshotStop")) as screenshot, \
+                    patch.object(guest_console.confidential, "encrypt_diagnostic") as encrypt:
+                with self.assertRaisesRegex(RuntimeError, "SyntheticScreenshotStop"):
+                    guest_console.capture(target)
+            connection.setsockopt.assert_called_once_with(guest_console.socket.IPPROTO_TCP,
+                                                         guest_console.socket.TCP_NODELAY, 1)
+            keys = [struct.unpack("!BBHI", sent.args[0]) for sent in connection.sendall.call_args_list
+                    if len(sent.args[0]) == 8]
+            self.assertEqual([(4, 1, 0, 0xFFE3), (4, 1, 0, 0xFFE9), (4, 1, 0, ord("t")),
+                              (4, 0, 0, ord("t")), (4, 0, 0, 0xFFE9), (4, 0, 0, 0xFFE3),
+                              (4, 1, 0, 0xFFC8), (4, 0, 0, 0xFFC8)], keys[:8])
+            self.assertEqual(guest_console.READ_ONLY_COMMAND,
+                             "".join(chr(key) for _, down, _, key in keys[8:-2]
+                                     if down and key != 0xFFE1))
+            self.assertEqual([(4, 1, 0, 0xFF0D), (4, 0, 0, 0xFF0D)], keys[-2:])
+            screenshot.assert_called_once_with(
+                ["virsh", "--connect", "qemu:///system", "screenshot", guest_console.DOMAIN, str(raw)],
+                capture_output=True, check=True, timeout=15,
+            )
+            encrypt.assert_not_called()
+            self.assertTrue(marker.exists())
+            self.assertFalse(raw.exists())
 
     def test_private_console_suppresses_every_later_public_snapshot_before_input(self):
         connection = Mock()

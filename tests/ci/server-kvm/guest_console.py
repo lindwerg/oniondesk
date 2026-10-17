@@ -10,6 +10,7 @@ import confidential
 
 DOMAIN = "oniondesk-workstation"
 SUPPRESSION_MARKER = Path("/run/oniondesk-ci-private-console-active")
+KEY_EVENT_INTERVAL = 0.02
 # The command is a literal, never assembled from guest output or arguments.
 READ_ONLY_COMMAND = (
     "clear; systemctl show oniondesk-first-boot.service "
@@ -36,26 +37,30 @@ def key_event(key, down):
     return struct.pack("!BBHI", 4, int(down), 0, key)
 
 
+def send_key(connection, key, down):
+    # QEMU's emulated keyboard has a bounded queue; never burst a command.
+    connection.sendall(key_event(key, down))
+    time.sleep(KEY_EVENT_INTERVAL)
+
+
 def chord(connection, keys):
-    connection.sendall(b"".join(key_event(key, True) for key in keys)
-                       + b"".join(key_event(key, False) for key in reversed(keys)))
+    for key in keys:
+        send_key(connection, key, True)
+    for key in reversed(keys):
+        send_key(connection, key, False)
 
 
-def typing_events():
-    # RFB is translated into a physical US keyboard by QEMU. Explicit Shift
-    # preserves capitals in systemctl property names and shell punctuation.
-    shifted = dict(zip('~!@#$%^&*()_+{}|:"<>?', '`1234567890-=[]\\;\',./'))
-    events = bytearray()
+def type_read_only_command(connection):
+    # RFC 6143 keysyms describe characters, not physical unshifted keys.
+    # QEMU also needs explicit Shift for its emulated US keyboard. Sending
+    # Shift + lowercase instead makes QEMU's CapsLock sync cancel the case.
+    shifted = '~!@#$%^&*()_+{}|:"<>?'
     for char in READ_ONLY_COMMAND:
-        if "A" <= char <= "Z":
-            keys = (0xFFE1, ord(char.lower()))
-        elif char in shifted:
-            keys = (0xFFE1, ord(shifted[char]))
+        if "A" <= char <= "Z" or char in shifted:
+            keys = (0xFFE1, ord(char))
         else:
             keys = (ord(char),)
-        events.extend(b"".join(key_event(key, True) for key in keys))
-        events.extend(b"".join(key_event(key, False) for key in reversed(keys)))
-    return bytes(events)
+        chord(connection, keys)
 
 
 def capture(target):
@@ -65,6 +70,7 @@ def capture(target):
     SUPPRESSION_MARKER.touch(mode=0o600, exist_ok=True)
     with socket.create_connection(("127.0.0.1", 5902), timeout=5) as connection:
         connection.settimeout(5)
+        connection.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         if receive(connection, 12) != b"RFB 003.008\n":
             raise ValueError("RFBVersionUnexpected")
         connection.sendall(b"RFB 003.008\n")
@@ -80,12 +86,12 @@ def capture(target):
         if name_length > 1024:
             raise ValueError("RFBNameLimit")
         receive(connection, name_length)
-        # Open the existing LXQt terminal, maximize it, then type the literal.
+        # Open the existing LXQt terminal; its own F11 avoids WM-specific binds.
         chord(connection, (0xFFE3, 0xFFE9, ord("t")))  # Ctrl+Alt+T
         time.sleep(3)
-        chord(connection, (0xFFEB, ord("a")))         # Super+A, vendor labwc maximize
+        chord(connection, (0xFFC8,))                  # F11, QTerminal fullscreen
         time.sleep(1)
-        connection.sendall(typing_events())
+        type_read_only_command(connection)
         chord(connection, (0xFF0D,))                  # Return
         time.sleep(5)
         try:

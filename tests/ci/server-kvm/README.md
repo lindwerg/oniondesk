@@ -108,8 +108,11 @@ after host installation. A cutoff remains FAIL/INCOMPLETE and is never described
 as a failed guest service or successful installation. The guests remain live.
 The installer output tail is also added to private encrypted evidence.
 If QGA is unavailable, the existing loopback RFB console opens the vendor's
-terminal with its documented Ctrl+Alt+T shortcut, maximizes it with Super+A,
-and types a literal read-only status/journal/jobs/package command. `sudo -n`
+terminal with its documented Ctrl+Alt+T shortcut, switches QTerminal to fullscreen
+with F11, and types a literal read-only status/journal/jobs/package command.
+RFB sends each key event separately with a 20 ms pause and preserves the actual
+uppercase/punctuation keysym, avoiding input bursts and unwanted Caps Lock changes.
+`sudo -n`
 never prompts or changes credentials. One console screenshot is encrypted as
 `workstation-console.cms`; it is evidence of visible output, not proof that the
 command succeeded. Before any console input, a persistent private marker blocks
