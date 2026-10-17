@@ -1,6 +1,7 @@
 """Pinned, bounded CMS envelope boundary shared with reviewed native CI."""
 import hashlib
 from pathlib import Path
+import re
 import subprocess
 
 HERE = Path(__file__).resolve().parent
@@ -131,4 +132,61 @@ class PrivateDiagnostic:
 
     def save(self, target):
         return encrypt_diagnostic(bytes(self.data), target)
+
+
+def passt_denials(data):
+    """Only passt AppArmor denial records from a bounded host kernel query."""
+    identity = re.compile(rb'\b(?:comm="passt(?:\.avx2)?"|profile="(?:/usr/bin/)?passt(?:\.avx2)?")')
+    return b"\n".join(line for line in data.splitlines()
+                      if b'apparmor="DENIED"' in line and identity.search(line))[-32 * 1024:]
+
+
+def collect_host_security(target):
+    """Read host policy/audit evidence; never load, unload or alter a policy."""
+    private = PrivateDiagnostic()
+    denied = b""
+    probes = (
+        ("kernel_passt_denials", ["sudo", "-n", "journalctl", "--dmesg", "--no-pager", "--output=cat", "--lines=500"]),
+        ("loaded_profiles", ["sudo", "-n", "cat", "/sys/kernel/security/apparmor/profiles"]),
+        ("host_passt_profile", ["sudo", "-n", "cat", "/etc/apparmor.d/usr.bin.passt"]),
+        ("host_passt_abstraction", ["sudo", "-n", "cat", "/etc/apparmor.d/abstractions/passt"]),
+    )
+    for label, arguments in probes:
+        try:
+            response = subprocess.run(arguments, capture_output=True, timeout=20)
+            data = response.stdout
+            if label == "kernel_passt_denials":
+                data = denied = passt_denials(data)
+            elif label == "loaded_profiles":
+                data = b"\n".join(line for line in data.splitlines() if b"passt" in line or b"libvirt" in line)
+            private.add(label, b"exit=" + str(response.returncode).encode("ascii") + b"\n" + data[-12 * 1024:])
+        except (OSError, subprocess.SubprocessError):
+            private.add(label, b"probe_unavailable")
+    return {"encrypted_host_security_diagnostic_saved": private.save(target),
+            "host_kernel_passt_apparmor_denial_observed": bool(denied)}
+
+
+def collect_container_security(private):
+    """Read packaged policy and the actual daemon label into encrypted inputs."""
+    for label, filename in (
+        ("container_passt_profile", "/etc/apparmor.d/usr.bin.passt"),
+        ("container_passt_abstraction", "/etc/apparmor.d/abstractions/passt"),
+        ("container_libvirt_policy", "/etc/apparmor.d/abstractions/libvirt-qemu"),
+        ("container_current_label", "/proc/self/attr/current"),
+    ):
+        try:
+            private.add(label, Path(filename).read_bytes()[-8 * 1024:])
+        except OSError:
+            private.add(label, b"probe_unavailable")
+    try:
+        response = subprocess.run(["systemctl", "show", "libvirtd.service", "--property=MainPID", "--value"],
+                                  capture_output=True, timeout=10)
+        pid = response.stdout.strip()
+        if response.returncode == 0 and re.fullmatch(rb"[1-9][0-9]{0,9}", pid):
+            private.add("libvirtd_current_label", Path("/proc", pid.decode("ascii"), "attr/current").read_bytes())
+        versions = subprocess.run(["dpkg-query", "-W", "-f=${binary:Package}\t${Version}\n",
+                                   "passt", "libvirt-daemon-driver-qemu", "apparmor"], capture_output=True, timeout=10)
+        private.add("container_package_versions", versions.stdout[-4096:])
+    except (OSError, subprocess.SubprocessError):
+        private.add("container_security_runtime", b"probe_unavailable")
 

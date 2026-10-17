@@ -474,6 +474,7 @@ def main(mode):
             except Exception:
                 status["failure_diagnostics"] = {"available": False}
         try:
+            confidential.collect_container_security(private)
             for unit in ("libvirtd.service", "oniondesk-vms.service"):
                 journal = subprocess.run(["journalctl", "--unit=" + unit, "--no-pager", "--output=cat", "--lines=120"],
                                          capture_output=True, timeout=20)

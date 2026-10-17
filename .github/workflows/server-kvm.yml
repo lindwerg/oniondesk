@@ -22,7 +22,7 @@ concurrency:
 jobs:
   server:
     if: github.event.repository.private == false
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 120
     env:
       CI_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false }}

@@ -1,7 +1,7 @@
 # Real KVM server CI
 
 This workflow runs only in a **public** repository on the standard free
-GitHub-hosted `ubuntu-24.04` runner. It refuses local and self-hosted execution.
+GitHub-hosted `ubuntu-26.04` runner. It refuses local and self-hosted execution.
 No larger runner, paid service, persistent cache, host Docker socket or host
 filesystem/cgroup bind is used. Do not run it against an existing server.
 
@@ -78,6 +78,19 @@ bounded ciphertext, no extra attributes/recipients or trailing bytes. Data,
 SignedData, foreign-recipient and alternate-cipher profiles fail closed. Only
 the owner-held local private key can decrypt it; no private key is in the
 repository, workflow or image. The existing 8 MiB/one-day limit still applies.
+
+The host snapshot only reads the loaded passt/libvirt AppArmor profile names,
+the two packaged passt policy files, and bounded kernel denial records filtered
+to passt. These private details are published only as
+`host-security-diagnostic.cms` under the same pinned recipient and strict CMS
+boundary. The container snapshot also reads its package policy and daemon label.
+No AppArmor policy is loaded, unloaded, put in complain mode or edited; no host
+sysctl or mount changes are made. The current standard Ubuntu 26.04 runner is
+selected to obtain its supported packaged policy, while the actual Debian 13
+userland, KVM checks and all 29 production source files remain unchanged. The
+newer host policy resolving the observed socket denial is a hypothesis until a
+real run proves it. Container export reserves 144 KiB for host CMS/JSON so the
+total artifact remains below 8 MiB.
 
 Local checks (no Docker/VM start):
 

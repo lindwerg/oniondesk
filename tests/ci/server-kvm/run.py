@@ -118,7 +118,8 @@ def export_evidence(container, temporary):
              "browser-gateway.png", "browser-workstation.png", "server-diagnostic.cms"}
     if any(path.name not in names or path.is_symlink() or not path.is_file() for path in files):
         raise ValueError("UnexpectedEvidenceFile")
-    if sum(path.stat().st_size for path in files) > MAX_ARTIFACT_BYTES:
+    # Reserve the optional host CMS (128 KiB) and bounded host/cleanup JSON.
+    if sum(path.stat().st_size for path in files) > MAX_ARTIFACT_BYTES - 144 * 1024:
         raise ValueError("EvidenceSizeLimit")
     for path in files:
         if path.name == "server-diagnostic.cms":
@@ -203,8 +204,13 @@ def run():
                                                "result": "FAIL_OR_INCOMPLETE"})
     finally:
         unchanged = payload(ROOT) == before
+        try:
+            security = confidential.collect_host_security(EVIDENCE / "host-security-diagnostic.cms")
+        except (OSError, ValueError, subprocess.SubprocessError):
+            security = {"encrypted_host_security_diagnostic_saved": False}
         write_json(EVIDENCE / "host.json", {"source_commit": source_sha, "tor_mode": mode,
                    "public_github_hosted_runner": True, "production_payload_unchanged": unchanged,
+                   **security,
                    "result": "PASS" if not failed and unchanged else "FAIL_OR_INCOMPLETE"})
         cleanup()
     return 1 if failed or not unchanged else 0

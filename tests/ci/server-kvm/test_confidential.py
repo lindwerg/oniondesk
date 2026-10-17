@@ -12,6 +12,50 @@ from test_harness import guest, host
 
 
 class ConfidentialTests(unittest.TestCase):
+    def test_host_kernel_filter_retains_only_passt_apparmor_denials(self):
+        own = b'apparmor="DENIED" operation="mknod" profile="passt" comm="passt.avx2" name="/run/libvirt/qemu/passt/owned.socket"'
+        foreign = b'apparmor="DENIED" profile="other-service" comm="other-service" private-unrelated-host-data'
+        messages = own + b"\n" + foreign + b'\nprofile="passt" unrelated warning'
+        self.assertEqual(own, confidential.passt_denials(messages))
+        self.assertEqual(b"", confidential.passt_denials(foreign))
+
+    def test_host_security_snapshot_uses_only_fixed_read_commands_and_encrypts(self):
+        original_run = subprocess.run
+        probes = []
+        marker = b"synthetic-private-policy-marker"
+        def execute(arguments, **kwargs):
+            if arguments[:2] != ["sudo", "-n"]:
+                return original_run(arguments, **kwargs)
+            probes.append(arguments)
+            if "journalctl" in arguments:
+                data = b'apparmor="DENIED" profile="passt" comm="passt" ' + marker
+            elif arguments[-1].endswith("/profiles"):
+                data = b"passt (enforce)\nprivate-other-profile (enforce)"
+            else:
+                data = marker
+            return subprocess.CompletedProcess(arguments, 0, stdout=data, stderr=b"")
+        with tempfile.TemporaryDirectory() as directory, patch.object(confidential.subprocess, "run", side_effect=execute):
+            target = Path(directory) / "host-security-diagnostic.cms"
+            result = confidential.collect_host_security(target)
+            confidential.validate_encrypted_diagnostic(target.read_bytes())
+            self.assertTrue(result["encrypted_host_security_diagnostic_saved"])
+            self.assertTrue(result["host_kernel_passt_apparmor_denial_observed"])
+            self.assertNotIn(marker, target.read_bytes())
+            self.assertEqual([target], list(Path(directory).iterdir()))
+        self.assertEqual(["sudo", "-n", "journalctl", "--dmesg", "--no-pager", "--output=cat", "--lines=500"], probes[0])
+        self.assertEqual({"/sys/kernel/security/apparmor/profiles", "/etc/apparmor.d/usr.bin.passt",
+                          "/etc/apparmor.d/abstractions/passt"}, {arguments[-1] for arguments in probes[1:]})
+        self.assertTrue(all(arguments[:3] == ["sudo", "-n", "cat"] for arguments in probes[1:]))
+
+    def test_container_export_preserves_host_cms_and_json_size_reserve(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def copied(_arguments, **kwargs):
+                (root / "export/status.json").write_text("{}")
+            with patch.object(host, "invoke", side_effect=copied), \
+                    patch.object(host, "MAX_ARTIFACT_BYTES", 144 * 1024 + 1), self.assertRaises(ValueError):
+                host.export_evidence("owned-container", root)
+
     def test_probe_variants_add_only_memory_then_passt(self):
         basic = ET.fromstring(guest.probe_xml("owned-probe"))
         memory = ET.fromstring(guest.probe_xml("owned-probe", "whonix_memory"))
