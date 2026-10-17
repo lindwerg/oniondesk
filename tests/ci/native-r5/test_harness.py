@@ -22,6 +22,29 @@ SPEC.loader.exec_module(HARNESS)
 
 
 class BoundaryTests(unittest.TestCase):
+    @unittest.skipIf(os.name == "nt", "Unix socket budget applies to Linux")
+    def test_short_private_root_keeps_socket_budget_and_falls_back_from_long_parent(self):
+        cases = [("/home/runner/work/_temp", Path("/home/runner/work/_temp")),
+                 ("/runner/" + "long" * 40, Path("/tmp")), ("/runner/" + "Ж" * 80, Path("/tmp"))]
+        for parent, expected in cases:
+            result = expected / "od-12345678"
+            with self.subTest(parent_bytes=len(os.fsencode(parent))), mock.patch.dict(os.environ, {"RUNNER_TEMP": parent}), \
+                 mock.patch.object(HARNESS.tempfile, "mkdtemp", return_value=str(result)) as create:
+                self.assertEqual(HARNESS.create_harness_root("a" * 32), result)
+                create.assert_called_once_with(prefix="od-", dir=expected)
+                self.assertLessEqual(HARNESS.browser_socket_path_max_bytes(result / "t"), 100)
+
+    @unittest.skipIf(os.name == "nt", "Unix socket budget applies to Linux")
+    def test_unexpected_long_temporary_name_fails_clearly_before_browser_tools(self):
+        result = Path("/tmp") / ("od-" + "x" * 160)
+        with mock.patch.dict(os.environ, {"RUNNER_TEMP": "/tmp"}), \
+             mock.patch.object(HARNESS.tempfile, "mkdtemp", return_value=str(result)), \
+             mock.patch.object(Path, "rmdir") as remove, mock.patch.object(HARNESS.subprocess, "run") as tools:
+            with self.assertRaisesRegex(RuntimeError, "^BrowserTemporaryPathTooLong$"):
+                HARNESS.create_harness_root("a" * 32)
+            remove.assert_called_once_with()
+            tools.assert_not_called()
+
     def test_dispatch_suites_have_fixed_targets_and_independent_concurrency(self):
         workflow = (HARNESS.REPO / ".github/workflows/native-r5.yml").read_text(encoding="utf-8")
         self.assertNotIn("\n  push:", workflow)
@@ -227,6 +250,7 @@ class BoundaryTests(unittest.TestCase):
     def test_browser_launch_classifier_publishes_only_fixed_facts(self):
         cases = {
             "Missing X server or $DISPLAY": "display_unavailable",
+            "Socket path too long: /private/synthetic/SingletonSocket": "socket_path_too_long",
             "The SUID sandbox helper binary was found, but is not configured correctly": "sandbox_helper_misconfigured",
             "No usable sandbox!": "sandbox_unavailable",
             "Failed to move to new namespace: Operation not permitted": "user_namespace_rejected",
@@ -266,7 +290,7 @@ class BoundaryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             parent = Path(temporary)
             owner = "a" * 32
-            root = parent / ("oniondesk-native-" + owner + "-test")
+            root = parent / (("oniondesk-native-" + owner + "-test") if os.name == "nt" else "od-abcd1234")
             root.mkdir()
             (root / ".owner").write_text(owner, encoding="utf-8")
             state = parent / "oniondesk-native-1-1-linux-x64.json"

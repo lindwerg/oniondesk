@@ -42,6 +42,10 @@ directories are tightened to 0755 before the unchanged file guard runs. No
 symlink or non-root-owned path is eligible for that operation. Verbose Linux
 launch diagnostics go only to the bounded encrypted capture; truncation keeps
 both the initial error and final crash context as valid UTF-8.
+Linux uses a short `od-` private root and `t` temporary child. The calculated
+worst-case Chromium socket path is capped at 100 bytes; long runner temporary
+parents select a fresh 0700 `/tmp/od-` root. The full 128-bit owner marker and
+private state still authenticate cleanup; only these exact short roots qualify.
 
 Public evidence is an allowlisted JSON status/cleanup pair plus cropped native
 windows and browser content. No browser chrome, URL, nonce, process arguments,

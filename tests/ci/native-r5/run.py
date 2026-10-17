@@ -45,7 +45,7 @@ BOOL_FIELDS = {"public_github_hosted_runner", "synthetic_profile", "starter_veri
 COUNT_FIELDS = {"restored_files_verified", "online_blobs_verified", "online_parts_verified"}
 BROWSER_FAILURE_REASONS = {"display_unavailable", "sandbox_helper_misconfigured", "sandbox_unavailable",
                            "user_namespace_rejected", "shared_library_missing", "executable_missing",
-                           "permission_denied", "sandbox_diagnostics_failed", "unclassified_browser_launch_failure"}
+                           "permission_denied", "socket_path_too_long", "sandbox_diagnostics_failed", "unclassified_browser_launch_failure"}
 PHASES = {"initialize", "download_release_asset", "headed_sandboxed_browser", "native_cold_download_and_restore",
           "independent_restore_verification", "ordinary_nsis_install", "ordinary_nsis_uninstall", "core_first_action",
           "core_ui_quit", "complete", "browser_sandbox_diagnostics", "browser_attestation", "browser_launch", "browser_sandbox_check"}
@@ -54,6 +54,7 @@ SHA = re.compile(r"[0-9a-f]{64}")
 TRUSTED_ERROR_CODES = {
     'BrowserSandboxDisabled',
     'BrowserELFArchitectureMismatch',
+    'BrowserTemporaryPathTooLong',
     'CIInterrupted',
     'CheckoutSHAMismatch',
     'ChromiumSandboxHelperRequired',
@@ -288,6 +289,8 @@ def validate_public_json(value):
             valid = isinstance(item, str) and bool(re.fullmatch(r"[0-9]{1,3}(?:\.[0-9]{1,8}){2,3}", item))
         elif key == "browser_elf_machine":
             valid = type(item) is int and 0 <= item <= 65535
+        elif key == "browser_socket_path_max_bytes":
+            valid = type(item) is int and 0 < item <= 100
         else:
             valid = False
         if not valid:
@@ -298,6 +301,7 @@ def browser_failure_facts(error):
     """Match fixed upstream signatures in memory; never publish exception text."""
     message = str(error).casefold()
     signatures = [
+        ("socket_path_too_long", ("socket path too long",)),
         ("display_unavailable", ("missing x server or $display", "cannot open display", "unable to open x display")),
         ("sandbox_helper_misconfigured", ("suid sandbox helper binary was found, but is not configured correctly", "setuid sandbox provides api version")),
         ("sandbox_unavailable", ("no usable sandbox", "running as root without --no-sandbox")),
@@ -465,6 +469,25 @@ def browser_elf_machine(executable):
     return int.from_bytes(header[18:20], "little")
 
 
+def browser_socket_path_max_bytes(temporary):
+    # Pinned Chromium uses 24/28-byte vendor+random directory names. Reserve
+    # 40 bytes, plus both separators and SingletonSocket, below Linux sun_path.
+    return len(os.fsencode(temporary)) + 1 + 40 + 1 + len(b"SingletonSocket")
+
+
+def create_harness_root(owner):
+    parent = Path(os.environ["RUNNER_TEMP"])
+    if os.name == "nt":
+        return Path(tempfile.mkdtemp(prefix="oniondesk-native-" + owner + "-", dir=parent))
+    if browser_socket_path_max_bytes(parent / "od-xxxxxxxx" / "t") > 100:
+        parent = Path("/tmp")
+    root = Path(tempfile.mkdtemp(prefix="od-", dir=parent))
+    if browser_socket_path_max_bytes(root / "t") > 100:
+        root.rmdir()  # This just-created directory is still empty.
+        raise RuntimeError("BrowserTemporaryPathTooLong")
+    return root
+
+
 def positive_linux_sandbox_layer(rows):
     if rows.get("Layer 1 Sandbox") not in {"SUID", "Namespace"} or any(
         rows.get(key) != "Yes" for key in ("PID namespaces", "Network namespaces", "Seccomp-BPF sandbox")
@@ -530,7 +553,7 @@ class Harness:
         if self.state_path.exists():
             raise RuntimeError("StateAlreadyExists")
         self.owner = uuid.uuid4().hex
-        self.root = Path(tempfile.mkdtemp(prefix="oniondesk-native-" + self.owner + "-", dir=os.environ["RUNNER_TEMP"]))
+        self.root = create_harness_root(self.owner)
         self.root.chmod(0o700)
         (self.root / ".owner").write_text(self.owner, encoding="utf-8")
         self.state = {"owner": self.owner, "root": str(self.root), "processes": [], "windows_claimed": False}
@@ -539,6 +562,11 @@ class Harness:
                       "index_sha256": PINS["index_sha256"], "manifest_sha256": self.pin["manifest_sha256"],
                       "source_commit": os.environ["GITHUB_SHA"], "synthetic_profile": True}
         self.save()
+        temporary = self.root / ("temp" if os.name == "nt" else "t")
+        temporary.mkdir(mode=0o700)
+        if os.name != "nt":
+            self.facts["browser_socket_path_max_bytes"] = browser_socket_path_max_bytes(temporary)
+            self.save()
         if os.name == "nt":
             import winreg
             for path in windows_claims():
@@ -556,7 +584,7 @@ class Harness:
                     raise RuntimeError("ExistingWindowsShortcut")
             self.state["windows_claimed"] = True
             self.save()
-        for relative in ("home", "temp", "package", "cache", "home/AppData/Local", "home/AppData/Roaming"):
+        for relative in ("home", "package", "cache", "home/AppData/Local", "home/AppData/Roaming"):
             (self.root / relative).mkdir(parents=True, exist_ok=True, mode=0o700)
         keys = {"PATH", "SystemRoot", "SYSTEMROOT", "WINDIR", "COMSPEC", "PATHEXT", "ProgramFiles", "PROGRAMFILES",
                 "ProgramFiles(x86)", "CommonProgramFiles", "PUBLIC", "ALLUSERSPROFILE", "PROGRAMDATA",
@@ -564,7 +592,7 @@ class Harness:
         self.environment = {k: v for k, v in os.environ.items() if k in keys}
         self.environment.update({"HOME": str(self.root / "home"), "USERPROFILE": str(self.root / "home"),
             "APPDATA": str(self.root / "home/AppData/Roaming"), "LOCALAPPDATA": str(self.root / "home/AppData/Local"),
-            "TMPDIR": str(self.root / "temp"), "TMP": str(self.root / "temp"), "TEMP": str(self.root / "temp"),
+            "TMPDIR": str(temporary), "TMP": str(temporary), "TEMP": str(temporary),
             "XDG_CACHE_HOME": str(self.root / "cache"), "XDG_CONFIG_HOME": str(self.root / "home/.config"),
             "ONIONDESK_CI_OWNED_ROOT": str(self.root), "ONIONDESK_CI_BROWSER_REQUEST": str(self.root / "browser-request"),
             "BROWSER": '"' + sys.executable + '" "' + str(HERE / "browser_dispatch.py") + '" %s'})
@@ -1089,7 +1117,10 @@ def cleanup():
     state = json.loads(path.read_text(encoding="utf-8"))
     owner = state["owner"]
     root = Path(state["root"])
-    if not re.fullmatch(r"[0-9a-f]{32}", owner) or root.parent.resolve() != path.parent.resolve() or not root.name.startswith("oniondesk-native-" + owner + "-"):
+    legacy_root = root.parent.resolve() == path.parent.resolve() and root.name.startswith("oniondesk-native-" + owner + "-")
+    short_root = os.name != "nt" and root.parent.resolve() in {path.parent.resolve(), Path("/tmp").resolve()} and \
+        bool(re.fullmatch(r"od-[a-z0-9_]{8}", root.name))
+    if not re.fullmatch(r"[0-9a-f]{32}", owner) or not (legacy_root or short_root):
         raise ValueError("CleanupOwnershipMismatch")
     if root.is_symlink() or (root / ".owner").is_symlink() or (root / ".owner").read_text(encoding="utf-8") != owner:
         raise ValueError("CleanupMarkerMismatch")
