@@ -2,7 +2,7 @@ name: Real server installation on ephemeral KVM
 
 on:
   push:
-    branches: [qa/runtime-preflight-20261017]
+    branches: [qa/server-debug-20261017]
   workflow_dispatch:
     inputs:
       tor_mode:

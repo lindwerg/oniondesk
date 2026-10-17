@@ -33,12 +33,27 @@ no marker or readiness report is invented to continue past it.
 Public evidence is limited to fixed status fields, safe numeric hardware facts,
 exact source hashes, and pixels from this run's unpersonalized guests/noVNC
 canvases. No host onion address, credentials, private host keys, browser profile,
-raw command output, journal or disk image is exported. Chromium uses an isolated
-temporary profile and no sandbox only inside this disposable root container.
+raw command output, journal or disk image is exported. Chromium runs under a
+dedicated non-root account with a private home/profile and the packaged sandbox;
+its own `chrome://sandbox/` evaluation must confirm adequate sandboxing before
+the onion route is tested. Credentials reach the child only over an anonymous
+pipe; no sandbox, AppArmor, namespace or host security setting is disabled.
 Artifacts are capped at 8 MiB and expire after one day. Container logging is
 disabled; installer output is bounded to 64 KiB in memory and never forwarded.
 Cleanup verifies a random ownership label before removing immutable container
 and image IDs; an `always()` step repeats cleanup after interruption.
+
+On installer failure, the harness observes the existing production ERR trap's
+bounded reported line number (Bash may report the currently executing shared
+function's line). It publishes fixed error signatures, static source
+error-site tokens such as `validate_guest_L53`, milestone existence booleans,
+domain/process state booleans, unit state booleans and a small exit status.
+Three read-only audit modes publish only allowlisted check tokens and booleans;
+unknown identifiers and every detail/message remain private. Error-site tokens
+are derived by AST parsing literal error strings in the hash-verified payload,
+without executing it. Bounded private journal/QEMU log tails are reduced to
+these same tokens and never copied to artifacts. Successful SYSMAINT staging
+messages do not imply a first-boot failure.
 
 Local checks (no Docker/VM start):
 
@@ -55,6 +70,9 @@ Implementation references:
 - [KVM API](https://www.kernel.org/doc/html/latest/virt/kvm/api.html)
 - [QEMU query-kvm](https://www.qemu.org/docs/master/interop/qemu-qmp-ref.html#command-query-kvm)
 - [GitHub standard hosted runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+- [Debian runuser account and HOME behavior](https://manpages.debian.org/trixie/util-linux/runuser.1.en.html)
+- [Debian Chromium sandbox package](https://packages.debian.org/trixie/chromium-sandbox)
+- [Chromium sandbox evaluation](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/chrome/browser/resources/sandbox_internals/sandbox_internals.ts)
 
 The Debian amd64 digest was resolved from Docker Hub's official `library/debian`
 registry manifest for `13-slim`; checkout v4.2.2 was resolved through the official

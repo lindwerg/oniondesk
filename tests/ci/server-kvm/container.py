@@ -17,8 +17,11 @@ import selectors
 import signal
 import struct
 import subprocess
+import sys
 import time
 import xml.etree.ElementTree as ET
+
+import diagnostics
 
 EVIDENCE = Path("/ci-evidence")
 SOURCE = Path("/src")
@@ -26,6 +29,7 @@ STATE = Path("/var/lib/oniondesk")
 DOMAINS = {"gateway": "oniondesk-gateway", "workstation": "oniondesk-workstation"}
 INSTALL_TIMEOUT = 5100
 MAX_TAIL = 64 * 1024
+BROWSER_HOME = Path("/var/lib/oniondesk-ci-browser")
 
 
 def command(arguments, timeout=60):
@@ -164,9 +168,10 @@ def classify(tail):
     text = tail.decode("utf-8", errors="replace")
     if "SHA-512 не совпадает" in text or "Неверный fingerprint" in text:
         return "image_verification"
-    if "Host Tor" in text:
+    if "Host Tor не подтверждён:" in text:
         return "host_tor_bootstrap"
-    if "SYSMAINT" in text or "USER/Tor/Telegram" in text:
+    if ("SYSMAINT не завершился вовремя." in text
+            or "USER/Tor/Telegram не подтверждены вовремя:" in text):
         return "guest_first_boot_or_readiness"
     return "production_install_exit"
 
@@ -195,6 +200,13 @@ def install(mode, status):
             status["failure_stage"] = classify(tail)
             raise RuntimeError("ProductionInstallFailed")
     finally:
+        # Existing production ERR trap is observed, never replaced/injected.
+        # Store static error-site tokens and validated line numbers only.
+        try:
+            status["installer_diagnostics"] = diagnostics.output_summary(
+                bytes(tail), sites=diagnostics.static_error_sites())
+        except (OSError, ValueError, SyntaxError):
+            status["installer_diagnostics"] = {"available": False}
         selector.close()
         child.stdout.close()
         if child.poll() is None:
@@ -321,27 +333,30 @@ def otp(secret):
     return f"{(struct.unpack('>I', digest[offset:offset + 4])[0] & 0x7fffffff) % 1000000:06d}"
 
 
-def browser():
+def browser_session(hostname, credentials):
+    if os.geteuid() == 0 or Path.home() != BROWSER_HOME:
+        raise RuntimeError("NonRootPrivateBrowserHomeRequired")
     from selenium import webdriver
     from selenium.webdriver.common.by import By
     from selenium.webdriver.chrome.service import Service
     from selenium.webdriver.support.ui import WebDriverWait
-    hostname = Path("/var/lib/tor/oniondesk/hostname").read_text().strip()
     if not re.fullmatch(r"[a-z2-7]{56}\.onion", hostname):
         raise ValueError("UnexpectedOnionHostname")
-    credentials = json.loads(Path("/etc/oniondesk/credentials.json").read_text())
     options = webdriver.ChromeOptions()
-    for argument in ("--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu",
+    for argument in ("--headless=new", "--disable-dev-shm-usage", "--disable-gpu",
                      "--window-size=1280,1024", "--proxy-server=socks5://127.0.0.1:9050",
                      "--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost",
-                     "--user-data-dir=/run/oniondesk-ci-browser"):
+                     "--user-data-dir=" + str(BROWSER_HOME / "profile")):
         options.add_argument(argument)
     service = Service(log_output=subprocess.DEVNULL)
     driver = webdriver.Chrome(service=service, options=options)
     try:
         driver.set_page_load_timeout(120)
-        driver.get("http://" + hostname + "/")
         wait = WebDriverWait(driver, 60)
+        driver.get("chrome://sandbox/")
+        wait.until(lambda current: current.find_element(By.ID, "evaluation").text
+                   == "You are adequately sandboxed.")
+        driver.get("http://" + hostname + "/")
         wait.until(lambda current: current.find_element(By.ID, "password"))
         driver.find_element(By.ID, "login").clear()
         driver.find_element(By.ID, "login").send_keys(credentials["login"])
@@ -349,18 +364,47 @@ def browser():
         driver.find_element(By.ID, "otp").send_keys(otp(credentials["totp_secret"]))
         driver.find_element(By.CSS_SELECTOR, "form button").click()
         wait.until(lambda current: len(current.find_elements(By.CSS_SELECTOR, "a.desktop")) == 2)
-        result = {"real_onion_route_via_Tor": True, "password_TOTP_login": True}
+        result = {"real_onion_route_via_Tor": True, "password_TOTP_login": True,
+                  "non_root_browser": True, "chromium_sandbox_confirmed": True}
         for role in DOMAINS:
             driver.get("http://" + hostname + "/novnc/vnc.html?autoconnect=1&resize=scale&path=/ws/" + role)
             canvas = wait.until(lambda current: current.find_element(By.CSS_SELECTOR, "#noVNC_container canvas"))
             # A connected RFB display is required; an empty/error page does not pass.
             wait.until(lambda current: "noVNC_connected" in current.find_element(By.TAG_NAME, "html").get_attribute("class"))
             time.sleep(2)
-            canvas.screenshot(str(EVIDENCE / ("browser-" + role + ".png")))
+            canvas.screenshot(str(BROWSER_HOME / ("browser-" + role + ".png")))
             result[role + "_real_noVNC_connected"] = True
         return result
     finally:
         driver.quit()
+
+
+def browser():
+    from PIL import Image
+    hostname = Path("/var/lib/tor/oniondesk/hostname").read_text().strip()
+    credentials = json.loads(Path("/etc/oniondesk/credentials.json").read_text())
+    private_input = {"hostname": hostname, "credentials": {
+        key: credentials[key] for key in ("login", "password", "totp_secret")}}
+    # Credentials travel over an anonymous pipe, never argv/environment/files.
+    response = subprocess.run(["runuser", "--user", "oniondesk-ci-browser", "--",
+                               "python3", "-B", "/ci/container.py", "--browser-only"],
+                              input=json.dumps(private_input).encode(), capture_output=True,
+                              check=True, timeout=600)
+    result = json.loads(response.stdout)
+    expected = {"real_onion_route_via_Tor", "password_TOTP_login", "non_root_browser",
+                "chromium_sandbox_confirmed", "gateway_real_noVNC_connected",
+                "workstation_real_noVNC_connected"}
+    if not isinstance(result, dict) or set(result) != expected or any(value is not True for value in result.values()):
+        raise RuntimeError("UnknownBrowserResult")
+    for role in DOMAINS:
+        raw = BROWSER_HOME / ("browser-" + role + ".png")
+        if raw.is_symlink() or not raw.is_file() or raw.stat().st_size > MAX_TAIL * 256:
+            raise ValueError("BrowserScreenshotInvalid")
+        with Image.open(raw) as pixels:
+            pixels.thumbnail((1280, 1024))
+            pixels.convert("RGB").save(EVIDENCE / raw.name, optimize=True)
+        raw.unlink()
+    return result
 
 
 def main(mode):
@@ -399,6 +443,12 @@ def main(mode):
     except Exception as error:
         # Exception messages, subprocess output, endpoints and filenames are not public evidence.
         status["error_class"] = type(error).__name__
+        if status["phase"] == "unmodified_production_install":
+            status["observed"] = installation_markers()
+            try:
+                status["failure_diagnostics"] = diagnostics.snapshot(diagnostics.static_error_sites())
+            except Exception:
+                status["failure_diagnostics"] = {"available": False}
     finally:
         for role in DOMAINS:
             try:
@@ -419,8 +469,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--tor-mode", choices=("direct", "public-obfs4"))
     parser.add_argument("--snapshot-only", action="store_true")
+    parser.add_argument("--browser-only", action="store_true")
     arguments = parser.parse_args()
-    if arguments.snapshot_only:
+    if arguments.browser_only:
+        try:
+            raw_input = sys.stdin.buffer.read(MAX_TAIL + 1)
+            if len(raw_input) > MAX_TAIL:
+                raise ValueError("BrowserInputLimit")
+            request = json.loads(raw_input)
+            print(json.dumps(browser_session(request["hostname"], request["credentials"])))
+        except Exception:
+            # Selenium exceptions may contain the private hostname/page state.
+            print("SandboxedBrowserFailed", file=sys.stderr)
+            raise SystemExit(1)
+    elif arguments.snapshot_only:
         for role in DOMAINS:
             try:
                 screenshot(role)
