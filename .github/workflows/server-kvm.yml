@@ -37,6 +37,12 @@ jobs:
         with:
           persist-credentials: false
           lfs: false
+      - name: Install the image dependency for host boundary tests
+        timeout-minutes: 5
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends python3-pil
+          python3 -c 'from PIL import Image; assert callable(Image.open)'
       - name: Verify the evidence boundary
         run: python3 -B -m unittest discover -s tests/ci/server-kvm -p 'test_*.py' -v
       - name: Install the unmodified server in fresh Debian 13 with real KVM
