@@ -47,15 +47,18 @@ BOOL_FIELDS = {"public_github_hosted_runner", "synthetic_profile", "starter_veri
                "manifest_child_owner_is_admin", "manifest_child_dacl_protected", "probe_diagnostic_complete",
                "cache_exists",
                "core_listener_closed", "owned_resources_only", "exact_process_identities_only", "owned_processes_stopped",
-               "private_cache_and_profile_removed"}
-COUNT_FIELDS = {"restored_files_verified", "online_blobs_verified", "online_parts_verified"}
+               "private_cache_and_profile_removed", "native_engine_test_asset_verified", "native_engine_temp_owned",
+               "native_engine_targeted_passed", "native_engine_full_passed"}
+COUNT_FIELDS = {"restored_files_verified", "online_blobs_verified", "online_parts_verified",
+                "native_engine_targeted_passed_count", "native_engine_targeted_skipped_count",
+                "native_engine_full_passed_count", "native_engine_full_skipped_count"}
 BROWSER_FAILURE_REASONS = {"display_unavailable", "sandbox_helper_misconfigured", "sandbox_unavailable",
                            "user_namespace_rejected", "shared_library_missing", "executable_missing",
                            "permission_denied", "socket_path_too_long", "sandbox_diagnostics_failed", "unclassified_browser_launch_failure"}
 PHASES = {"initialize", "download_release_asset", "headed_sandboxed_browser", "native_cold_download_and_restore",
           "independent_restore_verification", "ordinary_nsis_install", "ordinary_nsis_uninstall", "core_first_action",
           "core_ui_quit", "complete", "browser_sandbox_diagnostics", "browser_attestation", "browser_launch", "browser_sandbox_check",
-          "windows_cache_diagnostic"}
+          "windows_cache_diagnostic", "windows_native_engine_download", "windows_native_engine_targeted", "windows_native_engine_full"}
 NATIVE_ERRORS = {
     "Пакет установки ещё не готов. Получите готовый пакет OnionDesk у издателя.": "not_configured",
     "Недостаточно места на системном диске. Освободите место и повторите подготовку.": "space",
@@ -94,6 +97,15 @@ TRUSTED_ERROR_CODES = {
     'FreshPublicRunnerRequired',
     'InstalledCoreRequired',
     'KnownFolderUnavailable',
+    'NativeEngineTestPinInvalid',
+    'NativeEngineTemporaryOwnershipInvalid',
+    'NativeEngineTestPinMismatch',
+    'NativeEngineTestPEInvalid',
+    'NativeEngineWindowsRunnerRequired',
+    'NativeEngineTestTimedOut',
+    'NativeEngineTargetedFailed',
+    'NativeEngineFullSuiteFailed',
+    'NativeEngineTestOutputInvalid',
     'NativePreparationExitedBeforeReady',
     'NativePreparationTerminalError',
     'NativePreparationWindowNotProven',
@@ -281,7 +293,7 @@ def validate_public_json(value):
             valid = type(item) is bool
         elif key in COUNT_FIELDS:
             valid = type(item) is int and 0 <= item <= 10000
-        elif key in {"asset_sha256", "starter_sha256", "manifest_sha256", "index_sha256"}:
+        elif key in {"asset_sha256", "starter_sha256", "manifest_sha256", "index_sha256", "native_engine_test_sha256"}:
             valid = isinstance(item, str) and bool(SHA.fullmatch(item))
         elif key == "source_commit":
             valid = isinstance(item, str) and bool(re.fullmatch(r"[0-9a-f]{40}", item))
@@ -971,6 +983,9 @@ class Harness:
     def run(self):
         from playwright.sync_api import sync_playwright
         self.download()
+        if os.name == "nt":
+            from windows_r2 import run_engine_tests
+            run_engine_tests(sys.modules[__name__], self)
         self.phase("browser_attestation")
         with sync_playwright() as playwright:
             context = None

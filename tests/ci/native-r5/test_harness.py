@@ -22,6 +22,9 @@ SPEC.loader.exec_module(HARNESS)
 DEBUG_SPEC = importlib.util.spec_from_file_location("windows_cache_debug", Path(__file__).with_name("windows_cache_debug.py"))
 WINDOWS_DEBUG = importlib.util.module_from_spec(DEBUG_SPEC)
 DEBUG_SPEC.loader.exec_module(WINDOWS_DEBUG)
+R2_SPEC = importlib.util.spec_from_file_location("windows_r2", Path(__file__).with_name("windows_r2.py"))
+WINDOWS_R2 = importlib.util.module_from_spec(R2_SPEC)
+R2_SPEC.loader.exec_module(WINDOWS_R2)
 
 
 class BoundaryTests(unittest.TestCase):
@@ -85,13 +88,13 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(implicit, [])
 
     def test_all_trusted_literal_errors_have_public_codes(self):
-        trees = [ast.parse((HARNESS.HERE / name).read_text(encoding="utf-8")) for name in ("run.py", "windows_cache_debug.py")]
+        trees = [ast.parse((HARNESS.HERE / name).read_text(encoding="utf-8")) for name in ("run.py", "windows_cache_debug.py", "windows_r2.py")]
         names = {"ValueError", "RuntimeError", "TimeoutError", "OSError", "InterruptedError"}
         literals = {node.exc.args[0].value for tree in trees for node in ast.walk(tree) if isinstance(node, ast.Raise)
                     and isinstance(node.exc, ast.Call) and isinstance(node.exc.func, ast.Name)
                     and node.exc.func.id in names and node.exc.args and isinstance(node.exc.args[0], ast.Constant)
                     and isinstance(node.exc.args[0].value, str)}
-        self.assertEqual(literals, HARNESS.TRUSTED_ERROR_CODES)
+        self.assertEqual(literals | WINDOWS_R2.FAILURE_CODES, HARNESS.TRUSTED_ERROR_CODES)
         for code in literals:
             facts = HARNESS.trusted_error_facts(RuntimeError(code))
             self.assertEqual(facts, {"error_code": code})
