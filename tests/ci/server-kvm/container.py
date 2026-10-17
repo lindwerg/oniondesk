@@ -343,20 +343,19 @@ def live_readiness():
 
 
 def screenshot(role):
-    if role == "workstation" and guest_console.SUPPRESSION_MARKER.exists():
-        raise RuntimeError("PrivateConsolePublicCaptureSuppressed")
-    from PIL import Image
-    raw = Path("/run/oniondesk-ci-" + role + ".ppm")
-    virsh("screenshot", DOMAINS[role], str(raw), timeout=30)
-    try:
-        if raw.stat().st_size > 16 * 1024 * 1024:
-            raise ValueError("ScreenshotSizeLimit")
-        with Image.open(raw) as image:
-            image.thumbnail((1280, 1024))
-            # Re-encode pixels only; never copy metadata or browser chrome.
-            image.convert("RGB").save(EVIDENCE / (role + ".png"), optimize=True)
-    finally:
-        raw.unlink(missing_ok=True)
+    with guest_console.public_capture(role):
+        from PIL import Image
+        raw = Path("/run/oniondesk-ci-" + role + ".ppm")
+        virsh("screenshot", DOMAINS[role], str(raw), timeout=30)
+        try:
+            if raw.stat().st_size > 16 * 1024 * 1024:
+                raise ValueError("ScreenshotSizeLimit")
+            with Image.open(raw) as image:
+                image.thumbnail((1280, 1024))
+                # Re-encode pixels only; never copy metadata or browser chrome.
+                image.convert("RGB").save(EVIDENCE / (role + ".png"), optimize=True)
+        finally:
+            raw.unlink(missing_ok=True)
 
 
 def cold_boot():
@@ -383,6 +382,8 @@ def otp(secret):
 
 
 def browser_session(hostname, credentials):
+    if any(guest_console.public_capture_suppressed(role) for role in DOMAINS):
+        raise RuntimeError("PrivateConsolePublicCaptureSuppressed")
     if os.geteuid() == 0 or Path.home() != BROWSER_HOME:
         raise RuntimeError("NonRootPrivateBrowserHomeRequired")
     from selenium import webdriver
@@ -416,19 +417,22 @@ def browser_session(hostname, credentials):
         result = {"real_onion_route_via_Tor": True, "password_TOTP_login": True,
                   "non_root_browser": True, "chromium_sandbox_confirmed": True}
         for role in DOMAINS:
-            driver.get("http://" + hostname + "/novnc/vnc.html?autoconnect=1&resize=scale&path=/ws/" + role)
-            canvas = wait.until(lambda current: current.find_element(By.CSS_SELECTOR, "#noVNC_container canvas"))
-            # A connected RFB display is required; an empty/error page does not pass.
-            wait.until(lambda current: "noVNC_connected" in current.find_element(By.TAG_NAME, "html").get_attribute("class"))
-            time.sleep(2)
-            canvas.screenshot(str(BROWSER_HOME / ("browser-" + role + ".png")))
-            result[role + "_real_noVNC_connected"] = True
+            with guest_console.public_capture(role):
+                driver.get("http://" + hostname + "/novnc/vnc.html?autoconnect=1&resize=scale&path=/ws/" + role)
+                canvas = wait.until(lambda current: current.find_element(By.CSS_SELECTOR, "#noVNC_container canvas"))
+                # A connected RFB display is required; an empty/error page does not pass.
+                wait.until(lambda current: "noVNC_connected" in current.find_element(By.TAG_NAME, "html").get_attribute("class"))
+                time.sleep(2)
+                canvas.screenshot(str(BROWSER_HOME / ("browser-" + role + ".png")))
+                result[role + "_real_noVNC_connected"] = True
         return result
     finally:
         driver.quit()
 
 
 def browser():
+    if any(guest_console.public_capture_suppressed(role) for role in DOMAINS):
+        raise RuntimeError("PrivateConsolePublicCaptureSuppressed")
     from PIL import Image
     hostname = Path("/var/lib/tor/oniondesk/hostname").read_text().strip()
     credentials = json.loads(Path("/etc/oniondesk/credentials.json").read_text())
@@ -446,13 +450,14 @@ def browser():
     if not isinstance(result, dict) or set(result) != expected or any(value is not True for value in result.values()):
         raise RuntimeError("UnknownBrowserResult")
     for role in DOMAINS:
-        raw = BROWSER_HOME / ("browser-" + role + ".png")
-        if raw.is_symlink() or not raw.is_file() or raw.stat().st_size > MAX_TAIL * 256:
-            raise ValueError("BrowserScreenshotInvalid")
-        with Image.open(raw) as pixels:
-            pixels.thumbnail((1280, 1024))
-            pixels.convert("RGB").save(EVIDENCE / raw.name, optimize=True)
-        raw.unlink()
+        with guest_console.public_capture(role):
+            raw = BROWSER_HOME / ("browser-" + role + ".png")
+            if raw.is_symlink() or not raw.is_file() or raw.stat().st_size > MAX_TAIL * 256:
+                raise ValueError("BrowserScreenshotInvalid")
+            with Image.open(raw) as pixels:
+                pixels.thumbnail((1280, 1024))
+                pixels.convert("RGB").save(EVIDENCE / raw.name, optimize=True)
+            raw.unlink()
     return result
 
 
@@ -493,6 +498,10 @@ def main(mode):
         status["runtime_audit_after_cold_boot"] = audit()
         status["phase"] = "real_browser_onion_login_and_noVNC"
         save(status)
+        # Create browser-owned 0600 lock inodes before dropping to that account.
+        for role in DOMAINS:
+            with guest_console.public_capture(role):
+                pass
         status["browser"] = browser()
         success = True
     except Exception as error:
@@ -508,11 +517,12 @@ def main(mode):
                 except Exception:
                     status["encrypted_guest_diagnostic_saved"] = False
                 if not status.get("workstation_diagnostics", {}).get("qga_available"):
-                    status["workstation_public_screen_suppressed"] = True
-                    try:
-                        status["encrypted_guest_console_saved"] = guest_console.capture(EVIDENCE / "workstation-console.cms")
-                    except Exception:
-                        status["encrypted_guest_console_saved"] = False
+                    for role in DOMAINS:
+                        try:
+                            status[role + "_encrypted_console_saved"] = guest_console.capture(role)
+                        except Exception:
+                            status[role + "_encrypted_console_saved"] = False
+                        status[role + "_public_screen_suppressed"] = guest_console.public_capture_suppressed(role)
             try:
                 status["failure_diagnostics"] = diagnostics.snapshot(diagnostics.static_error_sites())
             except Exception:

@@ -163,6 +163,45 @@ class ConfidentialTests(unittest.TestCase):
                 host.export_evidence("owned-container", root)
             confidential.validate_encrypted_diagnostic((evidence / "server-diagnostic.cms").read_bytes())
 
+    def test_gateway_console_accepts_only_pinned_cms_and_preserves_atomic_export(self):
+        for valid in (False, True):
+            with self.subTest(valid=valid), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                evidence = root / "evidence"
+                evidence.mkdir()
+
+                def copied(_arguments, **_kwargs):
+                    (root / "export/status.json").write_text('{"result":"FAIL_OR_INCOMPLETE"}')
+                    target = root / "export/gateway-console.cms"
+                    if valid:
+                        confidential.encrypt_diagnostic(b"synthetic-private-gateway-console", target)
+                    else:
+                        target.write_bytes(b"synthetic-private-gateway-console")
+
+                with patch.object(host, "invoke", side_effect=copied), patch.object(host, "EVIDENCE", evidence):
+                    if valid:
+                        host.export_evidence("owned-container", root)
+                    else:
+                        with self.assertRaises(ValueError):
+                            host.export_evidence("owned-container", root)
+                if valid:
+                    ciphertext = (evidence / "gateway-console.cms").read_bytes()
+                    confidential.validate_encrypted_diagnostic(ciphertext)
+                    self.assertNotIn(b"synthetic-private-gateway-console", ciphertext)
+                else:
+                    self.assertEqual([], list(evidence.iterdir()))
+
+    def test_gateway_console_does_not_relax_global_evidence_size_limit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+
+            def copied(_arguments, **_kwargs):
+                confidential.encrypt_diagnostic(b"synthetic-private-gateway-console", root / "export/gateway-console.cms")
+
+            with patch.object(host, "invoke", side_effect=copied), \
+                    patch.object(host, "MAX_ARTIFACT_BYTES", 144 * 1024 + 1), self.assertRaises(ValueError):
+                host.export_evidence("owned-container", root)
+
 
 if __name__ == "__main__":
     unittest.main()

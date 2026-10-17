@@ -107,18 +107,53 @@ terminal state, or at an explicitly labeled five-minute maintenance cutoff
 after host installation. A cutoff remains FAIL/INCOMPLETE and is never described
 as a failed guest service or successful installation. The guests remain live.
 The installer output tail is also added to private encrypted evidence.
-If QGA is unavailable, the existing loopback RFB console opens the vendor's
-terminal with its documented Ctrl+Alt+T shortcut, switches QTerminal to fullscreen
-with F11, and types a literal read-only status/journal/jobs/package command.
-RFB sends each key event separately with a 20 ms pause and preserves the actual
-uppercase/punctuation keysym, avoiding input bursts and unwanted Caps Lock changes.
-`sudo -n`
-never prompts or changes credentials. One console screenshot is encrypted as
-`workstation-console.cms`; it is evidence of visible output, not proof that the
-command succeeded. Before any console input, a persistent private marker blocks
-all public Workstation screenshots, including the outer `--snapshot-only` call.
-No new guest agent, service, password, network listener or guest-disk mount is
-created. No live guestfish, forced guest shutdown or readiness bypass is used.
+If QGA is unavailable, the existing owned loopback RFB consoles are allowlisted
+as Workstation/5902 and Gateway/5901. Each opens the vendor's terminal using
+Ctrl+Alt+T, switches QTerminal to fullscreen with F11, and types its own fixed
+read-only literal. Workstation reports first-boot status and an unprivileged
+journal tail, fixed setup/curl/torsocks/apt/sleep process matches, routes,
+a DNS lookup of the Tor Project check host, installed packages and a TLS-verified
+HTTPS Tor check with a 15-second limit. Gateway reports both fixed Tor units,
+an unprivileged journal tail, selected directives in three fixed vendor torrc
+files, listening TCP sockets and routes. Permission denials remain visible;
+no privileged journal access or authentication change is attempted. Gateway
+performs no guessed SOCKS-port probe or direct Internet request. Existing Whonix
+networking and wrappers are used unchanged.
+
+RFB sends each key event separately with a 20 ms pause and preserves uppercase
+and punctuation keysyms, avoiding input bursts and unwanted Caps Lock changes.
+The literals are at most 1100 ASCII bytes and 2600 key events including terminal
+shortcuts and Return; over-budget literals fail before touching a guest. Each
+guest shell has a fixed 30-second timeout, and an independent 115-second host
+alarm bounds the entire per-role capture, including RFB, screenshot encoding
+and encryption. One PNG per role, at most 60 KiB before encryption, is saved
+only as `workstation-console.cms` or `gateway-console.cms` through the same
+pinned strict CMS boundary. These pictures are evidence of visible output,
+not proof that commands succeeded.
+
+Before any role receives console input, its persistent private marker blocks
+all later public screenshots for that role, including the outer
+`--snapshot-only` call and browser/noVNC capture/export. The marker stays after
+failed connection, input, screenshot or encryption. Public status adds only
+fixed per-role capture/suppression booleans; no addresses, command arguments,
+raw journal or private URLs are copied to JSON. No new guest agent, service,
+password, network listener or guest-disk mount is created. No live guestfish,
+forced guest shutdown or readiness bypass is used. The five-minute diagnostic
+maintenance cutoff remains unchanged and can only produce FAIL/INCOMPLETE.
+
+Each role uses one fixed `/run` interprocess `flock` inode shared by every public
+capture/publication and private marker creation. Public capture holds the lock
+from its final marker check through PNG publication; private input can start
+only after creating the permanent marker under the same lock. Thus an in-flight
+outer snapshot either publishes its clean frame first or rejects capture.
+The noVNC child capture and root PNG export each use this same protocol. Root
+creates the existing browser account's lock inodes before launching the child;
+each must remain a regular, single-link, browser-owned `0600` file opened with
+`O_NOFOLLOW` and `O_CLOEXEC`. A nonblocking acquisition loop waits at most ten
+seconds, included in the private capture's existing 115-second deadline.
+Locks are never unlinked and are released by closing the descriptor, including
+on interruption or process termination. Local tests exercise both process
+orderings with barriers, lock-owner termination, and unsafe inode rejection.
 
 Local checks (no Docker/VM start):
 
@@ -139,6 +174,7 @@ Implementation references:
 - [Debian Chromium sandbox package](https://packages.debian.org/trixie/chromium-sandbox)
 - [Chromium sandbox evaluation](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/chrome/browser/resources/sandbox_internals/sandbox_internals.ts)
 - [RFB protocol and key events](https://www.rfc-editor.org/rfc/rfc6143.html#section-7.5.4)
+- [Whonix Tor configuration files](https://www.whonix.org/wiki/Tor)
 - [Vendor terminal and maximize shortcuts](https://github.com/Kicksecure/desktop-config-dist/blob/master/usr/share/desktop-config-dist/labwc/rc.xml)
 
 The Debian amd64 digest was resolved from Docker Hub's official `library/debian`

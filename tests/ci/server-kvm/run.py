@@ -116,7 +116,7 @@ def export_evidence(container, temporary):
     files = sorted(destination.iterdir())
     names = {"status.json", "source.json", "gateway.png", "workstation.png",
              "browser-gateway.png", "browser-workstation.png", "server-diagnostic.cms",
-             "workstation-diagnostic.cms", "workstation-console.cms"}
+             "workstation-diagnostic.cms", "workstation-console.cms", "gateway-console.cms"}
     if any(path.name not in names or path.is_symlink() or not path.is_file() for path in files):
         raise ValueError("UnexpectedEvidenceFile")
     # Reserve the optional host CMS (128 KiB) and bounded host/cleanup JSON.
