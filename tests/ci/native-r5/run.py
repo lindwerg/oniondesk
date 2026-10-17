@@ -1224,6 +1224,11 @@ def cleanup():
     _, alive = psutil.wait_procs(alive, timeout=5)
     if alive:
         raise RuntimeError("OwnedProcessCleanupIncomplete")
+    if "native_engine_temporary" in state:
+        from types import SimpleNamespace
+        from windows_r2 import cleanup_temporary
+        cleanup_temporary(sys.modules[__name__], SimpleNamespace(owner=owner, state=state,
+                          save=lambda: write_json(path, state)))
     if os.name == "nt" and state["windows_claimed"]:
         import winreg
         for key in (r"Software\OnionDesk", r"Software\Microsoft\Windows\CurrentVersion\Uninstall\OnionDesk"):
