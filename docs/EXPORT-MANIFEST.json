@@ -1,9 +1,9 @@
 {
   "schema": 3,
-  "status": "Owner-approved GPLv3 and public visibility; all historical refs and payloads audited; native R4 delivery and exact compatibility/runtime proof scopes documented",
+  "status": "Owner-approved public GPLv3 release; R5 ordinary HTTPS delivery and Mac cold/warm runtime verified; exact platform and server proof scopes documented",
   "policy": "Explicit reviewed source classes only; no user data, raw logs, downloaded executable payloads or disk images",
   "baseline": "v5-frozen16-ui3-art32-data43",
-  "tree_sha256_excluding_this_manifest": "5c521f8d0e6e772f012fd91c2b8af0f955a021d1af30b326d266ccb66f2ee27e",
+  "tree_sha256_excluding_this_manifest": "90cb4da1c22615c957a6d2e5e63914d36f8cf615bbc028e14acf8725facfaf86",
   "allowlisted_source_tree_sha256": "1ebf8a462bbdca580db726b71feb9351ad35d3b1107d7c13237d33f75f5eaba6",
   "files": [
     {
@@ -23,8 +23,8 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 10570,
-      "sha256": "247f249cdb1458468695f9f1ac3219af15fd0e7f95cb8f7cee71a54e6091523a"
+      "bytes": 11395,
+      "sha256": "6dca8767b2210ed7e3109dd25d1e3ed9bf6ba602493b092401a08901b4821622"
     },
     {
       "path": "LICENSE",
@@ -88,9 +88,14 @@
       "modified_from_source": false
     },
     {
+      "path": "LICENSES/README.md",
+      "bytes": 2545,
+      "sha256": "6e995831356a7de8e64c157b9292cae6cb73616b70b23ed743e371e73732b3a0"
+    },
+    {
       "path": "README.md",
-      "bytes": 14183,
-      "sha256": "59fc02e61a2a4cd325056024ed4cd7211fea75d0ddbac3862fb0f4d5256cf964"
+      "bytes": 14023,
+      "sha256": "38b077b867675599ca131417bfb54a1fd4dd320d1df061413c03470cb1c4a717"
     },
     {
       "path": "SECURITY.md",
@@ -99,8 +104,8 @@
     },
     {
       "path": "START-HERE.md",
-      "bytes": 2248,
-      "sha256": "5599941b29c58f7e8a0470f40b637dbe0034a58d184f8f00b97d55cc1bb29afa"
+      "bytes": 2773,
+      "sha256": "0f8b3471e4de27c22b33f776b74f34f4b1275b9604019c77107faeb684cbacde"
     },
     {
       "path": "assets/agent-cover.png",
@@ -1209,8 +1214,8 @@
     },
     {
       "path": "docs/DOWNLOADS.md",
-      "bytes": 15668,
-      "sha256": "6e5bd88dae8d7f2f02b9a6fee7fd269cd648b20a984d5fb7676acc59e15a26c9"
+      "bytes": 13058,
+      "sha256": "97ff1d24e923216bdf88c9a7963a5db60b73e2670640f1ed0cdd78384efc791f"
     },
     {
       "path": "docs/EXPORT-POLICY.md",
@@ -1229,8 +1234,8 @@
     },
     {
       "path": "docs/LICENSES.md",
-      "bytes": 5033,
-      "sha256": "00b3c3cf99fedb9a9a633f580c3be21ddcf5772d70e58f889b3e3617e5385ab1"
+      "bytes": 8603,
+      "sha256": "9565601536350b42ae9965252c93187901448c43f5242584581ddaccf6c7fd31"
     },
     {
       "path": "docs/MONERO-USDT.md",
@@ -1249,8 +1254,8 @@
     },
     {
       "path": "docs/RELEASE-PLAN.md",
-      "bytes": 14350,
-      "sha256": "dfc48fcdd607dac84b326d12100c518ba2f23193c1fdbae45ca71e80e24bcb6c"
+      "bytes": 19914,
+      "sha256": "4c91f8fb5ff06190915de6b25ff0fc064d362eae62809c9a3b2bf67b03ecf62d"
     },
     {
       "path": "docs/ROADMAP.md",
@@ -1264,13 +1269,33 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 32529,
-      "sha256": "c1fbdcce1a3d4558556b2b6269b5508c7d45b23bcaa9702afc69c1f60af13003"
+      "bytes": 40690,
+      "sha256": "d2626c5654afee7a843d60319e06096eef254b35aae83b728c3ffedd93bb9841"
     },
     {
       "path": "docs/WEBSITES.md",
       "bytes": 8746,
       "sha256": "56bbe291baf004f22fad7cb869e9c896c313228485c757b2879bc2396e60c7db"
+    },
+    {
+      "path": "docs/evidence/r5/macos-download.jpg",
+      "bytes": 73342,
+      "sha256": "8aced9a4fcb483d0404f2340b91e28561e1ffcc271ac0d0c0f844b15aa33ba09"
+    },
+    {
+      "path": "docs/evidence/r5/macos-first-window.jpg",
+      "bytes": 686475,
+      "sha256": "7763264632bdaad01793a51adcf800c8ec264de74862b1cf9212e4d7fb0af63c"
+    },
+    {
+      "path": "docs/evidence/r5/macos-next-action.jpg",
+      "bytes": 505323,
+      "sha256": "2968c17745db3cf0d620210cfffc58f15de2343a3eb2c7e049951dd8e2e59ec2"
+    },
+    {
+      "path": "docs/evidence/r5/macos-r5.json",
+      "bytes": 4390,
+      "sha256": "bc85d765988c113008f5586a3244b5f3fc62f4b623eac20811a0c4d7bd092001"
     },
     {
       "path": "docs/images/cover.png",

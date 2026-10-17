@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "tested_platform": "macOS arm64",
+  "candidate_source_pins_sha256": "89b9267e7bb4f35184f5811b9512ff9d4383aecd49612ac7e1fcb6a95116b45e",
+  "candidate_bytes": 11300624,
+  "candidate_files": 7,
+  "candidate_sha256_unchanged": "PASS",
+  "candidate_strict_deep_codesign": "PASS",
+  "archive_style_test_modes": {
+    "directories": "0775",
+    "regular_files": "0664",
+    "executables": "0755"
+  },
+  "cold_online": {
+    "native_launcher_GUI": "PASS",
+    "source_pool_absent": true,
+    "actual_worker_established_TCP_observed": true,
+    "release": "runtime-data-2026.10.17-v6",
+    "all_raw_parts_streamed_bytes": 3776694788,
+    "full_part_size_and_SHA256_verified_receipts": [
+      {
+        "bytes": 1888347396,
+        "sha256": "d962e1e3d49c3e18633b36c005eab8d643f7f931ad8c6d25e3972c94d29314ee"
+      },
+      {
+        "bytes": 1888347392,
+        "sha256": "91c8e0bf333582c443a9eb36244df7876c41612db839c6f148c84d7d776d6bce"
+      }
+    ],
+    "native_restore_GUI": "PASS",
+    "native_Core_first_window": "PASS",
+    "first_action_scroll": "PASS",
+    "next_action_transition": "PASS",
+    "next_action_hero_changed": "PASS",
+    "macOS_arm64_detected_in_Core": "PASS",
+    "native_Core_application_quit": "PASS"
+  },
+  "cache_audit": {
+    "status": "PASS",
+    "at_unix": 1792228173.5357141,
+    "manifest_sha256": "f5e906e4237d10b2e3ee8f38f2dfbfbb56e46a30147bdfde12629548eee0d71e",
+    "online_index_sha256": "6f3e047791e4d60660a479b9019f0d041fae36cc150f0a345e642687531f26a3",
+    "catalogue_binding": "PASS",
+    "online_distribution_binding": "PASS",
+    "exact_pool_objects": 556,
+    "pool_bytes": 3446331406,
+    "payload_files": 570,
+    "payload_directories": 91,
+    "payload_symlinks": 43,
+    "all_file_sizes_sha256_modes_uid_nlink": "PASS",
+    "all_symlink_targets": "PASS",
+    "no_extra_pool_or_payload_nodes": "PASS",
+    "both_full_part_sha256_receipts": "PASS",
+    "restored_core_strict_deep_codesign": "PASS"
+  },
+  "warm_offline_worker": {
+    "status": "PASS",
+    "network_denied_to_worker": true,
+    "network_denial_direct_socket_probe": "Operation not permitted",
+    "source_pool_absent": true,
+    "exit_code": 0,
+    "ready_reused": true,
+    "same_ready_generation": true,
+    "manifest_sha256": "f5e906e4237d10b2e3ee8f38f2dfbfbb56e46a30147bdfde12629548eee0d71e",
+    "events": 22,
+    "stdout_bytes": 2529,
+    "downloading_phase_present": false,
+    "elapsed_seconds": 2.611,
+    "scope": "Unmodified pinned worker only; native Core local WebView is tested separately."
+  },
+  "warm_native_GUI": {
+    "same_ready_generation": true,
+    "source_pool_absent": true,
+    "native_Core_first_window": "PASS",
+    "native_Core_application_quit": "PASS"
+  },
+  "privacy_scope": {
+    "launcher_and_worker_private_fixture_home_and_cache": "PASS",
+    "owned_Core_HOME_and_CFFIXED_USER_HOME_match_fixture": true,
+    "Core_full_filesystem_home_isolation_proven": false,
+    "wallet_profile_seed_purchase_actions_executed": false,
+    "unrelated_user_applications_signalled_or_navigated": false
+  },
+  "limitations": {
+    "candidate_quarantine_present": false,
+    "Safari_download_ArchiveUtility_Gatekeeper_AppTranslocation_proven": false,
+    "notarization_proven": false,
+    "offline_network_denial_scope": "Pinned worker verification; native Core WebView tested separately",
+    "GUI_cancel_retry_exercised": false
+  },
+  "cleanup": {
+    "owned_app_and_worker_processes_remaining": 0,
+    "private_cache_preserved_for_root_inspection": true,
+    "canonical_sources_modified": false,
+    "global_network_or_security_settings_changed": false
+  },
+  "screenshots": [
+    {
+      "file": "macos-download.jpg",
+      "sha256": "8aced9a4fcb483d0404f2340b91e28561e1ffcc271ac0d0c0f844b15aa33ba09",
+      "bytes": 73342,
+      "pixels_unchanged": true,
+      "EXIF_IPTC_XMP_comments_removed": true
+    },
+    {
+      "file": "macos-first-window.jpg",
+      "sha256": "7763264632bdaad01793a51adcf800c8ec264de74862b1cf9212e4d7fb0af63c",
+      "bytes": 686475,
+      "pixels_unchanged": true,
+      "EXIF_IPTC_XMP_comments_removed": true
+    },
+    {
+      "file": "macos-next-action.jpg",
+      "sha256": "2968c17745db3cf0d620210cfffc58f15de2343a3eb2c7e049951dd8e2e59ec2",
+      "bytes": 505323,
+      "pixels_unchanged": true,
+      "EXIF_IPTC_XMP_comments_removed": true
+    }
+  ],
+  "finished_unix": 1792228199.519757
+}
