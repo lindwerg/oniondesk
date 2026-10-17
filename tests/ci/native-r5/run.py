@@ -30,13 +30,15 @@ REPO = HERE.parents[2]
 EVIDENCE = REPO / "native-r5-evidence"
 MAX_EVIDENCE = 8 * 1024 * 1024
 EVIDENCE_NAMES = {"status.json", "cleanup.json", "native-prepare.png",
-                  "native-installer.png", "core-first-action.png", "arm-gate.png"}
+                  "native-installer.png", "core-first-action.png", "arm-gate.png", "browser-diagnostic.cms"}
 BOOL_FIELDS = {"public_github_hosted_runner", "synthetic_profile", "starter_verified", "source_pool_absent",
                "cold_cache", "native_preparation_window_seen", "ready_receipt_verified", "ordinary_installer_completed",
                "ordinary_uninstaller_completed", "core_browser_fallback_seen", "headed_ui", "first_device_action_completed",
                "browser_sandbox_enabled", "unsupported_arm_tor_browser_gate_respected", "ui_quit_completed",
                "sandbox_renderer_flags_checked", "linux_renderer_seccomp_enabled",
                "tooling_mount_nosuid", "sandbox_helper_mount_nosuid", "linux_sandbox_diagnostics_positive",
+               "system_chrome_exists", "system_chrome_symlink", "system_chrome_regular", "system_chrome_root_owned",
+               "system_chrome_group_writable", "system_chrome_other_writable", "browser_diagnostic_encrypted",
                "core_listener_closed", "owned_resources_only", "exact_process_identities_only", "owned_processes_stopped",
                "private_cache_and_profile_removed"}
 COUNT_FIELDS = {"restored_files_verified", "online_blobs_verified", "online_parts_verified"}
@@ -45,15 +47,94 @@ BROWSER_FAILURE_REASONS = {"display_unavailable", "sandbox_helper_misconfigured"
                            "permission_denied", "sandbox_diagnostics_failed", "unclassified_browser_launch_failure"}
 PHASES = {"initialize", "download_release_asset", "headed_sandboxed_browser", "native_cold_download_and_restore",
           "independent_restore_verification", "ordinary_nsis_install", "ordinary_nsis_uninstall", "core_first_action",
-          "core_ui_quit", "complete", "browser_sandbox_diagnostics"}
-PINS = json.loads((HERE / "pins.json").read_text())
+          "core_ui_quit", "complete", "browser_sandbox_diagnostics", "browser_attestation", "browser_launch", "browser_sandbox_check"}
+PINS = json.loads((HERE / "pins.json").read_text(encoding="utf-8"))
 SHA = re.compile(r"[0-9a-f]{64}")
+TRUSTED_ERROR_CODES = {
+    'BrowserSandboxDisabled',
+    'CIInterrupted',
+    'CheckoutSHAMismatch',
+    'ChromiumSandboxHelperRequired',
+    'CleanupLinkedWindowsClaim',
+    'CleanupMarkerMismatch',
+    'CleanupOwnershipMismatch',
+    'ColdDownloadRequiresAbsentPool',
+    'ColdRestoreIncomplete',
+    'ContractDistributionMismatch',
+    'ContractPinMismatch',
+    'CoreListenerSurvivedQuit',
+    'CoreSystemBrowserRequestRequired',
+    'DiagnosticRecipientPinMismatch',
+    'DiagnosticDERInvalid',
+    'DiagnosticRecipientIdentityInvalid',
+    'DiagnosticRecipientRSARequired',
+    'EncryptedDiagnosticSizeLimit',
+    'EncryptedDiagnosticProfileMismatch',
+    'ExistingWindowsInstallationOrCache',
+    'ExistingWindowsRegistration',
+    'ExistingWindowsShortcut',
+    'ExpectedRunDistributionOrCleanup',
+    'FreshPublicRunnerRequired',
+    'InstalledCoreRequired',
+    'KnownFolderUnavailable',
+    'NativePreparationWindowNotProven',
+    'NativeWindowGeometry',
+    'OnlineBlobMismatch',
+    'OnlinePartReceiptMismatch',
+    'OnlinePoolSetMismatch',
+    'OrdinaryNSISIncomplete',
+    'OrdinaryUninstallLeftInstallation',
+    'OwnedBrowserRendererRequired',
+    'OwnedNativeWindowRequired',
+    'OwnedProcessCleanupIncomplete',
+    'PositiveSandboxDiagnosticsRequired',
+    'PublicEvidenceBudgetExceeded',
+    'PublicEvidenceField',
+    'PublicEvidenceSchema',
+    'ReadyGenerationCount',
+    'ReadyReceiptMismatch',
+    'ReleaseAssetPinMismatch',
+    'ReleaseAssetPinRequired',
+    'ReleaseAssetTooLarge',
+    'RendererSeccompRequired',
+    'RestoredDirectoryMismatch',
+    'RestoredFileMismatch',
+    'RestoredLinkMismatch',
+    'RestoredModeMismatch',
+    'SandboxHelperAlreadyExists',
+    'SandboxHelperCleanupIncomplete',
+    'SandboxHelperMissing',
+    'SandboxHelperMountRejectsSetuid',
+    'SandboxOwnershipMismatch',
+    'StarterEntryCount',
+    'StarterExecutableMismatch',
+    'StarterNotExecutable',
+    'StateAlreadyExists',
+    'TrustedSystemChromeRequired',
+    'UnexpectedCoreBrowserRequest',
+    'UnexpectedEvidenceImage',
+    'UnexpectedNSISFinish',
+    'UnexpectedPublicEvidence',
+    'UnexpectedRestoredEntry',
+    'UnexpectedZipPermissions',
+    'UnsafeBrowserToolingPath',
+    'UnsafeSandboxHelperIdentity',
+    'UnsafeSandboxHelperPin',
+    'UnsafeSandboxOwnershipRecord',
+    'UnsafeStatePath',
+    'UnsafeZipComponent',
+    'UnsafeZipEntry',
+    'UnsafeZipName',
+    'ZipBudgetExceeded',
+    'ZipTypeMismatch',
+}
+DIAGNOSTIC_CERT_SHA256 = "b023aa189fd017bba34f426e4b9af9fe3b3ebafd4138bec9771b315b3893132b"
 
 
 def write_json(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(".new")
-    temporary.write_text(json.dumps(value, sort_keys=True, indent=2) + "\n")
+    temporary.write_text(json.dumps(value, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     temporary.replace(path)
 
 
@@ -115,8 +196,8 @@ def verify_contract(distribution):
     path = HERE / "contracts" / (distribution + ".json")
     if digest(path) != pin["manifest_sha256"] or digest(HERE / "contracts/index.json") != PINS["index_sha256"]:
         raise ValueError("ContractPinMismatch")
-    manifest = json.loads(path.read_text())
-    index = json.loads((HERE / "contracts/index.json").read_text())
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    index = json.loads((HERE / "contracts/index.json").read_text(encoding="utf-8"))
     if manifest["distribution"] != distribution or index["release"] != PINS["release"]:
         raise ValueError("ContractDistributionMismatch")
     for item in manifest["files"] + manifest["directories"] + manifest["symlinks"]:
@@ -153,7 +234,11 @@ def seal_evidence():
         raise ValueError("PublicEvidenceBudgetExceeded")
     for path in files:
         if path.suffix == ".json":
-            validate_public_json(json.loads(path.read_text()))
+            validate_public_json(json.loads(path.read_text(encoding="utf-8")))
+        elif path.name == "browser-diagnostic.cms":
+            if path.stat().st_size > 128 * 1024:
+                raise ValueError("EncryptedDiagnosticSizeLimit")
+            validate_encrypted_diagnostic(path.read_bytes())
         else:
             from PIL import Image
             with Image.open(path) as image:
@@ -183,6 +268,10 @@ def validate_public_json(value):
         elif key == "result":
             valid = item in {"RUNNING", "PASS", "PASS_PREPARATION_UI_ARM_GATE", "FAIL_OR_INCOMPLETE"}
         elif key == "error_class":
+            valid = isinstance(item, str) and bool(re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,80}", item))
+        elif key in {"error_code", "diagnostic_error_code"}:
+            valid = isinstance(item, str) and item in TRUSTED_ERROR_CODES
+        elif key == "diagnostic_error_class":
             valid = isinstance(item, str) and bool(re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,80}", item))
         elif key == "browser_failure_reason":
             valid = isinstance(item, str) and item in BROWSER_FAILURE_REASONS
@@ -218,6 +307,137 @@ def browser_failure_facts(error):
     if match:
         result["browser_failure_signal"] = match[1].upper()
     return result
+
+
+def trusted_error_facts(error):
+    if type(error) in {RuntimeError, ValueError, TimeoutError, OSError, InterruptedError} and \
+            len(error.args) == 1 and isinstance(error.args[0], str) and error.args[0] in TRUSTED_ERROR_CODES:
+        return {"error_code": error.args[0]}
+    return {}
+
+
+def der_fields(data):
+    """Read bounded, definite, minimally encoded DER TLVs without recursion."""
+    fields, offset = [], 0
+    while offset < len(data):
+        start = offset
+        if len(fields) >= 32 or offset + 2 > len(data):
+            raise ValueError("DiagnosticDERInvalid")
+        tag, size = data[offset], data[offset + 1]
+        offset += 2
+        if tag == 0 or tag & 31 == 31:
+            raise ValueError("DiagnosticDERInvalid")
+        if size & 128:
+            count = size & 127
+            if count not in {1, 2, 3} or offset + count > len(data) or data[offset] == 0:
+                raise ValueError("DiagnosticDERInvalid")
+            size = int.from_bytes(data[offset:offset + count], "big")
+            offset += count
+            if size < 128:
+                raise ValueError("DiagnosticDERInvalid")
+        end = offset + size
+        if end > len(data):
+            raise ValueError("DiagnosticDERInvalid")
+        fields.append((tag, data[offset:end], data[start:end]))
+        offset = end
+    return fields
+
+
+def der_one(data, tag):
+    fields = der_fields(data)
+    if len(fields) != 1 or fields[0][0] != tag:
+        raise ValueError("DiagnosticDERInvalid")
+    return fields[0][1]
+
+
+def diagnostic_recipient_identifier():
+    certificate = HERE / "diagnostic-recipient.pem"
+    if certificate.is_symlink() or digest(certificate) != DIAGNOSTIC_CERT_SHA256:
+        raise ValueError("DiagnosticRecipientPinMismatch")
+    raw = subprocess.run(["openssl", "x509", "-in", str(certificate), "-outform", "DER"],
+                         check=True, capture_output=True, timeout=20).stdout
+    certificate_fields = der_fields(der_one(raw, 0x30))
+    if len(certificate_fields) != 3 or certificate_fields[0][0] != 0x30:
+        raise ValueError("DiagnosticRecipientIdentityInvalid")
+    tbs = der_fields(certificate_fields[0][1])
+    if tbs and tbs[0][0] == 0xA0:
+        tbs = tbs[1:]
+    if len(tbs) < 6 or tbs[0][0] != 2 or tbs[2][0] != 0x30 or tbs[5][0] != 0x30:
+        raise ValueError("DiagnosticRecipientIdentityInvalid")
+    # The pinned certificate also binds the exact RSA public key. Check its
+    # algorithm and modulus size, rather than trusting a caller's recipient ID.
+    spki = der_fields(tbs[5][1])
+    rsa_algorithm = bytes.fromhex("06092a864886f70d0101010500")
+    if len(spki) != 2 or spki[0][:2] != (0x30, rsa_algorithm) or spki[1][0] != 3 or not spki[1][1].startswith(b"\0"):
+        raise ValueError("DiagnosticRecipientIdentityInvalid")
+    rsa = der_fields(der_one(spki[1][1][1:], 0x30))
+    if len(rsa) != 2 or rsa[0][0] != 2 or rsa[1][0] != 2 or int.from_bytes(rsa[0][1], "big").bit_length() != 3072:
+        raise ValueError("DiagnosticRecipientIdentityInvalid")
+    return tbs[2][2], tbs[0][2]
+
+
+def validate_encrypted_diagnostic(data):
+    """Accept only our RFC 5652 RSA/AES-256-CBC EnvelopedData profile.
+
+    Exact TLV consumption rejects appended plaintext. No Data, SignedData,
+    optional attributes, additional recipients, or alternate ciphers are allowed.
+    """
+    content = der_fields(der_one(data, 0x30))
+    enveloped_oid = bytes.fromhex("2a864886f70d010703")
+    data_oid = bytes.fromhex("2a864886f70d010701")
+    rsa_algorithm = bytes.fromhex("06092a864886f70d0101010500")
+    aes256_oid = bytes.fromhex("60864801650304012a")
+    if len(content) != 2 or content[0][:2] != (6, enveloped_oid) or content[1][0] != 0xA0:
+        raise ValueError("EncryptedDiagnosticProfileMismatch")
+    envelope = der_fields(der_one(content[1][1], 0x30))
+    if len(envelope) != 3 or envelope[0][:2] != (2, b"\0") or envelope[1][0] != 0x31 or envelope[2][0] != 0x30:
+        raise ValueError("EncryptedDiagnosticProfileMismatch")
+    recipient = der_fields(der_one(envelope[1][1], 0x30))
+    if len(recipient) != 4 or recipient[0][:2] != (2, b"\0") or recipient[1][0] != 0x30 or \
+            recipient[2][:2] != (0x30, rsa_algorithm) or recipient[3][0] != 4 or len(recipient[3][1]) != 384:
+        raise ValueError("EncryptedDiagnosticProfileMismatch")
+    identifier = der_fields(recipient[1][1])
+    issuer, serial = diagnostic_recipient_identifier()
+    if len(identifier) != 2 or identifier[0][2] != issuer or identifier[1][2] != serial:
+        raise ValueError("EncryptedDiagnosticProfileMismatch")
+    encrypted = der_fields(envelope[2][1])
+    if len(encrypted) != 3 or encrypted[0][:2] != (6, data_oid) or encrypted[1][0] != 0x30 or encrypted[2][0] != 0x80:
+        raise ValueError("EncryptedDiagnosticProfileMismatch")
+    algorithm = der_fields(encrypted[1][1])
+    if len(algorithm) != 2 or algorithm[0][:2] != (6, aes256_oid) or algorithm[1][0] != 4 or len(algorithm[1][1]) != 16:
+        raise ValueError("EncryptedDiagnosticProfileMismatch")
+    if not encrypted[2][1] or len(encrypted[2][1]) % 16 or len(encrypted[2][1]) > 64 * 1024 + 16:
+        raise ValueError("EncryptedDiagnosticProfileMismatch")
+
+
+def encrypt_browser_diagnostic(error, phase):
+    """Send bounded raw diagnostics only to the root's pinned public recipient."""
+    certificate = HERE / "diagnostic-recipient.pem"
+    if certificate.is_symlink() or digest(certificate) != DIAGNOSTIC_CERT_SHA256:
+        raise ValueError("DiagnosticRecipientPinMismatch")
+    checked = subprocess.run(["openssl", "x509", "-in", str(certificate), "-noout", "-text"],
+                             check=True, capture_output=True, text=True, encoding="utf-8", timeout=20).stdout
+    if "Public Key Algorithm: rsaEncryption" not in checked or not re.search(r"Public-Key:\s*\(3072 bit\)", checked):
+        raise ValueError("DiagnosticRecipientRSARequired")
+    plaintext = ("phase=" + phase + "\nexception=" + type(error).__name__ + "\n" + str(error)).encode(
+        "utf-8", errors="backslashreplace")[:64 * 1024]
+    encrypted = subprocess.run(["openssl", "cms", "-encrypt", "-aes-256-cbc", "-binary", "-outform", "DER", str(certificate)],
+                               input=plaintext, check=True, capture_output=True, timeout=20).stdout
+    if not encrypted or len(encrypted) > 128 * 1024:
+        raise ValueError("EncryptedDiagnosticSizeLimit")
+    (EVIDENCE / "browser-diagnostic.cms").write_bytes(encrypted)
+
+
+def system_chrome_attestation(executable):
+    facts = {"system_chrome_exists": executable.exists(), "system_chrome_symlink": executable.is_symlink(),
+             "system_chrome_regular": False, "system_chrome_root_owned": False,
+             "system_chrome_group_writable": False, "system_chrome_other_writable": False}
+    if facts["system_chrome_exists"]:
+        info = executable.stat()
+        facts.update({"system_chrome_regular": stat.S_ISREG(info.st_mode), "system_chrome_root_owned": info.st_uid == 0,
+                      "system_chrome_group_writable": bool(info.st_mode & 0o020),
+                      "system_chrome_other_writable": bool(info.st_mode & 0o002)})
+    return facts
 
 
 def positive_linux_sandbox_layer(rows):
@@ -276,7 +496,7 @@ class Harness:
                     "GITHUB_REPOSITORY": "lindwerg/oniondesk"}
         if any(os.environ.get(k) != v for k, v in required.items()):
             raise RuntimeError("FreshPublicRunnerRequired")
-        source = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, check=True, capture_output=True, text=True, timeout=10).stdout.strip()
+        source = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, check=True, capture_output=True, text=True, encoding="utf-8", timeout=10).stdout.strip()
         if not re.fullmatch(r"[0-9a-f]{40}", source) or source != os.environ.get("GITHUB_SHA"):
             raise RuntimeError("CheckoutSHAMismatch")
         if not SHA.fullmatch(self.pin["zip_sha256"]):
@@ -287,7 +507,7 @@ class Harness:
         self.owner = uuid.uuid4().hex
         self.root = Path(tempfile.mkdtemp(prefix="oniondesk-native-" + self.owner + "-", dir=os.environ["RUNNER_TEMP"]))
         self.root.chmod(0o700)
-        (self.root / ".owner").write_text(self.owner)
+        (self.root / ".owner").write_text(self.owner, encoding="utf-8")
         self.state = {"owner": self.owner, "root": str(self.root), "processes": [], "windows_claimed": False}
         self.facts = {"distribution": distribution, "result": "RUNNING", "phase": "initialize",
                       "public_github_hosted_runner": True, "release": PINS["release"],
@@ -417,7 +637,7 @@ class Harness:
         if len(candidates) != 1 or candidates[0].is_symlink():
             raise ValueError("ReadyGenerationCount")
         generation = candidates[0]
-        if json.loads((generation / "receipt.json").read_text()) != {"schema": 1, "manifest": self.pin["manifest_sha256"]}:
+        if json.loads((generation / "receipt.json").read_text(encoding="utf-8")) != {"schema": 1, "manifest": self.pin["manifest_sha256"]}:
             raise ValueError("ReadyReceiptMismatch")
         return generation / "payload"
 
@@ -427,7 +647,7 @@ class Harness:
         online = self.cache / "online-r5" if os.name == "nt" else self.root / "cache/OnionDesk-Online-R5"
         namespace = online / ("r5-" + PINS["index_sha256"] + "-" + self.distribution + "-" + self.pin["manifest_sha256"])
         for i, part in enumerate(self.index["parts"]):
-            if (namespace / ("part-" + str(i) + ".ok")).read_text() != part["sha256"] + "\n":
+            if (namespace / ("part-" + str(i) + ".ok")).read_text(encoding="utf-8") != part["sha256"] + "\n":
                 raise ValueError("OnlinePartReceiptMismatch")
         pool = namespace / "pool"
         if {p.name for p in pool.iterdir()} != {b["sha256"] for b in self.manifest["blobs"]}:
@@ -458,13 +678,13 @@ class Harness:
         else:
             from PIL import ImageGrab
             result = subprocess.run(["xdotool", "search", "--onlyvisible", "--name", "^OnionDesk$"],
-                                    capture_output=True, text=True, timeout=10)
+                                    capture_output=True, text=True, encoding="utf-8", timeout=10)
             for window in result.stdout.split():
-                pid = subprocess.run(["xdotool", "getwindowpid", window], capture_output=True, text=True, timeout=10)
+                pid = subprocess.run(["xdotool", "getwindowpid", window], capture_output=True, text=True, encoding="utf-8", timeout=10)
                 if not pid.stdout.strip().isdigit() or int(pid.stdout) not in {i["pid"] for i in self.state["processes"]}:
                     continue
                 geometry = subprocess.run(["xdotool", "getwindowgeometry", "--shell", window],
-                                          check=True, capture_output=True, text=True, timeout=10)
+                                          check=True, capture_output=True, text=True, encoding="utf-8", timeout=10)
                 values = dict(line.split("=", 1) for line in geometry.stdout.splitlines() if "=" in line)
                 x, y, width, height = (int(values[k]) for k in ("X", "Y", "WIDTH", "HEIGHT"))
                 if not (0 <= x < 1280 and 0 <= y < 900 and 100 <= width <= 1280 and 100 <= height <= 900):
@@ -554,7 +774,7 @@ class Harness:
             time.sleep(0.2)
         if not request.is_file() or request.is_symlink() or request.stat().st_size > 512:
             raise RuntimeError("CoreSystemBrowserRequestRequired")
-        url = request.read_text()
+        url = request.read_text(encoding="utf-8")
         if not re.fullmatch(r"http://127\.0\.0\.1:[0-9]{1,5}/#[A-Za-z0-9_-]{32,128}", url):
             raise ValueError("UnexpectedCoreBrowserRequest")
         page = context.new_page()
@@ -605,7 +825,7 @@ class Harness:
         self.facts["sandbox_renderer_flags_checked"] = True
         if os.name != "nt":
             for pid in renderers:
-                fields = dict(line.split(":", 1) for line in Path("/proc", str(pid), "status").read_text().splitlines() if ":" in line)
+                fields = dict(line.split(":", 1) for line in Path("/proc", str(pid), "status").read_text(encoding="utf-8").splitlines() if ":" in line)
                 if fields.get("Seccomp", "").strip() != "2":
                     raise RuntimeError("RendererSeccompRequired")
             self.facts["linux_renderer_seccomp_enabled"] = True
@@ -631,7 +851,7 @@ class Harness:
     def run(self):
         from playwright.sync_api import sync_playwright
         self.download()
-        self.phase("headed_sandboxed_browser")
+        self.phase("browser_attestation")
         with sync_playwright() as playwright:
             context = None
             try:
@@ -639,12 +859,16 @@ class Harness:
                 self.facts["browser_engine"] = "pinned_chromium"
                 if self.distribution == "linux-x64":
                     executable = Path("/opt/google/chrome/chrome")
-                    info = executable.stat()
-                    if executable.is_symlink() or not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+                    self.facts["browser_engine"] = "system_google_chrome"
+                    facts = system_chrome_attestation(executable)
+                    self.facts.update(facts)
+                    self.save()
+                    if not all(facts[key] for key in ("system_chrome_exists", "system_chrome_regular", "system_chrome_root_owned")) or any(
+                        facts[key] for key in ("system_chrome_symlink", "system_chrome_group_writable", "system_chrome_other_writable")
+                    ):
                         raise RuntimeError("TrustedSystemChromeRequired")
                     options["executable_path"] = str(executable)
-                    self.facts["browser_engine"] = "system_google_chrome"
-                self.save()
+                self.phase("browser_launch")
                 context = playwright.chromium.launch_persistent_context(str(self.root / "browser-profile"),
                     headless=False, chromium_sandbox=True, viewport={"width": 1200, "height": 820},
                     env=self.environment, accept_downloads=False, **options)
@@ -652,16 +876,27 @@ class Harness:
                     self.facts["browser_version"] = context.browser.version
                 self.save()
                 if os.name != "nt":
-                    self.phase("browser_sandbox_diagnostics")
+                    self.phase("browser_sandbox_check")
                     self.linux_sandbox_diagnostics(context)
                 self.discover()
                 self.wait_native_restore()
                 self.core_flow(context)
             except Exception as error:
-                if self.facts["phase"] in {"headed_sandboxed_browser", "browser_sandbox_diagnostics"}:
-                    self.facts.update(browser_failure_facts(error))
-                    if self.facts["phase"] == "browser_sandbox_diagnostics":
+                if self.facts["phase"] in {"browser_attestation", "browser_launch", "browser_sandbox_check"}:
+                    self.facts.update(trusted_error_facts(error))
+                    if self.facts["phase"] == "browser_launch":
+                        self.facts.update(browser_failure_facts(error))
+                    elif self.facts["phase"] == "browser_sandbox_check":
                         self.facts["browser_failure_reason"] = "sandbox_diagnostics_failed"
+                    try:
+                        encrypt_browser_diagnostic(error, self.facts["phase"])
+                        self.facts["browser_diagnostic_encrypted"] = True
+                    except Exception as diagnostic_error:
+                        self.facts["browser_diagnostic_encrypted"] = False
+                        self.facts["diagnostic_error_class"] = type(diagnostic_error).__name__
+                        code = trusted_error_facts(diagnostic_error).get("error_code")
+                        if code:
+                            self.facts["diagnostic_error_code"] = code
                     self.save()
                 raise
             finally:
@@ -729,7 +964,7 @@ def cleanup_browser_tooling():
     if owner.exists():
         if owner.is_symlink() or not owner.is_file() or owner.stat().st_size > 1024:
             raise ValueError("UnsafeSandboxOwnershipRecord")
-        record = json.loads(owner.read_text())
+        record = json.loads(owner.read_text(encoding="utf-8"))
         if set(record) != {"sha256", "target"} or record["target"] != str(sandbox_helper_path()):
             raise ValueError("SandboxOwnershipMismatch")
         target = sandbox_helper_path()
@@ -775,7 +1010,7 @@ def provision():
         subprocess.run(["sudo", "--non-interactive", "install", "-o", "root", "-g", "root", "-m", "4755", "--", str(source), str(sandbox)],
                        check=True, capture_output=True, timeout=20)
         validate_sandbox_helper(sandbox, expected)
-        with Path(os.environ["GITHUB_ENV"]).open("a") as output:
+        with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as output:
             output.write("CI_CHROME_SANDBOX=" + str(sandbox) + "\n")
             output.write("CI_CHROME_SANDBOX_SHA256=" + expected + "\n")
     print("Native R5: browser tooling provisioned with browser sandbox enabled", flush=True)
@@ -788,12 +1023,12 @@ def cleanup():
         seal_evidence()
         return
     import psutil
-    state = json.loads(path.read_text())
+    state = json.loads(path.read_text(encoding="utf-8"))
     owner = state["owner"]
     root = Path(state["root"])
     if not re.fullmatch(r"[0-9a-f]{32}", owner) or root.parent.resolve() != path.parent.resolve() or not root.name.startswith("oniondesk-native-" + owner + "-"):
         raise ValueError("CleanupOwnershipMismatch")
-    if root.is_symlink() or (root / ".owner").is_symlink() or (root / ".owner").read_text() != owner:
+    if root.is_symlink() or (root / ".owner").is_symlink() or (root / ".owner").read_text(encoding="utf-8") != owner:
         raise ValueError("CleanupMarkerMismatch")
     # Stop only persisted PID + creation-time pairs. Never kill by process name.
     survivors = []
@@ -854,15 +1089,23 @@ def main():
         harness.run()
     except Exception as error:
         failed = True
-        if harness:
-            harness.facts.update({"result": "FAIL_OR_INCOMPLETE", "error_class": type(error).__name__})
-            harness.save()
-        else:
-            write_json(EVIDENCE / "status.json", {"result": "FAIL_OR_INCOMPLETE", "phase": "initialize",
-                                               "error_class": type(error).__name__})
+        record_failure(error, harness)
     finally:
-        cleanup()
+        try:
+            cleanup()
+        except Exception as error:
+            record_failure(error, harness)
+            raise
     return int(failed)
+
+
+def record_failure(error, harness=None):
+    facts = {"result": "FAIL_OR_INCOMPLETE", "error_class": type(error).__name__, **trusted_error_facts(error)}
+    if harness:
+        harness.facts.update(facts)
+        harness.save()
+    else:
+        write_json(EVIDENCE / "status.json", {"phase": "initialize", **facts})
 
 
 def interrupted(_signal, _frame):
@@ -875,5 +1118,6 @@ if __name__ == "__main__":
         raise SystemExit(main())
     except Exception as error:
         # Exception strings can contain nonce URLs, commands and private paths.
-        print("Native R5 stopped: " + type(error).__name__, file=sys.stderr)
+        code = trusted_error_facts(error).get("error_code")
+        print("Native R5 stopped: " + type(error).__name__ + (" [" + code + "]" if code else ""), file=sys.stderr)
         raise SystemExit(1)

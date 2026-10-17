@@ -1,9 +1,11 @@
 """Boundary regression checks. Native success still requires the actual CI run."""
+import ast
 import hashlib
 import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import stat
 import subprocess
 import sys
@@ -19,6 +21,110 @@ SPEC.loader.exec_module(HARNESS)
 
 
 class BoundaryTests(unittest.TestCase):
+    def test_controlled_io_uses_utf8_even_with_cp1252_default(self):
+        original_open = Path.open
+        implicit = []
+
+        def cp1252_open(path, mode="r", buffering=-1, encoding=None, errors=None, newline=None):
+            if "b" not in mode and encoding in {None, "locale"}:
+                implicit.append(path.name)
+                encoding = "cp1252"
+            return original_open(path, mode, buffering, encoding, errors, newline)
+
+        with tempfile.TemporaryDirectory() as temporary, mock.patch.object(Path, "open", new=cp1252_open):
+            for distribution in HARNESS.PINS["distributions"]:
+                HARNESS.verify_contract(distribution)
+            destination = Path(temporary) / "utf8.json"
+            HARNESS.write_json(destination, {"message": "Подготовка OnionDesk"})
+            self.assertEqual(json.loads(destination.read_text(encoding="utf-8"))["message"], "Подготовка OnionDesk")
+        self.assertEqual(implicit, [])
+
+    def test_all_trusted_literal_errors_have_public_codes(self):
+        tree = ast.parse((HARNESS.HERE / "run.py").read_text(encoding="utf-8"))
+        names = {"ValueError", "RuntimeError", "TimeoutError", "OSError", "InterruptedError"}
+        literals = {node.exc.args[0].value for node in ast.walk(tree) if isinstance(node, ast.Raise)
+                    and isinstance(node.exc, ast.Call) and isinstance(node.exc.func, ast.Name)
+                    and node.exc.func.id in names and node.exc.args and isinstance(node.exc.args[0], ast.Constant)
+                    and isinstance(node.exc.args[0].value, str)}
+        self.assertEqual(literals, HARNESS.TRUSTED_ERROR_CODES)
+        for code in literals:
+            facts = HARNESS.trusted_error_facts(RuntimeError(code))
+            self.assertEqual(facts, {"error_code": code})
+            HARNESS.validate_public_json(facts)
+        self.assertEqual(HARNESS.trusted_error_facts(RuntimeError("/private/path #nonce")), {})
+
+    @unittest.skipUnless(shutil.which("openssl"), "OpenSSL CMS tooling unavailable")
+    def test_encrypted_diagnostic_is_bounded_and_passes_public_boundary(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            marker = b"private-diagnostic-marker-never-published"
+            with mock.patch.object(HARNESS, "EVIDENCE", root):
+                HARNESS.encrypt_browser_diagnostic(RuntimeError(marker.decode("ascii") + "x" * 100000), "browser_launch")
+                encrypted = (root / "browser-diagnostic.cms").read_bytes()
+                self.assertLessEqual(len(encrypted), 128 * 1024)
+                self.assertLessEqual(len(encrypted), 64 * 1024 + 4096)
+                self.assertNotIn(marker, encrypted)
+                HARNESS.seal_evidence()
+                with mock.patch.object(HARNESS, "DIAGNOSTIC_CERT_SHA256", "0" * 64), self.assertRaises(ValueError):
+                    HARNESS.encrypt_browser_diagnostic(RuntimeError("ignored"), "browser_launch")
+
+    @unittest.skipUnless(shutil.which("openssl"), "OpenSSL CMS tooling unavailable")
+    def test_public_boundary_rejects_plain_signed_foreign_and_trailing_cms(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            evidence = root / "evidence"
+            evidence.mkdir()
+            marker = b"synthetic-private-plaintext-must-never-be-public"
+            certificate = root / "synthetic-recipient.pem"
+            key = root / "synthetic-fixture-key.pem"
+            subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-keyout", str(key),
+                            "-out", str(certificate), "-subj", "/CN=synthetic-CMS-boundary-fixture", "-days", "1"],
+                           check=True, capture_output=True, timeout=30)
+            commands = {
+                "Data": ["-data_create"],
+                "SignedData": ["-sign", "-nodetach", "-signer", str(certificate), "-inkey", str(key)],
+                "ForeignRecipient": ["-encrypt", "-aes-256-cbc", str(certificate)],
+                "AES128": ["-encrypt", "-aes-128-cbc", str(HARNESS.HERE / "diagnostic-recipient.pem")],
+            }
+            target = evidence / "browser-diagnostic.cms"
+            with mock.patch.object(HARNESS, "EVIDENCE", evidence):
+                for name, operation in commands.items():
+                    result = subprocess.run(["openssl", "cms", "-binary", "-outform", "DER", *operation],
+                                            input=marker, check=True, capture_output=True, timeout=20)
+                    if name in {"Data", "SignedData"}:
+                        self.assertIn(marker, result.stdout)
+                    target.write_bytes(result.stdout)
+                    with self.subTest(profile=name), self.assertRaises(ValueError):
+                        HARNESS.seal_evidence()
+                HARNESS.encrypt_browser_diagnostic(RuntimeError("synthetic valid encrypted diagnostic"), "browser_launch")
+                HARNESS.seal_evidence()
+                target.write_bytes(target.read_bytes() + marker)
+                with self.assertRaises(ValueError):
+                    HARNESS.seal_evidence()
+
+    def test_system_browser_attestation_exports_only_fixed_boolean_fields(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            executable = Path(temporary) / "chrome"
+            facts = HARNESS.system_chrome_attestation(executable)
+            self.assertFalse(facts["system_chrome_exists"])
+            executable.write_bytes(b"synthetic")
+            executable.chmod(0o777)
+            facts = HARNESS.system_chrome_attestation(executable)
+            self.assertTrue(facts["system_chrome_regular"])
+            self.assertTrue(facts["system_chrome_group_writable"])
+            self.assertTrue(facts["system_chrome_other_writable"])
+            self.assertTrue(all(type(value) is bool for value in facts.values()))
+            HARNESS.validate_public_json(facts)
+
+    def test_cleanup_failure_records_exact_code_and_cannot_leave_pass_result(self):
+        instance = SimpleNamespace(facts={"phase": "complete", "result": "PASS"}, save=mock.Mock(), run=mock.Mock())
+        with mock.patch.object(HARNESS, "Harness", return_value=instance), \
+             mock.patch.object(HARNESS, "cleanup", side_effect=RuntimeError("OwnedProcessCleanupIncomplete")), \
+             mock.patch.object(sys, "argv", ["run.py", "run", "linux-x64"]), self.assertRaises(RuntimeError):
+            HARNESS.main()
+        self.assertEqual(instance.facts["result"], "FAIL_OR_INCOMPLETE")
+        self.assertEqual(instance.facts["error_code"], "OwnedProcessCleanupIncomplete")
+
     def test_contract_bytes_survive_git_autocrlf_checkout(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -82,7 +188,7 @@ class BoundaryTests(unittest.TestCase):
             root = Path(temporary)
             tooling = root / "oniondesk-native-browsers-1-1"
             tooling.mkdir()
-            (tooling / "sandbox-owner.json").write_text(json.dumps({"target": "/private/unowned", "sha256": "a" * 64}))
+            (tooling / "sandbox-owner.json").write_text(json.dumps({"target": "/private/unowned", "sha256": "a" * 64}), encoding="utf-8")
             env = {"RUNNER_TEMP": temporary, "PLAYWRIGHT_BROWSERS_PATH": str(tooling),
                    "GITHUB_RUN_ID": "1", "GITHUB_RUN_ATTEMPT": "1"}
             with mock.patch.dict(os.environ, env), mock.patch.object(HARNESS.subprocess, "run") as command:
@@ -96,16 +202,16 @@ class BoundaryTests(unittest.TestCase):
             owner = "a" * 32
             root = parent / ("oniondesk-native-" + owner + "-test")
             root.mkdir()
-            (root / ".owner").write_text(owner)
+            (root / ".owner").write_text(owner, encoding="utf-8")
             state = parent / "oniondesk-native-1-1-linux-x64.json"
-            state.write_text(json.dumps({"root": str(root), "owner": owner, "processes": [], "windows_claimed": False}))
+            state.write_text(json.dumps({"root": str(root), "owner": owner, "processes": [], "windows_claimed": False}), encoding="utf-8")
             tooling = parent / "oniondesk-native-browsers-1-1"
             tooling.mkdir()
             helper = parent / "owned-sandbox-helper"
             helper.write_bytes(b"owned helper")
             expected = hashlib.sha256(helper.read_bytes()).hexdigest()
             record = tooling / "sandbox-owner.json"
-            record.write_text(json.dumps({"target": str(helper), "sha256": expected}))
+            record.write_text(json.dumps({"target": str(helper), "sha256": expected}), encoding="utf-8")
             evidence = parent / "evidence"
             env = {"RUNNER_TEMP": temporary, "CI_STATE_FILE": str(state), "PLAYWRIGHT_BROWSERS_PATH": str(tooling)}
             processes = SimpleNamespace(wait_procs=mock.Mock(return_value=([], [])), NoSuchProcess=ProcessLookupError)
@@ -136,7 +242,7 @@ class BoundaryTests(unittest.TestCase):
                 self.assertFalse(state.exists())
                 self.assertFalse(tooling.exists())
                 self.assertFalse(helper.exists())
-                self.assertTrue(json.loads((evidence / "cleanup.json").read_text())["private_cache_and_profile_removed"])
+                self.assertTrue(json.loads((evidence / "cleanup.json").read_text(encoding="utf-8"))["private_cache_and_profile_removed"])
                 self.assertEqual(validate.call_args_list, [mock.call(helper, expected), mock.call(helper, expected)])
                 self.assertEqual(len(attempts), 2)
 
@@ -240,9 +346,9 @@ class BoundaryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with mock.patch.object(HARNESS, "EVIDENCE", root):
-                (root / "status.json").write_text(json.dumps({"result": "PASS"}))
+                (root / "status.json").write_text(json.dumps({"result": "PASS"}), encoding="utf-8")
                 HARNESS.seal_evidence()
-                (root / "console.txt").write_text("private")
+                (root / "console.txt").write_text("private", encoding="utf-8")
                 with self.assertRaises(ValueError):
                     HARNESS.seal_evidence()
                 (root / "console.txt").unlink()

@@ -16,7 +16,7 @@ def main():
     if target.parent != root or root.is_symlink() or not (root / ".owner").is_file():
         return 2
     descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    with os.fdopen(descriptor, "w", encoding="ascii") as output:
+    with os.fdopen(descriptor, "w", encoding="utf-8") as output:
         output.write(sys.argv[1])
     return 0
 

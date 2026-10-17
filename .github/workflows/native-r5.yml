@@ -47,7 +47,7 @@ jobs:
           suffix = os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT']
           state = temporary / ('oniondesk-native-' + suffix + '-' + os.environ['CI_DISTRIBUTION'] + '.json')
           browsers = temporary / ('oniondesk-native-browsers-' + suffix)
-          with Path(os.environ['GITHUB_ENV']).open('a') as output:
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as output:
               output.write('CI_STATE_FILE=' + str(state) + '\n')
               output.write('PLAYWRIGHT_BROWSERS_PATH=' + str(browsers) + '\n')
       - name: Получить точную проверяемую версию

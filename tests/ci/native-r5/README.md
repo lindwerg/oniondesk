@@ -54,8 +54,19 @@ Primary runner reference (standard/free public labels, including native ARM64):
 https://docs.github.com/en/actions/reference/runners/github-hosted-runners
 Chromium's documented setuid-helper option, without disabling Ubuntu security:
 https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
-Failed browser launches publish only a fixed literal classification and signal;
-the raw exception, browser command line and paths remain private.
+Browser attestation, launch and sandbox checks have distinct phases. Failures
+publish exact allowlisted harness error codes, fixed literal classifications,
+signals and boolean file-guard facts. Raw browser diagnostics (at most 64 KiB)
+are encrypted in memory with OpenSSL CMS/AES-256-CBC to the pinned public
+RSA-3072 recipient certificate. Only `browser-diagnostic.cms` (at most 128 KiB)
+may be uploaded. The boundary accepts only definite canonical DER EnvelopedData:
+one RSA-3072 key-transport recipient matching the pinned certificate's exact
+issuer/serial, AES-256-CBC with a 16-byte IV, and bounded ciphertext. Data,
+SignedData, extra recipients/attributes, other ciphers and trailing bytes fail.
+No private
+key or plaintext diagnostic file enters the checkout or artifact. Encryption
+failure preserves the original test failure and reports only a fixed error type.
+Controlled text and JSON reads/writes use UTF-8 explicitly on every platform.
 Official action SHAs were verified from upstream v4.2.2 checkout, v5.6.0
 setup-python and v4.6.2 upload-artifact tags. The local macOS checks do not prove
 Windows/Linux runtime success; that requires the actual reviewed CI run.
