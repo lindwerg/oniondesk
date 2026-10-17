@@ -60,7 +60,6 @@ def typing_events():
 
 def capture(target):
     """No credential bypass: production VNC is already host-loopback only."""
-    from PIL import Image
     raw = Path("/run/oniondesk-ci-private-workstation.ppm")
     # This survives the outer host's later --snapshot-only invocation too.
     SUPPRESSION_MARKER.touch(mode=0o600, exist_ok=True)
@@ -94,6 +93,7 @@ def capture(target):
                            capture_output=True, check=True, timeout=15)
             if raw.stat().st_size > 16 * 1024 * 1024:
                 raise ValueError("PrivateConsoleImageLimit")
+            from PIL import Image
             with Image.open(raw) as pixels:
                 pixels.thumbnail((1280, 1024))
                 buffer = io.BytesIO()
