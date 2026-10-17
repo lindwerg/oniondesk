@@ -1,9 +1,9 @@
 {
   "schema": 3,
-  "status": "Owner-approved GPLv3; media and native-bootstrap corresponding-source assets actual private Release readback PASS; native binary delivery remains separately gated",
+  "status": "Owner-approved GPLv3; private R4 Mac/Linux distributions and corresponding-source Release assets published with actual remote readback; local Mac and virtual Linux cold/cached/cancel/retry scopes documented; Windows GUI and hardware checks pending",
   "policy": "Explicit reviewed source classes only; no user data, raw logs, downloaded executable payloads or disk images",
   "baseline": "v5-frozen16-ui3-art32-data43",
-  "tree_sha256_excluding_this_manifest": "4a2b362b7e38f8deb89012ce6d1c98a958bbbde24a8a21712858eb593acdee4b",
+  "tree_sha256_excluding_this_manifest": "0763500daff538bea94ecb501851ad5601d56667f7ded4ebbbc0a4e358a25069",
   "allowlisted_source_tree_sha256": "1ebf8a462bbdca580db726b71feb9351ad35d3b1107d7c13237d33f75f5eaba6",
   "files": [
     {
@@ -23,8 +23,8 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 10655,
-      "sha256": "25b44e4db1b3fa5839488cf50cb5aaff23bac4bb141874148cce03333fdec7a8"
+      "bytes": 10583,
+      "sha256": "5b2b558d5db1a4253ae219b9bd0cf82d56d491ccccdbedf9c2c980465e637bbd"
     },
     {
       "path": "LICENSE",
@@ -89,8 +89,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 13234,
-      "sha256": "3dcdee701fc9ee253d98c02dc1b4ecaf0680ead68c4578c61c06a3d0b6b1f55d"
+      "bytes": 14542,
+      "sha256": "4c867abcafcf08b8cade4e1de684d00ccc90ce0bc1c45bbe2b0f34418dfbef6a"
     },
     {
       "path": "SECURITY.md",
@@ -99,8 +99,8 @@
     },
     {
       "path": "START-HERE.md",
-      "bytes": 1556,
-      "sha256": "4ee03d2ad8c4133eef0777295960d54cfd9b4f17b167d1a891afd5cbcfa8b4f0"
+      "bytes": 2315,
+      "sha256": "a36952bdb254334cd4de044c36477d1b8fb08a6363e3cf6b0770d38896612583"
     },
     {
       "path": "assets/agent-cover.png",
@@ -1209,8 +1209,8 @@
     },
     {
       "path": "docs/DOWNLOADS.md",
-      "bytes": 12467,
-      "sha256": "0b229eb38f234d779462495906b7c8e5aa2befd6b952c6b5ccda099fc4692fc9"
+      "bytes": 15465,
+      "sha256": "b26914ab5acdb4846e313d432d0f9cd41ebc41ced47f79ed23c4e4aba99baccf"
     },
     {
       "path": "docs/EXPORT-POLICY.md",
@@ -1264,8 +1264,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 19170,
-      "sha256": "c2fa1a8725578de301473f438dd9dce0991de0be85a371101e6b0989207f5a5c"
+      "bytes": 30425,
+      "sha256": "a50a6a97339622def9d974adda4d3cdb12f6a91f3c1e7be6cfd887fa5c4f88e7"
     },
     {
       "path": "docs/WEBSITES.md",
@@ -1284,23 +1284,23 @@
     },
     {
       "path": "docs/images/download-linux-arm64.svg",
-      "bytes": 1201,
-      "sha256": "49039a4609cca1b38e2ca2a5e09e0cea150befb81a662ea5b4cea06d0cf06d3a"
+      "bytes": 1258,
+      "sha256": "230276c0902fa07425dbeb5e25ffae23ae79fe3eb6b403444a88680c1c78dd90"
     },
     {
       "path": "docs/images/download-linux-x64.svg",
-      "bytes": 1039,
-      "sha256": "0b25d8e39eaf35bb2bf05c0a151c9b336ce87903b0f23df99a25769133f3f679"
+      "bytes": 1000,
+      "sha256": "08abf42521b19a619d58b1b0c0696d3fdef3dd7ac3147b53b7b530b110f3e96c"
     },
     {
       "path": "docs/images/download-macos.svg",
-      "bytes": 1053,
-      "sha256": "0dda9fb42e2e5424fad8b71e111d90804092fb7b8f42c3e059631246b2ba2e0f"
+      "bytes": 1014,
+      "sha256": "b02cc31e5a6c54d9326394703d03771bbd431b2ea73c1535f86dde9817baa447"
     },
     {
       "path": "docs/images/download-windows.svg",
-      "bytes": 1066,
-      "sha256": "db8711a994f4f9e7ec3f045984eb4f43c47c7244d71ecef87e46311dc19f9018"
+      "bytes": 979,
+      "sha256": "7e0a8384846287a77bd38c8ffbe2455b99743d6b3e22758ae38048cfa7ca3516"
     },
     {
       "path": "docs/images/hero-preview.png",
@@ -1519,6 +1519,26 @@
       "path": "screenshots/real/README.md",
       "bytes": 1596,
       "sha256": "559e97e5bea2389e2c7868a91c425a2c802374509811dbc7d763642cf49e492a"
+    },
+    {
+      "path": "screenshots/real/linux-arm64-r4-cancelled.jpg",
+      "bytes": 17389,
+      "sha256": "d939f7745181bd522db480e0afca0c3d8ac1578d2078883bae1e1e27dd4a2072"
+    },
+    {
+      "path": "screenshots/real/linux-tor-https-qa.jpg",
+      "bytes": 44509,
+      "sha256": "22e50d4c87a3e6689336a1423ad0d543dfd07affaad67f18d90ec4ad2c79e282"
+    },
+    {
+      "path": "screenshots/real/linux-x64-r4-first-open.jpg",
+      "bytes": 114336,
+      "sha256": "38f1716bede9784d7aad23ca83fa717be12e2a291d489ce9494d6bc2abba45ca"
+    },
+    {
+      "path": "screenshots/real/macos-r4-first-open.jpg",
+      "bytes": 687643,
+      "sha256": "dd2783e7121fd3e8bca53b8a9f02f42eb0b6ed821cba171807f360e923e4cfa2"
     },
     {
       "path": "screenshots/real/metadata/01-select-file.png",

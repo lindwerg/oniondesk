@@ -8,14 +8,14 @@
 
 ## Программа для вашего компьютера
 
-Новые комплекты для запуска одним нажатием ещё не опубликованы. Выберите **систему компьютера, на котором будете открывать мастер**, чтобы посмотреть текущий статус и порядок первого запуска. Ссылки появятся после публикации и проверки; запуск через графический интерфейс на всех четырёх системах пока не подтверждён.
+Выберите **систему компьютера, на котором будете открывать мастер**, и скачайте ZIP. Это бесплатный закрытый предварительный выпуск: для загрузки нужен аккаунт GitHub с доступом к репозиторию. Комплект занимает несколько ГБ; перед загрузкой освободите не менее **20 ГБ**. [Что проверено и какие ограничения остаются](docs/VERIFICATION.md).
 
 <p align="center">
-  <a href="docs/DOWNLOADS.md#windows"><img src="docs/images/download-windows.svg" alt="Windows x64 — статус проверки загрузки" width="270"></a>
-  <a href="docs/DOWNLOADS.md#macos"><img src="docs/images/download-macos.svg" alt="Mac Apple Silicon, macOS 15 и новее — статус проверки загрузки" width="270"></a>
+  <a href="https://github.com/lindwerg/oniondesk/archive/027269c31225d8e7c3907747cff5d6e79ca79962.zip"><img src="docs/images/download-windows.svg" alt="Windows x64 — Скачать ZIP" width="270"></a>
+  <a href="https://github.com/lindwerg/oniondesk/archive/a9d7dbb1d1c60e23089de7578453b9d4b35ecca4.zip"><img src="docs/images/download-macos.svg" alt="Mac Apple Silicon, macOS 15 и новее — Скачать ZIP" width="270"></a>
   <br>
-  <a href="docs/DOWNLOADS.md#linux-x64"><img src="docs/images/download-linux-x64.svg" alt="Linux Intel или AMD x64 — статус проверки загрузки" width="270"></a>
-  <a href="docs/DOWNLOADS.md#linux-arm64"><img src="docs/images/download-linux-arm64.svg" alt="Linux ARM64 — статус проверки загрузки и ограничения Tor Browser" width="270"></a>
+  <a href="https://github.com/lindwerg/oniondesk/archive/57fe7ff4ca294eb4a34fdb5ba35b707122dd5788.zip"><img src="docs/images/download-linux-x64.svg" alt="Linux Intel или AMD x64 — Скачать ZIP" width="270"></a>
+  <a href="https://github.com/lindwerg/oniondesk/archive/3cf25cfa68a7ff8966d79f487447e766a9ad1a09.zip"><img src="docs/images/download-linux-arm64.svg" alt="Linux ARM64 — Скачать ZIP: подготовка и инструкции, Tor Browser недоступен" width="270"></a>
 </p>
 
 **Linux ARM64:** OnionDesk можно открыть для подготовки и просмотра инструкций. В этом выпуске этап с официальным Tor Browser недоступен. Для полного маршрута используйте компьютер Intel/AMD x86-64 или поддерживаемый Mac.
@@ -70,21 +70,33 @@ OnionDesk ведёт по настройке этого доступа чере�
 
 ## Установить и открыть
 
-Следующие действия относятся к **полностью полученному и проверенному комплекту**. Новые комплекты для запуска одним нажатием ещё не опубликованы; полная проверка первого открытия на всех четырёх системах не завершена. Частичный архив запускать нельзя.
+1. **Выберите ОС и дождитесь загрузки ZIP целиком.** Комплект занимает несколько ГБ; частичный архив запускать нельзя.
+2. **Полностью распакуйте ZIP** в одну папку. Сохраните всё его содержимое рядом.
+3. **Откройте значок программы** из таблицы ниже с учётом статуса своей ОС и дождитесь проверки файлов. Первое открытие может занять время.
 
 | Ваш компьютер | Что открыть после полной распаковки ZIP |
 |---|---|
-| Windows x64 | `OnionDesk-Windows.exe`, затем созданный ярлык OnionDesk |
-| Mac Apple Silicon, macOS 15+ | `OnionDesk.app`; порядок первого открытия — в [инструкции для Mac](docs/DOWNLOADS.md#macos) |
+| Windows x64 | `OnionDesk-Windows.exe` |
+| Mac Apple Silicon, macOS 15+ | `OnionDesk.app`; [первое открытие и статус Mac](docs/DOWNLOADS.md#macos) |
 | Linux Intel / AMD x64 | `OnionDesk-Linux-x64`; для Tor Browser нужен обычный Linux Desktop с GTK3 и ALSA |
 | Linux ARM64 | `OnionDesk-Linux-ARM64` — подготовка и инструкции; этап Tor Browser на этой архитектуре недоступен |
 
-Сохраняйте комплект целиком. Папка `.oniondesk` рядом с Windows- и Linux-программами содержит необходимые ресурсы и может быть скрыта проводником. В Mac-приложении ресурсы встроены. **Файлы исходного кода в верхней части GitHub для установки не нужны.**
+Сохраняйте комплект целиком: папка `.oniondesk` содержит необходимые ресурсы и должна оставаться рядом с программой, включая `OnionDesk.app` на Mac. Она может быть скрыта в файловом менеджере; в Windows папка с точкой может быть видна. **GitHub Source code ZIP содержит исходники; для установки используйте кнопки выше.** [Первое открытие и статус каждой ОС](docs/DOWNLOADS.md).
 
 <details>
-<summary><strong>Статус экспериментального получения через CLI</strong></summary>
+<summary><strong>Дополнительный способ: GitHub CLI</strong></summary>
 
-Ранее подготовленные distribution-ветки остаются экспериментальными. Пользовательские ссылки появятся после публикации и проверки новых комплектов для запуска одним нажатием. Инструкции для разработчиков находятся в [описании нативной сборки](client/BUILD-NATIVE.md).
+Нужны установленные Git, Git LFS, GitHub CLI и аккаунт с доступом к приватному репозиторию. Пример для Linux Intel/AMD x64:
+
+```sh
+gh auth login
+gh repo clone lindwerg/oniondesk OnionDesk -- --branch dist/linux-x64-native-v5-preview-20261017-r4 --single-branch
+cd OnionDesk
+git lfs install --local
+git lfs pull
+```
+
+Для другой ОС замените имя ветки: Windows — `dist/windows-x64-native-v5-preview-20261017`, Mac Apple Silicon — `dist/macos-arm64-native-v5-preview-20261017-r4`, Linux ARM64 — `dist/linux-arm64-native-v5-preview-20261017-r4` для подготовки и инструкций. После полного получения файлов откройте программу своей ОС. Короткий текстовый указатель вместо большого файла означает, что загрузка не закончена. Это инструкция; полный CLI-прогон загрузки всех четырёх комплектов не заявляется. Для новой ОС выбирайте отдельную пустую папку.
 
 </details>
 
@@ -99,6 +111,8 @@ Tor, разделение сред и локальные проверки уме
 
 [Архитектура](docs/ARCHITECTURE.md) · [Разработка](docs/DEVELOPMENT.md) · [Участие](CONTRIBUTING.md) · [Безопасность](SECURITY.md) · [Лицензии сторонних компонентов](docs/LICENSES.md).
 
-Собственная лицензия проекта этим описанием не меняется. Сторонние компоненты сохраняют свои условия. Изображения служат иллюстрациями, а не доказательствами проверки сервера, оплаты или наличия средств.
+Наш код распространяется по [GPLv3](LICENSE): можно бесплатно использовать, изучать и изменять; при распространении изменённых версий нужно соблюдать условия GPLv3.
+
+Сторонние компоненты сохраняют свои условия. Изображения служат иллюстрациями, а не доказательствами проверки сервера, оплаты или наличия средств.
 
 </details>
