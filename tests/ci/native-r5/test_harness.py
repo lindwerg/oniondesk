@@ -19,6 +19,9 @@ import zipfile
 SPEC = importlib.util.spec_from_file_location("native_r5", Path(__file__).with_name("run.py"))
 HARNESS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(HARNESS)
+DEBUG_SPEC = importlib.util.spec_from_file_location("windows_cache_debug", Path(__file__).with_name("windows_cache_debug.py"))
+WINDOWS_DEBUG = importlib.util.module_from_spec(DEBUG_SPEC)
+DEBUG_SPEC.loader.exec_module(WINDOWS_DEBUG)
 
 
 class BoundaryTests(unittest.TestCase):
@@ -49,7 +52,7 @@ class BoundaryTests(unittest.TestCase):
         workflow = (HARNESS.REPO / ".github/workflows/native-r5.yml").read_text(encoding="utf-8")
         self.assertNotIn("\n  push:", workflow)
         self.assertIn("\n  workflow_dispatch:", workflow)
-        self.assertIn("options: [all, linux, windows]", workflow)
+        self.assertIn("options: [all, linux, windows, windows-debug]", workflow)
         self.assertNotIn("\nconcurrency:", workflow)
         self.assertIn("group: native-r5-${{ github.ref }}-${{ matrix.distribution }}", workflow)
         self.assertIn("cancel-in-progress: false", workflow)
@@ -61,6 +64,7 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(matrices, [linux, [windows], [windows, *linux]])
         self.assertIn("inputs.suite == 'linux'", expression)
         self.assertIn("inputs.suite == 'windows'", expression)
+        self.assertIn("inputs.suite == 'windows-debug'", expression)
 
     def test_controlled_io_uses_utf8_even_with_cp1252_default(self):
         original_open = Path.open
@@ -81,9 +85,9 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(implicit, [])
 
     def test_all_trusted_literal_errors_have_public_codes(self):
-        tree = ast.parse((HARNESS.HERE / "run.py").read_text(encoding="utf-8"))
+        trees = [ast.parse((HARNESS.HERE / name).read_text(encoding="utf-8")) for name in ("run.py", "windows_cache_debug.py")]
         names = {"ValueError", "RuntimeError", "TimeoutError", "OSError", "InterruptedError"}
-        literals = {node.exc.args[0].value for node in ast.walk(tree) if isinstance(node, ast.Raise)
+        literals = {node.exc.args[0].value for tree in trees for node in ast.walk(tree) if isinstance(node, ast.Raise)
                     and isinstance(node.exc, ast.Call) and isinstance(node.exc.func, ast.Name)
                     and node.exc.func.id in names and node.exc.args and isinstance(node.exc.args[0], ast.Constant)
                     and isinstance(node.exc.args[0].value, str)}
@@ -213,6 +217,42 @@ class BoundaryTests(unittest.TestCase):
             HARNESS.main()
         self.assertEqual(instance.facts["result"], "FAIL_OR_INCOMPLETE")
         self.assertEqual(instance.facts["error_code"], "OwnedProcessCleanupIncomplete")
+
+    def test_owned_native_terminal_error_stops_restore_without_blind_wait(self):
+        instance = HARNESS.Harness.__new__(HARNESS.Harness)
+        instance.environment = {}
+        instance.entry = Path("synthetic-starter.exe")
+        instance.facts = {}
+        for name in ("phase", "save", "cache_progress", "discover"):
+            setattr(instance, name, mock.Mock())
+        instance.native_snapshot = mock.Mock(return_value=True)
+        instance.payload = mock.Mock(return_value=None)
+        instance.native_terminal_error = mock.Mock(return_value="unsafe_cache")
+        instance.spawn = mock.Mock(return_value=SimpleNamespace(poll=lambda: None))
+        env = {"USERPROFILE": "synthetic", "LOCALAPPDATA": "synthetic", "APPDATA": "synthetic"}
+        with mock.patch.object(HARNESS.os, "name", "nt"), mock.patch.dict(os.environ, env), \
+             mock.patch.object(HARNESS.time, "sleep") as wait:
+            with self.assertRaisesRegex(RuntimeError, "^NativePreparationTerminalError$"):
+                instance.wait_native_restore()
+            wait.assert_not_called()
+        self.assertEqual(instance.facts["native_error_code"], "unsafe_cache")
+        self.assertEqual(HARNESS.classify_native_error(list(HARNESS.NATIVE_ERRORS)), "not_configured")
+        self.assertIsNone(HARNESS.classify_native_error(["/private/arbitrary text"]))
+
+    def test_windows_probe_public_output_contains_only_known_booleans_and_error_kind(self):
+        snapshot = {"exists": True, "owner_is_user": False, "owner_is_admin": True, "dacl_protected": False,
+                    "sddl": "O:private-owner-D:private", "descriptor_error": "private-path"}
+        result = {"root_after": {**snapshot, "owner_is_user": True, "owner_is_admin": False}, "child_after": snapshot,
+                  "token_owner_equals_user": False, "token_owner_is_admin": True, "token_elevated": True,
+                  "go_version": "go1.26.2", "unsafe_error": True, "download_progress_seen": False,
+                  "deadline_reached": False, "restore_lock_exists": False,
+                  "restore_error": "unsafe cache: cache handle owner/DACL differs", "cache": "private-path"}
+        facts = WINDOWS_DEBUG.public_probe_facts(result)
+        HARNESS.validate_public_json(facts)
+        self.assertNotIn("private", json.dumps(facts))
+        self.assertTrue(facts["manifest_child_owner_is_admin"])
+        self.assertTrue(facts["cache_owner_is_user"])
+        self.assertEqual(facts["probe_error_kind"], "owned_handle_owner_dacl")
 
     def test_contract_bytes_survive_git_autocrlf_checkout(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -40,6 +40,12 @@ BOOL_FIELDS = {"public_github_hosted_runner", "synthetic_profile", "starter_veri
                "system_chrome_exists", "system_chrome_symlink", "system_chrome_regular", "system_chrome_root_owned",
                "system_chrome_group_writable", "system_chrome_other_writable", "browser_diagnostic_encrypted",
                "system_chrome_permissions_hardened", "browser_architecture_matches",
+               "native_launcher_alive", "probe_source_verified", "probe_exact_go_version", "probe_unsafe_error",
+               "probe_download_progress_seen", "probe_deadline_reached", "probe_restore_lock_exists",
+               "token_owner_equals_user", "token_owner_is_admin", "token_elevated", "cache_owner_is_user",
+               "cache_owner_is_admin", "cache_dacl_protected", "manifest_child_exists", "manifest_child_owner_is_user",
+               "manifest_child_owner_is_admin", "manifest_child_dacl_protected", "probe_diagnostic_complete",
+               "cache_exists",
                "core_listener_closed", "owned_resources_only", "exact_process_identities_only", "owned_processes_stopped",
                "private_cache_and_profile_removed"}
 COUNT_FIELDS = {"restored_files_verified", "online_blobs_verified", "online_parts_verified"}
@@ -48,12 +54,20 @@ BROWSER_FAILURE_REASONS = {"display_unavailable", "sandbox_helper_misconfigured"
                            "permission_denied", "socket_path_too_long", "sandbox_diagnostics_failed", "unclassified_browser_launch_failure"}
 PHASES = {"initialize", "download_release_asset", "headed_sandboxed_browser", "native_cold_download_and_restore",
           "independent_restore_verification", "ordinary_nsis_install", "ordinary_nsis_uninstall", "core_first_action",
-          "core_ui_quit", "complete", "browser_sandbox_diagnostics", "browser_attestation", "browser_launch", "browser_sandbox_check"}
+          "core_ui_quit", "complete", "browser_sandbox_diagnostics", "browser_attestation", "browser_launch", "browser_sandbox_check",
+          "windows_cache_diagnostic"}
+NATIVE_ERRORS = {
+    "Пакет установки ещё не готов. Получите готовый пакет OnionDesk у издателя.": "not_configured",
+    "Недостаточно места на системном диске. Освободите место и повторите подготовку.": "space",
+    "Файлы не прошли проверку целостности. Повторите подготовку или получите новый пакет.": "integrity",
+    "Не удалось безопасно подготовить файлы. Проверьте доступ к пользовательскому кэшу и повторите попытку.": "unsafe_cache",
+    "Не удалось подготовить установку. Повторите попытку. Если ошибка сохранится, получите новый пакет.": "preparation_failed",
+}
 PINS = json.loads((HERE / "pins.json").read_text(encoding="utf-8"))
 SHA = re.compile(r"[0-9a-f]{64}")
 TRUSTED_ERROR_CODES = {
-    'BrowserSandboxDisabled',
     'BrowserELFArchitectureMismatch',
+    'BrowserSandboxDisabled',
     'BrowserTemporaryPathTooLong',
     'CIInterrupted',
     'CheckoutSHAMismatch',
@@ -67,12 +81,12 @@ TRUSTED_ERROR_CODES = {
     'ContractPinMismatch',
     'CoreListenerSurvivedQuit',
     'CoreSystemBrowserRequestRequired',
-    'DiagnosticRecipientPinMismatch',
     'DiagnosticDERInvalid',
     'DiagnosticRecipientIdentityInvalid',
+    'DiagnosticRecipientPinMismatch',
     'DiagnosticRecipientRSARequired',
-    'EncryptedDiagnosticSizeLimit',
     'EncryptedDiagnosticProfileMismatch',
+    'EncryptedDiagnosticSizeLimit',
     'ExistingWindowsInstallationOrCache',
     'ExistingWindowsRegistration',
     'ExistingWindowsShortcut',
@@ -80,6 +94,8 @@ TRUSTED_ERROR_CODES = {
     'FreshPublicRunnerRequired',
     'InstalledCoreRequired',
     'KnownFolderUnavailable',
+    'NativePreparationExitedBeforeReady',
+    'NativePreparationTerminalError',
     'NativePreparationWindowNotProven',
     'NativeWindowGeometry',
     'OnlineBlobMismatch',
@@ -91,6 +107,11 @@ TRUSTED_ERROR_CODES = {
     'OwnedNativeWindowRequired',
     'OwnedProcessCleanupIncomplete',
     'PositiveSandboxDiagnosticsRequired',
+    'ProbeExactGoVersionRequired',
+    'ProbeExecutionIncomplete',
+    'ProbeFrozenSourceMismatch',
+    'ProbeSourceArchiveMismatch',
+    'ProbeSourceCatalogMismatch',
     'PublicEvidenceBudgetExceeded',
     'PublicEvidenceField',
     'PublicEvidenceSchema',
@@ -129,6 +150,7 @@ TRUSTED_ERROR_CODES = {
     'UnsafeZipComponent',
     'UnsafeZipEntry',
     'UnsafeZipName',
+    'WindowsDiagnosticRunnerRequired',
     'ZipBudgetExceeded',
     'ZipTypeMismatch',
 }
@@ -270,7 +292,7 @@ def validate_public_json(value):
         elif key == "phase":
             valid = isinstance(item, str) and item in PHASES
         elif key == "result":
-            valid = item in {"RUNNING", "PASS", "PASS_PREPARATION_UI_ARM_GATE", "FAIL_OR_INCOMPLETE"}
+            valid = item in {"RUNNING", "PASS", "PASS_PREPARATION_UI_ARM_GATE", "FAIL_OR_INCOMPLETE", "WINDOWS_CACHE_DIAGNOSTIC_ONLY"}
         elif key == "error_class":
             valid = isinstance(item, str) and bool(re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,80}", item))
         elif key in {"error_code", "diagnostic_error_code"}:
@@ -291,6 +313,14 @@ def validate_public_json(value):
             valid = type(item) is int and 0 <= item <= 65535
         elif key == "browser_socket_path_max_bytes":
             valid = type(item) is int and 0 < item <= 100
+        elif key == "native_error_code":
+            valid = isinstance(item, str) and item in set(NATIVE_ERRORS.values())
+        elif key == "probe_error_kind":
+            valid = isinstance(item, str) and item in {"owned_handle_owner_dacl", "root_owner_dacl", "ancestor_acl", "other", "none"}
+        elif key == "progress_blob_files":
+            valid = type(item) is int and 0 <= item <= 1000
+        elif key == "progress_blob_bytes":
+            valid = type(item) is int and 0 <= item <= 16 * 1024**3
         else:
             valid = False
         if not valid:
@@ -316,6 +346,10 @@ def browser_failure_facts(error):
     if match:
         result["browser_failure_signal"] = match[1].upper()
     return result
+
+
+def classify_native_error(texts):
+    return next((NATIVE_ERRORS[value.strip()] for value in texts if value.strip() in NATIVE_ERRORS), None)
 
 
 def trusted_error_facts(error):
@@ -762,6 +796,24 @@ class Harness:
             raise RuntimeError("OwnedNativeWindowRequired")
         return None
 
+    def native_terminal_error(self):
+        window = self.nsis_window(required=False, installer=False)
+        if window:
+            return classify_native_error([child.window_text() for child in window.children() if child.class_name() == "Static"])
+        return None
+
+    def cache_progress(self, launcher):
+        online = self.cache / "online-r5"
+        namespace = online / ("r5-" + PINS["index_sha256"] + "-" + self.distribution + "-" + self.pin["manifest_sha256"])
+        expected = {item["sha256"]: item["bytes"] for item in self.manifest["blobs"]}
+        sizes = [path.stat().st_size for path in (namespace / "pool").glob("*") if path.name in expected and
+                 path.is_file() and not path.is_symlink() and path.stat().st_size == expected[path.name]]
+        self.facts.update({"native_launcher_alive": launcher.poll() is None,
+                           "progress_blob_files": len(sizes), "progress_blob_bytes": sum(sizes)})
+        self.save()
+        print("Native R5 progress: " + json.dumps({key: self.facts[key] for key in
+              ("native_launcher_alive", "progress_blob_files", "progress_blob_bytes")}), flush=True)
+
     def drive_nsis(self, uninstall=False):
         self.phase("ordinary_nsis_uninstall" if uninstall else "ordinary_nsis_install")
         deadline = time.monotonic() + 600
@@ -795,9 +847,10 @@ class Harness:
         wrapper_environment = dict(self.environment)
         if os.name == "nt":
             wrapper_environment.update({k: os.environ[k] for k in ("USERPROFILE", "LOCALAPPDATA", "APPDATA")})
-        self.spawn(self.entry, wrapper_environment)
+        launcher = self.spawn(self.entry, wrapper_environment)
         deadline = time.monotonic() + 2400
         snapshot = False
+        progress_due = time.monotonic()
         while time.monotonic() < deadline:
             if not snapshot:
                 snapshot = self.native_snapshot()
@@ -813,6 +866,20 @@ class Harness:
                         raise RuntimeError("InstalledCoreRequired")
                     self.spawn(core)
                 return
+            if os.name == "nt":
+                error = self.native_terminal_error()
+                if error:
+                    self.facts["native_error_code"] = error
+                    self.native_snapshot()
+                    self.save()
+                    raise RuntimeError("NativePreparationTerminalError")
+                if launcher.poll() is not None:
+                    self.facts["native_launcher_alive"] = False
+                    self.save()
+                    raise RuntimeError("NativePreparationExitedBeforeReady")
+                if time.monotonic() >= progress_due:
+                    self.cache_progress(launcher)
+                    progress_due = time.monotonic() + 60
             self.discover()
             time.sleep(0.5)
         raise TimeoutError("ColdRestoreIncomplete")
@@ -1165,6 +1232,9 @@ def cleanup():
 
 
 def main():
+    if sys.argv[1:] == ["diagnose-windows"]:
+        from windows_cache_debug import run_diagnostic
+        return run_diagnostic(sys.modules[__name__])
     if sys.argv[1:] == ["seal"]:
         seal_evidence()
         return 0

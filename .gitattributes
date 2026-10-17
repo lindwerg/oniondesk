@@ -2,3 +2,4 @@
 /tests/ci/native-r5/contracts/*.json -text
 /tests/ci/native-r5/pins.json -text
 /tests/ci/native-r5/diagnostic-recipient.pem -text
+/tests/ci/native-r5/windows-probe/source-pins.json -text

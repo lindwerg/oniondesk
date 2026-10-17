@@ -6,6 +6,18 @@ The workflow runs only by manual dispatch. Its `suite` choice selects all three
 targets, the two Linux targets, or Windows only. Concurrency is per distribution,
 so a Linux-only dispatch can proceed while an earlier Windows test is running.
 
+`suite=windows-debug` is a diagnostic-only run. It skips browser provisioning,
+verifies/extracts 13 required frozen source files from the pinned published GPL
+source archive, and builds a separate probe with Go 1.26.2. The unchanged R5 UI
+gets 30 seconds to report a known terminal error; the probe then calls the exact
+unchanged `RestoreOnline` with a 25-second context and the same KnownFolder cache.
+Only fixed owner/User/Admin/protected-DACL booleans and an error category become
+public. Wrapped errors, SDDL and cache paths go only into the pinned encrypted
+CMS artifact. No accounts, tokens, ACL guards or production binaries are changed.
+The result is explicitly `WINDOWS_CACHE_DIAGNOSTIC_ONLY`, never a product PASS.
+Normal Windows runs now stop on known terminal UI errors or owned-launcher exit,
+and report only bounded cache-object progress counts once per minute.
+
 The real release ZIP is hash checked and extracted with a portable path/type
 guard. Its top executable is independently pinned. Required empty transport
 parents are created; the source blob pool is deliberately absent. R5 must
