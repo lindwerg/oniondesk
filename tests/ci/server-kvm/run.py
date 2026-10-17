@@ -13,6 +13,8 @@ import sys
 import tempfile
 import uuid
 
+import confidential
+
 ROOT = Path(__file__).resolve().parents[3]
 EVIDENCE = ROOT / "server-kvm-evidence"
 LABEL = "io.oniondesk.server-kvm-ci"
@@ -113,11 +115,15 @@ def export_evidence(container, temporary):
     invoke(["docker", "cp", container + ":/ci-evidence/.", str(destination)], timeout=60)
     files = sorted(destination.iterdir())
     names = {"status.json", "source.json", "gateway.png", "workstation.png",
-             "browser-gateway.png", "browser-workstation.png"}
+             "browser-gateway.png", "browser-workstation.png", "server-diagnostic.cms"}
     if any(path.name not in names or path.is_symlink() or not path.is_file() for path in files):
         raise ValueError("UnexpectedEvidenceFile")
     if sum(path.stat().st_size for path in files) > MAX_ARTIFACT_BYTES:
         raise ValueError("EvidenceSizeLimit")
+    for path in files:
+        if path.name == "server-diagnostic.cms":
+            confidential.validate_encrypted_diagnostic(path.read_bytes())
+    # Validate the complete set before publishing even the first file.
     for path in files:
         shutil.copyfile(path, EVIDENCE / path.name)
 

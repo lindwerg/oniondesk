@@ -14,7 +14,9 @@ installer, checks, signature/TLS validation and all 29 launcher payload files
 are copied unchanged; their exact commit and before/after hashes are recorded.
 
 Stages: genuine production preflight; `KVM_CREATE_VM`; a non-root libvirt KVM
-probe with QMP `query-kvm`; official Whonix 18.2.1.9 HTTPS download, SHA-512 and
+probe with QMP `query-kvm`; two diskless probes adding the Whonix memory settings
+and then the production `passt` backend, before any Whonix download;
+official Whonix 18.2.1.9 HTTPS download, SHA-512 and
 OpenPGP verification through the production installer; automatic SYSMAINT/USER
 first boot and current production audit; graceful shutdown and cold boot of
 both actual guests; password/TOTP login through the real onion/Tor route in
@@ -65,6 +67,17 @@ the unchanged Gateway is permitted only when both owned domains are defined
 and shut off, no QEMU PID exists, the pre-start audit passes and the VM unit
 has failed. This retry can mutate this disposable guest's first-boot state;
 it never changes the failed installer result or satisfies a readiness gate.
+
+On failure only, up to 64 KiB of private probe stderr and fixed-unit journal
+tails are encrypted in memory to the pinned RSA-3072 public recipient shared
+with native CI. No plaintext log is written to an artifact or to disk. The
+optional `server-diagnostic.cms` envelope is at most 128 KiB and passes the
+same reviewed strict DER/CMS boundary before both writing and host export:
+exact EnvelopedData, one pinned issuer/serial RSA recipient, AES-256-CBC,
+bounded ciphertext, no extra attributes/recipients or trailing bytes. Data,
+SignedData, foreign-recipient and alternate-cipher profiles fail closed. Only
+the owner-held local private key can decrypt it; no private key is in the
+repository, workflow or image. The existing 8 MiB/one-day limit still applies.
 
 Local checks (no Docker/VM start):
 

@@ -22,6 +22,7 @@ import time
 import xml.etree.ElementTree as ET
 
 import diagnostics
+import confidential
 
 EVIDENCE = Path("/ci-evidence")
 SOURCE = Path("/src")
@@ -115,7 +116,20 @@ def qmp_kvm(domain):
     return {"present": True, "enabled": True}
 
 
-def probe_libvirt():
+def probe_xml(name, configuration="basic"):
+    if configuration not in {"basic", "whonix_memory", "whonix_memory_passt"}:
+        raise ValueError("UnknownProbeConfiguration")
+    memory = ("<memory unit='MiB'>128</memory>" if configuration == "basic" else
+              "<memory dumpCore='off' unit='GB'>2</memory><currentMemory unit='GB'>2</currentMemory>"
+              "<memoryBacking><allocation mode='ondemand'/><discard/><nosharepages/></memoryBacking>")
+    network = ("<interface type='user'><backend type='passt'/><model type='virtio'/></interface>"
+               if configuration == "whonix_memory_passt" else "")
+    return ("<domain type='kvm'><name>" + name + "</name>" + memory + "<vcpu>1</vcpu>"
+            "<os><type arch='x86_64' machine='pc'>hvm</type></os>"
+            "<devices><emulator>/usr/bin/qemu-system-x86_64</emulator>" + network + "</devices></domain>")
+
+
+def probe_libvirt(configuration="basic", private=None):
     command(["systemctl", "enable", "--now", "libvirtd.socket"])
     deadline = time.monotonic() + 30
     while True:
@@ -130,12 +144,11 @@ def probe_libvirt():
     path = Path("/run/oniondesk-ci-kvm-probe.xml")
     # This is a real, diskless KVM BIOS boot, only to fail early if libvirt
     # cannot launch non-root QEMU in the delegated cgroup. No substitute binary.
-    path.write_text("<domain type='kvm'><name>" + name + "</name>"
-                    "<memory unit='MiB'>128</memory><vcpu>1</vcpu>"
-                    "<os><type arch='x86_64' machine='pc'>hvm</type></os>"
-                    "<devices><emulator>/usr/bin/qemu-system-x86_64</emulator></devices></domain>")
-    virsh("create", str(path))
+    path.write_text(probe_xml(name, configuration))
+    created = False
     try:
+        virsh("create", str(path))
+        created = True
         result = qmp_kvm(name)
         pid = int(Path("/run/libvirt/qemu/" + name + ".pid").read_text())
         uid_line = next(line for line in Path(f"/proc/{pid}/status").read_text().splitlines()
@@ -143,10 +156,15 @@ def probe_libvirt():
         if int(uid_line.split()[1]) == 0:
             raise RuntimeError("QEMUUnexpectedRootUID")
         return {**result, "qemu_non_root": True, "libvirt_domain_type": "kvm"}
+    except subprocess.CalledProcessError as error:
+        if private is not None:
+            private.add("probe_" + configuration, (error.stdout or b"") + (error.stderr or b""))
+        raise
     finally:
         # Only the transient probe created above; production guests are removed
         # solely with their owning disposable Docker container.
-        virsh("destroy", name)
+        if created:
+            virsh("destroy", name)
         path.unlink(missing_ok=True)
 
 
@@ -413,6 +431,7 @@ def main(mode):
               "host_reboot_tested": False, "RDP_tested": False}
     save(status)
     success = False
+    private = confidential.PrivateDiagnostic()
     try:
         source = source_hashes()
         (EVIDENCE / "source.json").write_text(json.dumps(source, indent=2, sort_keys=True) + "\n")
@@ -422,7 +441,12 @@ def main(mode):
         status["real_kvm_device"] = kvm_device()
         status["phase"] = "libvirt_kvm_probe"
         save(status)
-        status["real_libvirt_kvm_probe"] = probe_libvirt()
+        status["real_libvirt_kvm_probe"] = probe_libvirt(private=private)
+        status["production_like_kvm_probes"] = {}
+        for configuration in ("whonix_memory", "whonix_memory_passt"):
+            status["phase"] = "libvirt_" + configuration + "_probe"
+            save(status)
+            status["production_like_kvm_probes"][configuration] = probe_libvirt(configuration, private)
         status["phase"] = "unmodified_production_install"
         save(status)
         install(mode, status)
@@ -449,6 +473,14 @@ def main(mode):
                 status["failure_diagnostics"] = diagnostics.snapshot(diagnostics.static_error_sites())
             except Exception:
                 status["failure_diagnostics"] = {"available": False}
+        try:
+            for unit in ("libvirtd.service", "oniondesk-vms.service"):
+                journal = subprocess.run(["journalctl", "--unit=" + unit, "--no-pager", "--output=cat", "--lines=120"],
+                                         capture_output=True, timeout=20)
+                private.add(unit, journal.stdout)
+            status["encrypted_diagnostic_saved"] = private.save(EVIDENCE / "server-diagnostic.cms")
+        except Exception:
+            status["encrypted_diagnostic_saved"] = False
     finally:
         for role in DOMAINS:
             try:

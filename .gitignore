@@ -16,6 +16,7 @@ client/data/
 OnionDesk-Data/
 *.log
 *.pem
+!tests/ci/server-kvm/diagnostic-recipient.pem
 *.key
 *.p12
 *.pfx

@@ -52,6 +52,7 @@ jobs:
           path: |
             server-kvm-evidence/*.json
             server-kvm-evidence/*.png
+            server-kvm-evidence/*.cms
           retention-days: 1
           if-no-files-found: error
           compression-level: 6
