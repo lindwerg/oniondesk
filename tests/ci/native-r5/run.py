@@ -39,6 +39,7 @@ BOOL_FIELDS = {"public_github_hosted_runner", "synthetic_profile", "starter_veri
                "tooling_mount_nosuid", "sandbox_helper_mount_nosuid", "linux_sandbox_diagnostics_positive",
                "system_chrome_exists", "system_chrome_symlink", "system_chrome_regular", "system_chrome_root_owned",
                "system_chrome_group_writable", "system_chrome_other_writable", "browser_diagnostic_encrypted",
+               "system_chrome_permissions_hardened", "browser_architecture_matches",
                "core_listener_closed", "owned_resources_only", "exact_process_identities_only", "owned_processes_stopped",
                "private_cache_and_profile_removed"}
 COUNT_FIELDS = {"restored_files_verified", "online_blobs_verified", "online_parts_verified"}
@@ -52,6 +53,7 @@ PINS = json.loads((HERE / "pins.json").read_text(encoding="utf-8"))
 SHA = re.compile(r"[0-9a-f]{64}")
 TRUSTED_ERROR_CODES = {
     'BrowserSandboxDisabled',
+    'BrowserELFArchitectureMismatch',
     'CIInterrupted',
     'CheckoutSHAMismatch',
     'ChromiumSandboxHelperRequired',
@@ -110,6 +112,7 @@ TRUSTED_ERROR_CODES = {
     'StarterExecutableMismatch',
     'StarterNotExecutable',
     'StateAlreadyExists',
+    'SystemChromePermissionsUnsafe',
     'TrustedSystemChromeRequired',
     'UnexpectedCoreBrowserRequest',
     'UnexpectedEvidenceImage',
@@ -283,6 +286,8 @@ def validate_public_json(value):
             valid = isinstance(item, str) and item in {"system_google_chrome", "pinned_chromium"}
         elif key == "browser_version":
             valid = isinstance(item, str) and bool(re.fullmatch(r"[0-9]{1,3}(?:\.[0-9]{1,8}){2,3}", item))
+        elif key == "browser_elf_machine":
+            valid = type(item) is int and 0 <= item <= 65535
         else:
             valid = False
         if not valid:
@@ -419,13 +424,25 @@ def encrypt_browser_diagnostic(error, phase):
                              check=True, capture_output=True, text=True, encoding="utf-8", timeout=20).stdout
     if "Public Key Algorithm: rsaEncryption" not in checked or not re.search(r"Public-Key:\s*\(3072 bit\)", checked):
         raise ValueError("DiagnosticRecipientRSARequired")
-    plaintext = ("phase=" + phase + "\nexception=" + type(error).__name__ + "\n" + str(error)).encode(
-        "utf-8", errors="backslashreplace")[:64 * 1024]
+    plaintext = bounded_browser_diagnostic(error, phase)
     encrypted = subprocess.run(["openssl", "cms", "-encrypt", "-aes-256-cbc", "-binary", "-outform", "DER", str(certificate)],
                                input=plaintext, check=True, capture_output=True, timeout=20).stdout
     if not encrypted or len(encrypted) > 128 * 1024:
         raise ValueError("EncryptedDiagnosticSizeLimit")
     (EVIDENCE / "browser-diagnostic.cms").write_bytes(encrypted)
+
+
+def bounded_browser_diagnostic(error, phase):
+    payload = ("phase=" + phase + "\nexception=" + type(error).__name__ + "\n" + str(error)).encode(
+        "utf-8", errors="backslashreplace")
+    limit = 64 * 1024
+    if len(payload) <= limit:
+        return payload
+    marker = b"\n[bounded diagnostic: middle omitted]\n"
+    first = (limit - len(marker)) // 2
+    last = limit - first - len(marker)
+    return payload[:first].decode("utf-8", errors="ignore").encode("utf-8") + marker + \
+        payload[-last:].decode("utf-8", errors="ignore").encode("utf-8")
 
 
 def system_chrome_attestation(executable):
@@ -438,6 +455,14 @@ def system_chrome_attestation(executable):
                       "system_chrome_group_writable": bool(info.st_mode & 0o020),
                       "system_chrome_other_writable": bool(info.st_mode & 0o002)})
     return facts
+
+
+def browser_elf_machine(executable):
+    with executable.open("rb") as source:
+        header = source.read(64)
+    if len(header) != 64 or header[:7] != b"\x7fELF\x02\x01\x01":
+        return 0
+    return int.from_bytes(header[18:20], "little")
 
 
 def positive_linux_sandbox_layer(rows):
@@ -857,6 +882,7 @@ class Harness:
             try:
                 options = {}
                 self.facts["browser_engine"] = "pinned_chromium"
+                executable = Path(playwright.chromium.executable_path)
                 if self.distribution == "linux-x64":
                     executable = Path("/opt/google/chrome/chrome")
                     self.facts["browser_engine"] = "system_google_chrome"
@@ -868,6 +894,17 @@ class Harness:
                     ):
                         raise RuntimeError("TrustedSystemChromeRequired")
                     options["executable_path"] = str(executable)
+                    self.facts["system_chrome_permissions_hardened"] = os.environ.get("CI_SYSTEM_CHROME_HARDENED") == "true"
+                if os.name != "nt":
+                    machine = browser_elf_machine(executable)
+                    self.facts.update({"browser_elf_machine": machine,
+                                       "browser_architecture_matches": machine == (183 if self.distribution == "linux-arm64" else 62)})
+                    self.save()
+                    if not self.facts["browser_architecture_matches"]:
+                        raise RuntimeError("BrowserELFArchitectureMismatch")
+                    # Upstream diagnostic logging stays inside the bounded,
+                    # recipient-encrypted exception capture on launch failure.
+                    options["args"] = ["--enable-logging=stderr", "--v=1"]
                 self.phase("browser_launch")
                 context = playwright.chromium.launch_persistent_context(str(self.root / "browser-profile"),
                     headless=False, chromium_sandbox=True, viewport={"width": 1200, "height": 820},
@@ -977,6 +1014,28 @@ def cleanup_browser_tooling():
         shutil.rmtree(tooling)
 
 
+def harden_system_chrome_permissions():
+    """Tighten only known root-owned Chrome paths on the ephemeral CI VM."""
+    executable = Path("/opt/google/chrome/chrome")
+    parents = [Path("/opt"), Path("/opt/google"), executable.parent]
+    paths = [*parents, executable]
+    for path in paths:
+        info = path.lstat()
+        expected_type = stat.S_ISREG if path == executable else stat.S_ISDIR
+        if info.st_uid != 0 or not expected_type(info.st_mode):
+            raise RuntimeError("SystemChromePermissionsUnsafe")
+    # Lock the parent directories before the executable, then re-attest all
+    # paths. The launch guard remains unchanged and still rejects writable code.
+    for group in (parents, [executable]):
+        subprocess.run(["sudo", "--non-interactive", "chmod", "0755", "--", *(str(path) for path in group)],
+                       check=True, capture_output=True, timeout=20)
+    for path in paths:
+        info = path.lstat()
+        expected_type = stat.S_ISREG if path == executable else stat.S_ISDIR
+        if info.st_uid != 0 or not expected_type(info.st_mode) or stat.S_IMODE(info.st_mode) != 0o755:
+            raise RuntimeError("SystemChromePermissionsUnsafe")
+
+
 def provision():
     """Normal sandbox provisioning; never alter AppArmor, sysctls or TLS."""
     distribution = os.environ.get("CI_DISTRIBUTION")
@@ -994,6 +1053,10 @@ def provision():
     commands.append([sys.executable, "-m", "playwright", "install", "--with-deps", "chromium"])
     for command in commands:
         subprocess.run(command, check=True, capture_output=True, timeout=900)
+    if distribution == "linux-x64":
+        harden_system_chrome_permissions()
+        with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as output:
+            output.write("CI_SYSTEM_CHROME_HARDENED=true\n")
     if os.name != "nt":
         from playwright.sync_api import sync_playwright
         with sync_playwright() as playwright:

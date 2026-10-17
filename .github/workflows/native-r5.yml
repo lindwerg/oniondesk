@@ -1,20 +1,17 @@
 name: Native R5 — загрузка и первый запуск
 
 on:
-  push:
-    branches: [qa/native-r5-20261017]
-    paths:
-      - .gitattributes
-      - .github/workflows/native-r5.yml
-      - tests/ci/native-r5/**
   workflow_dispatch:
+    inputs:
+      suite:
+        description: Набор платформ для проверки
+        type: choice
+        required: true
+        default: all
+        options: [all, linux, windows]
 
 permissions:
   contents: read
-
-concurrency:
-  group: native-r5-${{ github.ref }}
-  cancel-in-progress: false
 
 jobs:
   native:
@@ -22,18 +19,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - distribution: windows-x64
-            runner: windows-2022
-            python_arch: x64
-          - distribution: linux-x64
-            runner: ubuntu-24.04
-            python_arch: x64
-          - distribution: linux-arm64
-            runner: ubuntu-24.04-arm
-            python_arch: arm64
+        include: ${{ fromJSON(inputs.suite == 'linux' && '[{"distribution":"linux-x64","runner":"ubuntu-24.04","python_arch":"x64"},{"distribution":"linux-arm64","runner":"ubuntu-24.04-arm","python_arch":"arm64"}]' || inputs.suite == 'windows' && '[{"distribution":"windows-x64","runner":"windows-2022","python_arch":"x64"}]' || '[{"distribution":"windows-x64","runner":"windows-2022","python_arch":"x64"},{"distribution":"linux-x64","runner":"ubuntu-24.04","python_arch":"x64"},{"distribution":"linux-arm64","runner":"ubuntu-24.04-arm","python_arch":"arm64"}]') }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
+    concurrency:
+      group: native-r5-${{ github.ref }}-${{ matrix.distribution }}
+      cancel-in-progress: false
     env:
       CI_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false }}
       CI_DISTRIBUTION: ${{ matrix.distribution }}
@@ -57,6 +48,7 @@ jobs:
           lfs: false
           sparse-checkout: |
             tests/ci/native-r5
+            .github/workflows
           sparse-checkout-cone-mode: true
       - name: Подготовить Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0

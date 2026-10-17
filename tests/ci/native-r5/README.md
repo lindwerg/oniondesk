@@ -2,7 +2,9 @@
 
 Only `lindwerg/oniondesk`, public GitHub-hosted runners, and the three fixed
 Windows/Linux targets are accepted. Nothing is dispatched by these scripts.
-The workflow has a separate branch trigger from the server installation test.
+The workflow runs only by manual dispatch. Its `suite` choice selects all three
+targets, the two Linux targets, or Windows only. Concurrency is per distribution,
+so a Linux-only dispatch can proceed while an earlier Windows test is running.
 
 The real release ZIP is hash checked and extracted with a portable path/type
 guard. Its top executable is independently pinned. Required empty transport
@@ -31,6 +33,15 @@ sysctls, TLS and OS security settings are never weakened. UI selectors perform
 the first device action, verify the platform, and click the application's Quit.
 The owned listener must then stop. ARM64 additionally verifies the disabled
 unsupported official Tor Browser action; no Tor Browser success is claimed.
+
+Linux test tooling pins Playwright Python 1.64.0 (official Chromium
+156.0.8078.4/revision 1248, including native ARM64); Windows retains its 1.55.0
+tooling pin. Linux reads the browser's ELF architecture before launch. The
+ephemeral x64 runner's known root-owned Chrome binary and three parent
+directories are tightened to 0755 before the unchanged file guard runs. No
+symlink or non-root-owned path is eligible for that operation. Verbose Linux
+launch diagnostics go only to the bounded encrypted capture; truncation keeps
+both the initial error and final crash context as valid UTF-8.
 
 Public evidence is an allowlisted JSON status/cleanup pair plus cropped native
 windows and browser content. No browser chrome, URL, nonce, process arguments,

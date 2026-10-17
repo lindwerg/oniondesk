@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import stat
 import subprocess
@@ -21,6 +22,23 @@ SPEC.loader.exec_module(HARNESS)
 
 
 class BoundaryTests(unittest.TestCase):
+    def test_dispatch_suites_have_fixed_targets_and_independent_concurrency(self):
+        workflow = (HARNESS.REPO / ".github/workflows/native-r5.yml").read_text(encoding="utf-8")
+        self.assertNotIn("\n  push:", workflow)
+        self.assertIn("\n  workflow_dispatch:", workflow)
+        self.assertIn("options: [all, linux, windows]", workflow)
+        self.assertNotIn("\nconcurrency:", workflow)
+        self.assertIn("group: native-r5-${{ github.ref }}-${{ matrix.distribution }}", workflow)
+        self.assertIn("cancel-in-progress: false", workflow)
+        expression = next(line for line in workflow.splitlines() if "include: ${{ fromJSON(" in line)
+        matrices = [json.loads(value) for value in re.findall(r"'(\[.*?\])'", expression)]
+        windows = {"distribution": "windows-x64", "runner": "windows-2022", "python_arch": "x64"}
+        linux = [{"distribution": "linux-x64", "runner": "ubuntu-24.04", "python_arch": "x64"},
+                 {"distribution": "linux-arm64", "runner": "ubuntu-24.04-arm", "python_arch": "arm64"}]
+        self.assertEqual(matrices, [linux, [windows], [windows, *linux]])
+        self.assertIn("inputs.suite == 'linux'", expression)
+        self.assertIn("inputs.suite == 'windows'", expression)
+
     def test_controlled_io_uses_utf8_even_with_cp1252_default(self):
         original_open = Path.open
         implicit = []
@@ -115,6 +133,54 @@ class BoundaryTests(unittest.TestCase):
             self.assertTrue(facts["system_chrome_other_writable"])
             self.assertTrue(all(type(value) is bool for value in facts.values()))
             HARNESS.validate_public_json(facts)
+
+    def test_known_root_owned_chrome_permissions_are_tightened_before_launch(self):
+        executable = Path("/opt/google/chrome/chrome")
+        parents = [Path("/opt"), Path("/opt/google"), executable.parent]
+        modes = {path: (stat.S_IFREG if path == executable else stat.S_IFDIR) | 0o777 for path in [*parents, executable]}
+        commands = []
+
+        def file_stat(path):
+            return SimpleNamespace(st_uid=0, st_mode=modes[path])
+
+        def chmod(arguments, **_kwargs):
+            self.assertEqual(arguments[:5], ["sudo", "--non-interactive", "chmod", "0755", "--"])
+            commands.append(arguments)
+            for name in arguments[5:]:
+                path = Path(name)
+                modes[path] = stat.S_IFMT(modes[path]) | 0o755
+            return subprocess.CompletedProcess(arguments, 0)
+
+        with mock.patch.object(Path, "lstat", new=file_stat), mock.patch.object(HARNESS.subprocess, "run", side_effect=chmod):
+            HARNESS.harden_system_chrome_permissions()
+        self.assertEqual([command[5:] for command in commands], [[str(path) for path in parents], [str(executable)]])
+        self.assertTrue(all(stat.S_IMODE(mode) == 0o755 for mode in modes.values()))
+        modes[executable] = stat.S_IFLNK | 0o777
+        with mock.patch.object(Path, "lstat", new=file_stat), mock.patch.object(HARNESS.subprocess, "run") as command:
+            with self.assertRaises(RuntimeError):
+                HARNESS.harden_system_chrome_permissions()
+            command.assert_not_called()
+
+    def test_browser_elf_architecture_is_read_from_native_header(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / "synthetic-browser"
+            header = bytearray(64)
+            header[:7] = b"\x7fELF\x02\x01\x01"
+            for machine in (62, 183):
+                header[18:20] = machine.to_bytes(2, "little")
+                target.write_bytes(header)
+                self.assertEqual(HARNESS.browser_elf_machine(target), machine)
+            header[5] = 2
+            target.write_bytes(header)
+            self.assertEqual(HARNESS.browser_elf_machine(target), 0)
+
+    def test_bounded_browser_diagnostic_keeps_first_and_fatal_tail_as_utf8(self):
+        payload = HARNESS.bounded_browser_diagnostic(RuntimeError("FIRST-MARKER" + "Ж" * 100000 + "LAST-FATAL-MARKER"), "browser_launch")
+        self.assertLessEqual(len(payload), 64 * 1024)
+        text = payload.decode("utf-8")
+        self.assertIn("FIRST-MARKER", text)
+        self.assertIn("middle omitted", text)
+        self.assertTrue(text.endswith("LAST-FATAL-MARKER"))
 
     def test_cleanup_failure_records_exact_code_and_cannot_leave_pass_result(self):
         instance = SimpleNamespace(facts={"phase": "complete", "result": "PASS"}, save=mock.Mock(), run=mock.Mock())
